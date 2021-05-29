@@ -1,3 +1,2 @@
 # GSecurity
 # Hardening, performance, privacy, debloating, etc...
-# You can get just the cmd file at tinu.be/GSecurity
