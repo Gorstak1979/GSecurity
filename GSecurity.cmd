@@ -11,9 +11,9 @@ goto:eof
 fsutil dirty query %systemdrive% >nul
 goto:eof
 :run
-REM ; Make current folder active one
+:: Make current folder active one
 pushd %~dp0
-REM ; Remove random reg keys (Startup/Privacy/Policies/Malware related)
+:: Remove random reg keys (Startup/Privacy/Policies/Malware related)
 Echo Y | Reg.exe delete "HKEY_CURRENT_USER\Software\Microsoft\Command Processor" /v "AutoRun" /f
 Echo Y | Reg.exe delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /f
 Echo Y | Reg.exe delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /f
@@ -79,7 +79,7 @@ Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Ses
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager" /v "Execute" /f
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager" /v "SETUPEXECUTE" /f
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\Wds\rdpwd" /v "StartupPrograms" /f
-REM ; Remove random files/folders
+:: Remove random files/folders
 del "%AppData%\Microsoft\Windows\Recent\*" /s /f /q
 del "%WINDIR%\System32\sru\*" /s /f /q
 rd "%SystemDrive%\AMD" /s /q
@@ -99,7 +99,7 @@ rd "%LocalAppData%\Microsoft\Windows\INetCache" /s /q
 rd "%LocalAppData%\Microsoft\Windows\INetCookies" /s /q
 rd "%LocalAppData%\Microsoft\Windows\WebCache" /s /q
 rd "%LocalAppData%\Packages\Microsoft.Windows.Cortana_cw5n1h2txyewy\AppData\Indexed DB" /s /q
-REM ; Restore essential startup entries
+:: Restore essential startup entries
 bcdedit /deletevalue {current} safeboot
 bcdedit /deletevalue {current} safebootalternateshell
 bcdedit /deletevalue {current} removememory
@@ -128,9 +128,9 @@ Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVe
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "Shell" /t REG_SZ /d "explorer.exe" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager" /v "BootExecute" /t REG_MULTI_SZ /d "autocheck autochk *" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager" /v "SETUPEXECUTE" /t REG_MULTI_SZ /d "" /f
-REM ; Remove user account
+:: Remove user account
 net user defaultuser0 /delete
-REM ; Prevent files from being run/altered/recreated
+:: Prevent files from being run/altered/recreated
 takeown /f "%WINDIR%\System32\sethc.exe" /a
 icacls "%WINDIR%\System32\sethc.exe" /remove "Administrators" "Authenticated Users" "Users" "System"
 takeown /f "%WINDIR%\SysWOW64\sethc.exe" /a
@@ -139,24 +139,24 @@ takeown /f "%WINDIR%\System32\utilman.exe" /a
 icacls "%WINDIR%\System32\utilman.exe" /remove "Administrators" "Authenticated Users" "Users" "System"
 takeown /f "%WINDIR%\SysWOW64\utilman.exe" /a
 icacls "%WINDIR%\SysWOW64\utilman.exe" /remove "Administrators" "Authenticated Users" "Users" "System"
-REM ; Debloat
+:: Debloat
 powershell "Get-AppxPackage -AllUsers | Where {($_.Name -notlike '*tore*')} | Where {($_.Name -notlike '*dge*')} | Where {($_.Name -notlike '*vidia*')} | Where {($_.Name -notlike '*dentity*')} | Where {($_.Name -notlike '*ost*')} | Where {($_.Name -notlike '*alc*')} | Where {($_.Name -notlike '*hotos*')} | Where {($_.Name -notlike '*hell*')} | Where {($_.Name -notlike '*ealtek*')} | Where {($_.Name -notlike '*olby*')} | Remove-AppxPackage"
 powershell "Get-AppxProvisionedPackage -Online | Where {($_.Name -notlike '*tore*')} | Where {($_.Name -notlike '*dge*')} | Where {($_.Name -notlike '*vidia*')} | Where {($_.Name -notlike '*dentity*')} | Where {($_.Name -notlike '*ost*')} | Where {($_.Name -notlike '*alc*')} | Where {($_.Name -notlike '*hotos*')} | Where {($_.Name -notlike '*hell*')} | Where {($_.Name -notlike '*ealtek*')} | Where {($_.Name -notlike '*olby*')} | Remove-AppxProvisionedPackage -Online"
-REM ; Take ownership of Desktop
+:: Take ownership of Desktop
 takeown /s %computername% /u %username% /f "%SystemDrive%\Users\Public\Desktop" /r /d y
 icacls "%SystemDrive%\Users\Public\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 takeown /s %computername% /u %username% /f "%USERPROFILE%\Desktop" /r /d y
 icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
-REM ; Configure DNS
+:: Configure DNS
 wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("1.1.1.1", "8.8.8.8", "9.9.9.9")
 :next
-REM ; Autorun
+:: Autorun
 rem 0 - Use Autoplay for all media and devices
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" /v "DisableAutoplay" /t REG_DWORD /d "1" /f 
 rem Disable AutoPlay and AutoRun
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d "255" /f
-REM ; Feedback and diagnostics
+:: Feedback and diagnostics
 rem Diagnostic and usage data - Select how much data you send to Microsoft / 0 - Security (Not aplicable on Home/Pro, it resets to Basic) / 1 - Basic / 2 - Enhanced (Hidden) / 3 - Full
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Application-Experience/Program-Telemetry" /v "Enabled" /t REG_DWORD /d "0" /f
@@ -167,7 +167,7 @@ Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersio
 rem Feedback Frequency - Windows should ask for my feedback: 0 - Never / Removed - Automatically
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /t REG_DWORD /d "0" /f
-REM ; Keyboard Tweaks
+:: Keyboard Tweaks
 rem Language bar options - Advanced key settings - Change Key Sequence
 rem 3 - Not assigned / 2 - CTRL+SHIFT / 1 - Left ALT+SHIFT
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Keyboard Layout\Toggle" /v "Language Hotkey" /t REG_SZ /d "3" /f
@@ -207,17 +207,17 @@ rem 1 - Disable Windows Key Hotkeys
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWinKeys" /t REG_DWORD /d "1" /f
 rem Disable specific Windows Key Hotkeys only (like R = Win+R)
 rem Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "DisabledHotkeys" /t REG_EXPAND_SZ /d "R" /f
-REM ; Radios
+:: Radios
 rem Let apps control radios / 0 - Default / 1 - Enabled / 2 - Disabled
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios" /t REG_DWORD /d "2" /f
-REM ; Networking Tweaks
+:: Networking Tweaks
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "autodisconnect" /t REG_DWORD /d "4294967295" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "Size" /t REG_DWORD /d "3" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "EnableOplocks" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "IRPStackSize" /t REG_DWORD /d "32" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "SharingViolationDelay" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "SharingViolationRetries" /t REG_DWORD /d "0" /f
-REM ; Performance Tweaks
+:: Performance Tweaks
 rem n - Disable Background disk defragmentation / y - Enable How long in milliseconds you want to have for a startup delay time for desktop apps that run at startup to load
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Dfrg\BootOptimizeFunction" /v "Enable" /t REG_SZ /d "n" /f
 rem 0 - Disable Background auto-layout / Disable Optimize Hard Disk when idle
@@ -269,14 +269,14 @@ Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Sessio
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnableSuperfetch" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction" /v "Enable" /t REG_SZ /d "y" /f
-REM ; Firewall
+:: Firewall
 rem Block all inbound network traffic and all outbound except allowed apps
 netsh advfirewall set DomainProfile firewallpolicy blockinboundalways,blockoutbound
 netsh advfirewall set PrivateProfile firewallpolicy blockinboundalways,blockoutbound
 netsh advfirewall set PublicProfile firewallpolicy blockinbound,allowoutbound
 rem Remove All Windows Firewall Rules
 netsh advfirewall firewall delete rule name=all
-REM ; Logging
+:: Logging
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\AppModel" /v "Start" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\Circular Kernel Context Logger" /v "Start" /t REG_DWORD /d "0" /f
@@ -298,7 +298,7 @@ Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Au
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\WdiContextLog" /v "Start" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\WiFiDriverIHVSession" /v "Start" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\WMI\Autologger\WiFiSession" /v "Start" /t REG_DWORD /d "0" /f
-REM ; Error reporting
+:: Error reporting
 rem Disable Microsoft Support Diagnostic Tool MSDT
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" /v "DisableQueryRemoteServer" /t REG_DWORD /d "0" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" /v "EnableQueryRemoteServer" /t REG_DWORD /d "0" /f
@@ -334,7 +334,7 @@ takeown /f "%WinDir%\System32\WerFault.exe" /a
 icacls "%WinDir%\System32\WerFault.exe" /grant:r Administrators:F /c
 taskkill /im WerFault.exe /f
 del "%WinDir%\System32\WerFault.exe" /s /f /q
-REM ; Explorer advanced settings
+:: Explorer advanced settings
 rem 1 - Show hidden files, folders and drives
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Hidden" /t REG_DWORD /d "1" /f
 rem 0 - Show extensions for known file types
@@ -361,20 +361,20 @@ rem 1 - Display confirmation dialog when deleting files
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ConfirmFileDelete" /t REG_DWORD /d "1" /f
 rem 1075839525 - Auto arrange icons and Align icons to grid on Desktop / 1075839520 / 1075839521 / 1075839524
 Echo Y | Reg.exe add "HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Bags\1\Desktop" /v "FFlags" /t REG_DWORD /d "1075839525" /f
-REM ; Priority Tweaks
+:: Priority Tweaks
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "38" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "IRQ8Priority" /t REG_DWORD /d "1" /f
-REM ; SSRP
+:: SSRP
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\safer" /f
-REM ; Pagefile
+:: Pagefile
 wmic computersystem where name="%computername%" set AutomaticManagedPagefile=False
 wmic pagefileset where name="%SystemDrive%\\pagefile.sys" set InitialSize=0,MaximumSize=0
 wmic pagefileset where name="%SystemDrive%\\pagefile.sys" delete
-REM ; CPU Scheduling
+:: CPU Scheduling
 rem 0 - Foreground and background applications equally responsive / 1 - Foreground application more responsive than background / 2 - Best foreground application response time (Default)
 rem 38 - Adjust for best performance of Programs / 24 - Adjust for best performance of Background Services
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation " /t REG_DWORD /d "0" /f
-REM ; System Restore
+:: System Restore
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows NT\SystemRestore" /v "DisableSR" /f
 Echo Y | Reg.exe delete "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows NT\SystemRestore" /v "DisableConfig" /f
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\SPP\Clients" /v " {09F7EDC5-294E-4180-AF6A-FB0E6A0E9513}" /t REG_MULTI_SZ /d "1" /f
@@ -384,14 +384,14 @@ sc config wbengine start= demand
 sc config swprv start= demand
 sc config vds start= demand
 sc config VSS start= demand
-REM ; Reduce windows size
+:: Reduce windows size
 vssadmin delete shadows /all /quiet
 dism /online /cleanup-image /startcomponentcleanup /resetbase
 compact /compactos:always
-REM ; File history
+:: File history
 rem 1 - Disable File History (Creating previous versions of files/Windows Backup)
 Echo Y | Reg.exe add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\FileHistory" /v "Disabled" /t REG_DWORD /d "1" /f
-REM ; Tasks
+:: Tasks
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
 schtasks /DELETE /TN "AMDLinkUpdate" /f
@@ -499,10 +499,17 @@ schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Logon Synchron
 schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Maintenance Work" /Disable
 schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /Disable
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
-REM ; Import registry
+:: Import registry
 Reg.exe import GSecurity.reg
-REM ; Exit
+:: Reset Network
+ipconfig /release
+ipconfig /flushdns
+ipconfig /renew
+netsh int ip reset
+netsh winsock reset
+:: Exit
 popd
+shutdown -r -t 0
 exit /b
 :UACPrompt
 echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
