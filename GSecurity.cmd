@@ -19,9 +19,9 @@ net user defaultuser0 /delete
 powershell "Get-AppxPackage -AllUsers | Where {($_.Name -notlike '*store*')} | Where {($_.Name -notlike '*Edge*')} | Where {($_.Name -notlike '*nvidia*')} | Where {($_.Name -notlike '*identity*')} | Where {($_.Name -notlike '*host*')} | Where {($_.Name -notlike '*calc*')} | Where {($_.Name -notlike '*photos*')} | Remove-AppxPackage"
 powershell "Get-AppxProvisionedPackage -Online | Where {($_.Name -notlike '*store*')} | Where {($_.Name -notlike '*Edge*')} | Where {($_.Name -notlike '*nvidia*')} | Where {($_.Name -notlike '*identity*')} | Where {($_.Name -notlike '*host*')} | Where {($_.Name -notlike '*calc*')} | Where {($_.Name -notlike '*photos*')} | Remove-AppxProvisionedPackage -Online"
 :: Take ownership of desktop
-takeown /s %computername% /u %username% /f "%SystemDrive%\Users\Public\Desktop" /r /d y
+takeown /F "%SystemDrive%\Users\Public\Desktop" /r /d y
 icacls "%SystemDrive%\Users\Public\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
-takeown /s %computername% /u %username% /f "%USERPROFILE%\Desktop" /r /d y
+takeown /F "%USERPROFILE%\Desktop" /r /d y
 icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 :: Configure DNS
 wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("94.140.14.14", "1.1.1.1", "8.8.8.8")
