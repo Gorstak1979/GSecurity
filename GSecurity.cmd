@@ -11,61 +11,6 @@ goto:eof
 fsutil dirty query %systemdrive% >nul
 goto:eof
 :run
-:: Remove authenticated users group
-C:
-cd\
-takeown /s %computername% /u %username% /f "A:"
-icacls "A:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "B:"
-icacls "B:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "C:"
-icacls "C:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "D:"
-icacls "D:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "E:"
-icacls "E:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "F:"
-icacls "F:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "G:"
-icacls "G:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "H:"
-icacls "H:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "I:"
-icacls "I:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "J:"
-icacls "J:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "K:"
-icacls "K:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "L:"
-icacls "L:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "M:"
-icacls "M:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "N:"
-icacls "N:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "O:"
-icacls "O:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "P:"
-icacls "P:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "Q:"
-icacls "Q:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "R:"
-icacls "R:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "S:"
-icacls "S:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "T:"
-icacls "T:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "U:"
-icacls "U:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "V:"
-icacls "V:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "W:"
-icacls "W:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "X:"
-icacls "X:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "Y:"
-icacls "Y:" /remove:g "Authenticated Users":F
-takeown /s %computername% /u %username% /f "Z:"
-icacls "Z:" /remove:g "Authenticated Users":F
 :: Make current folder active one
 pushd %~dp0
 :: Remove user account
@@ -79,7 +24,7 @@ icacls "%SystemDrive%\Users\Public\Desktop" /grant:r %username%:(OI)(CI)F /t /l 
 takeown /s %computername% /u %username% /f "%USERPROFILE%\Desktop" /r /d y
 icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 :: Configure DNS
-wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("1.1.1.1", "8.8.8.8", "9.9.9.9")
+wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("94.140.14.14", "1.1.1.1", "8.8.8.8")
 :: Setup tasks
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
