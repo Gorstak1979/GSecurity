@@ -841,9 +841,6 @@ Windows Registry Editor Version 5.00
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options]
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dllhost.exe]
-"Debugger"="svchost.exe"
-
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ftp.exe]
 "Debugger"="svchost.exe"
 
@@ -866,9 +863,6 @@ Windows Registry Editor Version 5.00
 "Debugger"="svchost.exe"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\spoolsv.exe]
-"Debugger"="svchost.exe"
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskhostw.exe]
 "Debugger"="svchost.exe"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wbemtest.exe]
@@ -11504,3 +11498,99 @@ Windows Registry Editor Version 5.00
 
 [-HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SrpV2]
 
+; WinOptimizer
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\LanmanServer\Parameters]
+"AutoShareWks"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Tcpip\Parameters]
+"TcpWindowSize"=dword:0002da00
+"GlobalMaxTcpWindowSize"=dword:0002da00
+"DefaultTTL"=dword:00000040
+"EnablePMTUDiscovery"="1"
+"EnablePMTUBHDetect"=dword:00000000
+"SackOpts"=dword:00000000
+"Tcp1323Opts"=dword:00000003
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PCHealth\ErrorReporting]
+"DoReport"=dword:00000001
+"ShowUI"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Lsa]
+"RestrictAnonymous"=dword:00000001
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer]
+"ClearRecentDocsOnExit"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Script Host\Settings]
+"Enabled"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Terminal Server]
+"fAllowToGetHelp"=dword:00000000
+"fAllowFullControl"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\W32Time\Parameters]
+"Type"="NoSync"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon]
+"AllocateFloppies"="0"
+"AllocateCDRoms"="0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\W32Time]
+"Start"=dword:00000002
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\WerSvc]
+"Start"=dword:00000004
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\MediaPlayer\Preferences]
+"UpgradeCodecPrompt"=dword:00000000
+"SendUserGUID"=hex(3):00
+"SilentAcquisition"=hex(3):00
+"DisableMRU"=hex(3):01
+"MetadataRetrieval"=dword:00000000
+"UsageTracking"=dword:00000000
+"AutoAddMusicToLibrary"=dword:00000000
+"StartInMediaGuide"=dword:00000000
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
+"EnableNegotiate"=dword:00000000
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\Main]
+"Use FormSuggest"="yes"
+"IEWatsonEnabled"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update]
+"AUOptions"=dword:00000004
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\wuauserv]
+"Start"=dword:00000002
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\dmwappushsvc]
+"Start"=dword:00000004
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{D89823BA-7180-4B81-B50C-7E471E6121A3}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{E5323777-F976-4f5b-9B55-B94699C46E44}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{2EEF81BE-33FA-4800-9670-1CD474972C3F}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{A8804298-2D5F-42E3-9531-9C8C39EB29CE}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}]
+"Value"="Allow"
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}]
+"Value"="Allow"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config]
+"AutoConnectAllowedOEM"=dword:00000000
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Network]
+"NoWorkgroupContents"=dword:00000001
