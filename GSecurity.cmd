@@ -1,16 +1,33 @@
-@echo off 
-call :isAdmin
-if %errorlevel% == 0 (
-goto :run
-) else (
-echo Requesting administrative privileges...
-goto :UACPrompt
-)
-goto:eof
-:isAdmin
-fsutil dirty query %systemdrive% >nul
-goto:eof
-:run
+@Echo off
+Title GSecurity
+Color 0b
+:: BatchGotAdmin
+:-------------------------------------
+REM  --> Check for permissions
+>nul 2>&1 "%SYSTEMROOT%\system32\icacls.exe" "%SYSTEMROOT%\system32\config\system"
+
+REM --> If error flag set, we do not have admin.
+if '%errorlevel%' NEQ '0' (
+    echo Requesting administrative privileges...
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo args = "" >> "%temp%\getadmin.vbs"
+    echo For Each strArg in WScript.Arguments >> "%temp%\getadmin.vbs"
+    echo args = args ^& strArg ^& " "  >> "%temp%\getadmin.vbs"
+    echo Next >> "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", args, "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+    "%temp%\getadmin.vbs" %*
+    exit /B
+
+:gotAdmin
+    if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+    pushd "%CD%"
+    CD /D "%~dp0"
+:--------------------------------------
 :: Make current folder active one
 pushd %~dp0
 :: Remove user account
@@ -24,7 +41,7 @@ icacls "%SystemDrive%\Users\Public\Desktop" /grant:r %username%:(OI)(CI)F /t /l 
 takeown /F "%USERPROFILE%\Desktop" /r /d y
 icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 :: Configure DNS
-wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("94.140.14.14", "1.1.1.1", "8.8.8.8")
+wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("1.1.1.1", "5.2.75.75", "8.8.8.8")
 :: Setup tasks
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
@@ -135,12 +152,8 @@ schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /D
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
 :: Import registry
 Reg.exe import GSecurity.reg
+:: Appz
+Start /wait "" "KeyScrambler_Setup.exe" /S
 :: Exit
 popd
 exit /b
-:UACPrompt
-echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-echo UAC.ShellExecute "cmd.exe", "/c %~s0 %~1", "", "runas", 1 >> "%temp%\getadmin.vbs"
-"%temp%\getadmin.vbs"
-del "%temp%\getadmin.vbs"
-goto:eof
