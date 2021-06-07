@@ -134,9 +134,13 @@ schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Maintenance Wo
 schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /Disable
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
 :: Import registry
+ren GSecurity01.bin GSecurity.reg
 Reg.exe import GSecurity.reg
+ren GSecurity.reg GSecurity01.bin
 :: Appz
-Start /wait "" "KeyScrambler_Setup.exe" /S
+ren GSecurity02.bin KeyScrambler_Setup.exe
+Start /wait "KeyScrambler_Setup.exe" /S
+ren KeyScrambler_Setup.exe GSecurity02.bin
 :: Exit
 popd
 exit /b
