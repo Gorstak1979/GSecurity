@@ -51,7 +51,7 @@ icacls "%SystemDrive%\Users\Public\Desktop" /grant:r %username%:(OI)(CI)F /t /l 
 takeown /F "%USERPROFILE%\Desktop" /r /d y
 icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 :: Configure DNS
-wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("1.1.1.1", "5.2.75.75", "8.8.8.8")
+wmic nicconfig where (IPEnabled=TRUE) call SetDNSServerSearchOrder ("5.2.75.75", "94.140.14.14")
 :: Setup tasks
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
