@@ -123,6 +123,10 @@ schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Logon Synchron
 schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Maintenance Work" /Disable
 schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /Disable
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
+:: Copy PAC file
+ren GSecurity03.bin GSecurity.pac
+copy /y GSecurity.pac %Systemdrive%\Windows\
+ren GSecurity.pac GSecurity03.bin
 :: Import registry
 ren GSecurity01.bin GSecurity.reg
 Reg.exe import GSecurity.reg
