@@ -11,13 +11,13 @@ Windows Registry Editor Version 5.00
 ; DNS
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Policies\Microsoft\Windows NT\DNSClient]
-"NameServer"="1.1.1.1 8.8.8.8 9.9.9.9"
+"NameServer"="5.2.75.75 94.140.14.14 1.1.1.1"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient]
-"NameServer"="1.1.1.1 8.8.8.8 9.9.9.9"
+"NameServer"="5.2.75.75 94.140.14.14 1.1.1.1"
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy Objects\{EC1F4539-05EA-4B3F-81C3-A7B204C8A542}Machine\Software\Policies\Microsoft\Windows NT\DNSClient]
-"NameServer"="1.1.1.1 8.8.8.8 9.9.9.9"
+"NameServer"="5.2.75.75 94.140.14.14 1.1.1.1"
 
 ; PAC file
 
