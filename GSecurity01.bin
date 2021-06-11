@@ -1468,7 +1468,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Assistance\Client\1.0]
 "NoActiveHelp"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Biometrics]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Biometrics]
 "Enabled"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Biometrics\FacialFeatures]
@@ -1477,12 +1477,12 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Conferencing]
 "NoRDS"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Cryptography\AutoEnrollment]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Cryptography\AutoEnrollment]
 "AEPolicy"=dword:00000007
 "OfflineExpirationPercent"=dword:0000000a
 "OfflineExpirationStoreNames"="MY"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Edge]
 "AutofillCreditCardEnabled"=dword:00000000
 "UserFeedbackAllowed"=dword:00000000
 
@@ -1496,7 +1496,7 @@ Windows Registry Editor Version 5.00
 "UseTPMKeyPIN"=dword:00000002
 "UseTPMPIN"=dword:00000002
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\InputPersonalization]
 "AllowInputPersonalization"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Internet Explorer\Download]
@@ -1536,6 +1536,17 @@ Windows Registry Editor Version 5.00
 "explorer.exe"="1"
 "iexplore.exe"="1"
 
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE]
+"excel.exe"=dword:00011000
+"msaccess.exe"=dword:00011000
+"mspub.exe"=dword:00011000
+"onenote.exe"=dword:00011000
+"outlook.exe"=dword:00011000
+"powerpnt.exe"=dword:00011000
+"visio.exe"=dword:00011000
+"winproj.exe"=dword:00011000
+"winword.exe"=dword:00011000
+
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND]
 "(Reserved)"="1"
 "explorer.exe"="1"
@@ -1551,7 +1562,7 @@ Windows Registry Editor Version 5.00
 "explorer.exe"="1"
 "iexplore.exe"="1"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Internet Explorer\PhishingFilter]
 "EnabledV9"=dword:00000001
 "PreventOverride"=dword:00000001
 "PreventOverrideAppRepUnknown"=dword:00000001
@@ -1575,19 +1586,19 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\MicrosoftEdge\Main]
 "FormSuggest Passwords"="no"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\MicrosoftEdge\PhishingFilter]
 "EnabledV9"=dword:00000001
 "PreventOverride"=dword:00000001
 "PreventOverrideAppRepUnknown"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\MRT]
 "DontOfferThroughWUAU"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\office\16.0\lync]
 "disablehttpconnect"=dword:00000001
 "enablesiphighsecuritymode"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Peernet]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Peernet]
 "Disabled"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51]
@@ -1598,10 +1609,10 @@ Windows Registry Editor Version 5.00
 "ACSettingIndex"=dword:00000000
 "DCSettingIndex"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Speech]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Speech]
 "AllowSpeechModelUpdate"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\109F1CAED645BB78B3EA2B94C0697C740733031C]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\109F1CAED645BB78B3EA2B94C0697C740733031C]
 "Blob"=hex:0f,00,00,00,01,00,00,00,10,00,00,00,05,85,87,0a,20,bd,9e,68,5a,85,14,\
   a9,82,bb,2b,e2,0d,00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,\
   00,14,00,00,00,10,9f,1c,ae,d6,45,bb,78,b3,ea,2b,94,c0,69,7c,74,07,33,03,1c,1b,\
@@ -1648,7 +1659,7 @@ Windows Registry Editor Version 5.00
   a8,d7,95,05,eb,46,52,54,71,8e,e8,7e,cd,9a,6e,e7,4a,f3,a4,49,f0,ca,c6,95,a5,51,\
   60,55,bd,74,1e,cb,2c,01
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\18F7C1FCC3090203FD5BAA2F861A754976C8DD25]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\18F7C1FCC3090203FD5BAA2F861A754976C8DD25]
 "Blob"=hex:0f,00,00,00,01,00,00,00,10,00,00,00,65,fc,47,52,0f,66,38,39,62,ec,0b,\
   7b,88,a0,82,1d,1b,00,00,00,01,00,00,00,08,00,00,00,a0,5f,87,97,af,cd,d5,01,0d,\
   00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,18,\
@@ -1682,7 +1693,7 @@ Windows Registry Editor Version 5.00
   92,dc,ff,ba,67,42,48,a6,90,10,e4,bf,61,f8,9c,53,e5,93,d1,73,3f,f8,fd,9d,4f,84,\
   ac,55,d1,fd,11,63,63
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\245C97DF7514E7CF2DF8BE72AE957B9E04741E85]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\245C97DF7514E7CF2DF8BE72AE957B9E04741E85]
 "Blob"=hex:0f,00,00,00,01,00,00,00,10,00,00,00,9d,f0,d1,31,00,12,3a,ec,a7,70,13,\
   0f,4a,d8,d2,09,1b,00,00,00,01,00,00,00,08,00,00,00,00,47,9e,89,af,cd,d5,01,0d,\
   00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,24,\
@@ -1715,7 +1726,7 @@ Windows Registry Editor Version 5.00
   0b,93,72,f6,44,9a,ce,a7,95,3a,8f,50,10,9e,1d,b1,59,16,ab,cf,3e,df,83,8b,c7,fa,\
   c3,6b,dc,64,9f,40,2b,1f,45,24,04,ae,49,2f,f6,df,0c,91
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\3679CA35668772304D30A5FB873B0FA77BB70D54]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\3679CA35668772304D30A5FB873B0FA77BB70D54]
 "Blob"=hex:0f,00,00,00,01,00,00,00,20,00,00,00,17,fe,16,f3,94,ec,70,a5,bb,0c,67,\
   84,ca,b4,0b,1e,61,02,5a,e9,d5,0e,ca,a0,53,1d,6b,4d,99,7b,bc,59,1b,00,00,00,01,\
   00,00,00,08,00,00,00,f0,9a,a2,b9,af,cd,d5,01,0d,00,00,00,01,00,00,00,02,00,00,\
@@ -1769,7 +1780,7 @@ Windows Registry Editor Version 5.00
   90,c5,eb,86,30,c6,35,bf,f0,ff,c3,55,88,83,4b,ef,05,92,06,71,f2,b8,98,93,b7,ec,\
   cd,82,61,f1,38,e6,4f,97,98,2a,5a,8d
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\4EB6D578499B1CCF5F581EAD56BE3D9B6744A5E5]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\4EB6D578499B1CCF5F581EAD56BE3D9B6744A5E5]
 "Blob"=hex:0f,00,00,00,01,00,00,00,14,00,00,00,e9,1e,1e,97,2b,8f,46,7a,b4,e0,59,\
   8f,a9,22,85,38,7d,ee,94,c9,1b,00,00,00,01,00,00,00,08,00,00,00,60,6d,87,b5,af,\
   cd,d5,01,0d,00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,00,14,\
@@ -1823,7 +1834,7 @@ Windows Registry Editor Version 5.00
   fb,33,35,48,71,b8,9d,27,8b,c4,65,5f,0d,86,76,9c,44,7a,f6,95,5c,f6,5d,32,08,33,\
   a4,54,b6,18,3f,68,5c,f2,42,4a,85,38,54,83,5f,d1,e8,2c,f2,ac,11,d6,a8,ed,63,6a
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\D559A586669B08F46A30A133F8A9ED3D038E2EA8]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\D559A586669B08F46A30A133F8A9ED3D038E2EA8]
 "Blob"=hex:0f,00,00,00,01,00,00,00,14,00,00,00,49,73,e0,92,cf,8a,9e,2c,a5,f9,88,\
   49,3a,5b,ac,fe,38,95,94,2e,1b,00,00,00,01,00,00,00,08,00,00,00,80,c8,f2,c9,af,\
   cd,d5,01,0d,00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,00,14,\
@@ -1865,7 +1876,7 @@ Windows Registry Editor Version 5.00
   f7,38,de,6f,41,54,b8,ab,57,6b,06,df,c7,a2,d4,a9,f6,f1,36,62,80,88,f2,8b,75,d6,\
   80,71
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\FEE449EE0E3965A5246F000E87FDE2A065FD89D4]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\SystemCertificates\Disallowed\Certificates\FEE449EE0E3965A5246F000E87FDE2A065FD89D4]
 "Blob"=hex:0f,00,00,00,01,00,00,00,10,00,00,00,84,e2,72,9c,de,a3,57,78,27,4b,d1,\
   e3,da,aa,cc,5b,1b,00,00,00,01,00,00,00,08,00,00,00,50,5c,4d,c5,af,cd,d5,01,0d,\
   00,00,00,01,00,00,00,02,00,00,00,00,00,03,00,00,00,01,00,00,00,14,00,00,00,fe,\
@@ -1889,30 +1900,32 @@ Windows Registry Editor Version 5.00
   f5,c3,95,db,62,69,5b,c9,dc,c1,b3,fa,f0,c4,6f,6f,64,9a,bd,e7,1b,25,68,72,83,67,\
   bd,56,b0,8d,01,bd,2a,f7,cc,4b,bd,87,a5,ba,87,20,4c,42,11,41,ad,10,17,3b,8c
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\TPM]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\TPM]
 "OSManagedAuthLevel"=dword:00000005
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender Security Center\App and Browser protection]
 "DisallowExploitProtectionOverride"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender]
 "DisableAntiSpyware"=dword:00000000
 "PUAProtection"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\MpEngine]
 "MpBafsExtendedTimeout"=dword:00000032
-"MpCloudBlockLevel"=dword:00000006
+"MpCloudBlockLevel"=dword:00000002
 "MpEnablePus"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Real-Time Protection]
 "DisableBehaviorMonitoring"=dword:00000000
+"DisableIOAVProtection"=dword:00000000
 "DisableRealtimeMonitoring"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Scan]
 "DisableRemovableDriveScanning"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet]
-"SpyNetReporting"=dword:00000001
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Spynet]
+"DisableBlockAtFirstSeen"=dword:00000000
+"SpyNetReporting"=dword:00000002
 "SubmitSamplesConsent"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR]
@@ -1928,13 +1941,15 @@ Windows Registry Editor Version 5.00
 "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"="1"
 "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"="1"
 "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"="1"
+"c1db55ab-c21a-4637-bb3f-a12568109d35"="1"
 "d3e037e1-3eb8-44c8-a917-57927947596d"="1"
 "d4f940ab-401b-4efc-aadc-ad5f3c50688a"="1"
+"e6db77e5-3df2-4cf1-b95a-636979351e5b"="1"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access]
 "EnableControlledFolderAccess"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection]
 "EnableNetworkProtection"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows NT\DNSClient]
@@ -1975,16 +1990,16 @@ Windows Registry Editor Version 5.00
 "fEnableUsbNoAckIsochWriteToDevice"=dword:00000050
 "fEnableUsbSelectDeviceByInterface"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client\UsbBlockDeviceBySetupClasses]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows NT\terminal services\client\UsbBlockDeviceBySetupClasses]
 "1000"="{3376f4ce-ff8d-40a2-a80f-bb4359d1415c}"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client\UsbSelectDeviceByInterfaces]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows NT\terminal services\client\UsbSelectDeviceByInterfaces]
 "1000"="{6bdd1fc6-810f-11d0-bec7-08002be2092f}"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows NT\Windows File Protection]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows NT\Windows File Protection]
 "KnownDllList"="nlhtml.dll"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppCompat]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\AppCompat]
 "AITEnable"=dword:00000000
 "DisableInventory"=dword:00000001
 "DisableUAR"=dword:00000001
@@ -2002,10 +2017,10 @@ Windows Registry Editor Version 5.00
 "AllowProtectedCreds"=dword:00000001
 "RestrictedRemoteAdministration"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CredUI]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\CredUI]
 "DisablePasswordReveal"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings]
 "CallLegacyWCMPolicies"=dword:00000000
 "CertificateRevocation"=dword:00000001
 "EnableLegacyAutoProxyFeature"=dword:00000000
@@ -2125,25 +2140,27 @@ Windows Registry Editor Version 5.00
 "2709"=dword:00000003
 "270C"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\software\policies\microsoft\windows\datacollection]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\datacollection]
 "AllowTelemetry"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeliveryOptimization]
 "DODownloadMode"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeviceGuard]
 "ConfigureSystemGuardLaunch"=dword:00000001
 "EnableVirtualizationBasedSecurity"=dword:00000001
-"HVCIMATRequired"=dword:00000000
+"HVCIMATRequired"=dword:00000001
 "HypervisorEnforcedCodeIntegrity"=dword:00000001
-"LsaCfgFlags"=dword:00000000
+"LsaCfgFlags"=dword:00000001
 "RequirePlatformSecurityFeatures"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeviceInstall\Restrictions]
 "DenyDeviceClasses"=dword:00000001
 "DenyDeviceClassesRetroactive"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\software\policies\microsoft\windows\deviceinstall\restrictions\denydeviceclasses]
+[-HKEY_LOCAL_MACHINE\software\policies\microsoft\windows\deviceinstall\restrictions\denydeviceclasses]
+
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeviceInstall\Restrictions\denydeviceclasses]
 "1"="{d48179be-ec20-11d1-b6b8-00c04fa372a7}"
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeviceInstall\Settings]
@@ -2152,7 +2169,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\DeviceRedirect\Restrictions]
 "AllowRedirect"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\EnhancedStorageDevices]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\EnhancedStorageDevices]
 "TCGSecurityActivationDisabled"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\EventLog\Application]
@@ -2181,7 +2198,7 @@ Windows Registry Editor Version 5.00
 "NoBackgroundPolicy"=dword:00000000
 "NoGPOListChanges"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\HandwritingErrorReports]
 "PreventHandwritingErrorReports"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\HomeGroup]
@@ -2191,10 +2208,10 @@ Windows Registry Editor Version 5.00
 "AlwaysInstallElevated"=dword:00000000
 "EnableUserControl"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local]
 "ActivePolicy"="SOFTWARE\\Policies\\Microsoft\\Windows\\IPSEC\\Policy\\Local\\ipsecPolicy{fef1d3cd-e509-4d7e-ac24-4a23afc9eb26}"
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecFilter{4e7abc22-0344-4449-8cdd-a657421c35fc}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecFilter{4e7abc22-0344-4449-8cdd-a657421c35fc}]
 "className"="ipsecFilter"
 "ipsecData"=hex:b5,20,dc,80,c8,2e,d1,11,a8,9e,00,a0,24,8d,30,21,a6,04,00,00,11,\
   00,00,00,02,00,00,00,00,00,02,00,00,00,00,00,02,00,00,00,00,00,56,49,3f,31,22,\
@@ -2258,7 +2275,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecFilter{4e7abc22-0344-4449-8cdd-a657421c35fc}"
 "whenChanged"=dword:5e139380
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecFilter{687ec486-1e0c-41d1-8e73-de45fc3b5941}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecFilter{687ec486-1e0c-41d1-8e73-de45fc3b5941}]
 "className"="ipsecFilter"
 "ipsecData"=hex:b5,20,dc,80,c8,2e,d1,11,a8,9e,00,a0,24,8d,30,21,46,00,00,00,01,\
   00,00,00,02,00,00,00,00,00,02,00,00,00,00,00,02,00,00,00,00,00,4a,69,85,49,39,\
@@ -2279,7 +2296,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecFilter{687ec486-1e0c-41d1-8e73-de45fc3b5941}"
 "whenChanged"=dword:5df59203
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecISAKMPPolicy{ec3a9fd0-e4a6-424a-b404-b12c193fe563}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecISAKMPPolicy{ec3a9fd0-e4a6-424a-b404-b12c193fe563}]
 "className"="ipsecISAKMPPolicy"
 "ipsecData"=hex:b8,20,dc,80,c8,2e,d1,11,a8,9e,00,a0,24,8d,30,21,80,00,00,00,00,\
   00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,\
@@ -2301,7 +2318,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecISAKMPPolicy{ec3a9fd0-e4a6-424a-b404-b12c193fe563}"
 "whenChanged"=dword:5df58fb2
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNegotiationPolicy{00490fc2-3a37-419d-bbb4-1f83be7050d9}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNegotiationPolicy{00490fc2-3a37-419d-bbb4-1f83be7050d9}]
 "className"="ipsecNegotiationPolicy"
 "ipsecData"=hex:b9,20,dc,80,c8,2e,d1,11,a8,9e,00,a0,24,8d,30,21,a4,00,00,00,02,\
   00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,00,00,03,00,00,\
@@ -2327,7 +2344,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecNegotiationPolicy{00490fc2-3a37-419d-bbb4-1f83be7050d9}"
 "whenChanged"=dword:5df58fb3
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNegotiationPolicy{36e031c3-e248-4274-acd2-157f8aa000bf}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNegotiationPolicy{36e031c3-e248-4274-acd2-157f8aa000bf}]
 "className"="ipsecNegotiationPolicy"
 "ipsecData"=hex:b9,20,dc,80,c8,2e,d1,11,a8,9e,00,a0,24,8d,30,21,04,00,00,00,00,\
   00,00,00,00
@@ -2356,7 +2373,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecNegotiationPolicy{36e031c3-e248-4274-acd2-157f8aa000bf}"
 "whenChanged"=dword:5df58fda
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{55e17124-5934-4c81-b22b-0a644a4a4f01}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{55e17124-5934-4c81-b22b-0a644a4a4f01}]
 "className"="ipsecNFA"
 "ipsecData"=hex:00,ac,bb,11,8d,49,d1,11,86,39,00,a0,24,8d,30,21,2a,00,00,00,01,\
   00,00,00,05,00,00,00,02,00,00,00,00,00,ff,ff,ff,ff,02,00,00,00,00,00,00,00,00,\
@@ -2387,7 +2404,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecNFA{55e17124-5934-4c81-b22b-0a644a4a4f01}"
 "whenChanged"=dword:5df5924f
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{7963c026-53c2-468d-a3be-2a9f86441647}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{7963c026-53c2-468d-a3be-2a9f86441647}]
 "className"="ipsecNFA"
 "ipsecData"=hex:00,ac,bb,11,8d,49,d1,11,86,39,00,a0,24,8d,30,21,2a,00,00,00,01,\
   00,00,00,05,00,00,00,02,00,00,00,00,00,fd,ff,ff,ff,02,00,00,00,00,00,00,00,00,\
@@ -2418,7 +2435,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecNFA{7963c026-53c2-468d-a3be-2a9f86441647}"
 "whenChanged"=dword:5e139383
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{fec14657-c53e-4a4f-bd6c-e5a3d4d7b1df}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecNFA{fec14657-c53e-4a4f-bd6c-e5a3d4d7b1df}]
 "className"="ipsecNFA"
 "ipsecData"=hex:00,ac,bb,11,8d,49,d1,11,86,39,00,a0,24,8d,30,21,2a,00,00,00,01,\
   00,00,00,05,00,00,00,02,00,00,00,00,00,fd,ff,ff,ff,02,00,00,00,00,00,00,00,00,\
@@ -2440,7 +2457,7 @@ Windows Registry Editor Version 5.00
 "name"="ipsecNFA{fec14657-c53e-4a4f-bd6c-e5a3d4d7b1df}"
 "whenChanged"=dword:5df58fb3
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecPolicy{fef1d3cd-e509-4d7e-ac24-4a23afc9eb26}]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\IPSec\Policy\Local\ipsecPolicy{fef1d3cd-e509-4d7e-ac24-4a23afc9eb26}]
 "className"="ipsecPolicy"
 "ipsecData"=hex:63,21,20,22,4c,4f,d1,11,86,3b,00,a0,24,8d,30,21,04,00,00,00,30,\
   2a,00,00,00
@@ -2481,10 +2498,10 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\LanmanWorkstation]
 "AllowInsecureGuestAuth"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Messaging]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Messaging]
 "AllowMessageSync"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Network Connections]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Network Connections]
 "NC_PersonalFirewallConfig"=dword:00000000
 "NC_ShowSharedAccessUI"=dword:00000000
 
@@ -2495,14 +2512,14 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\NetworkConnectivityAssistant\Probes]
 "PING:myserver.corp.contoso.com"="PING:myserver.corp.contoso.com"
 
-[HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths]
 "\\\\*\\NETLOGON"="RequireMutualAuthentication=1,RequireIntegrity=1"
 "\\\\*\\SYSVOL"="RequireMutualAuthentication=1,RequireIntegrity=1"
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\NvCache]
 "OptimizeBootAndResume"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Personalization]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Personalization]
 "NoLockScreen"=dword:00000000
 "NoLockScreenCamera"=dword:00000001
 "NoLockScreenSlideshow"=dword:00000001
@@ -2519,7 +2536,7 @@ Windows Registry Editor Version 5.00
 "EnableConfigFlighting"=dword:00000001
 "EnableExperimentation"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Psched]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Psched]
 "NonBestEffortLimit"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\RemovableStorageDevices\{53f56308-b6bf-11d0-94f2-00a0c91efb8b}]
@@ -2534,10 +2551,10 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\RemovableStorageDevices\{53f56311-b6bf-11d0-94f2-00a0c91efb8b}]
 "Deny_Execute"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\safer\codeidentifiers]
 "authenticodeenabled"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\SettingSync]
 "EnableBackupForWin8Apps"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\SrpV2\Appx]
@@ -2546,7 +2563,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\SrpV2\Exe]
 "EnforcementMode"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\System]
 "AllowClipboardHistory"=dword:00000000
 "AllowCrossDeviceClipboard"=dword:00000000
 "AllowDomainPINLogon"=dword:00000000
@@ -2563,7 +2580,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\System\Fdeploy]
 "PrimaryComputerEnabledFR"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\TabletPC]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\TabletPC]
 "PreventHandwritingDataSharing"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\TCPIP\v6Transition]
@@ -2574,24 +2591,24 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WcmSvc\GroupPolicy]
 "fBlockNonDomain"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WcmSvc\Local]
 "WCMPresent"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\policies\microsoft\windows\wdi\{c295fbba-fd47-46ac-8bee-b1715ec634e5}]
 "downloadtoolslevel"=-
 "DownloadToolsEnabled"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Windows Error Reporting]
 "Disabled"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\Windows Search]
 "AllowCloudSearch"=dword:00000000
 "AllowCortana"=dword:00000000
 "AllowIndexingEncryptedStoresOrItems"=dword:00000000
 "ConnectedSearchUseWeb"=dword:00000000
 "DisableWebSearch"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WindowsUpdate\AU]
 "NoAutoRebootWithLoggedOnUsers"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WinRM\Client]
@@ -2615,7 +2632,7 @@ Windows Registry Editor Version 5.00
 "HttpCompatibilityListener"=dword:00000000
 "HttpsCompatibilityListener"=dword:00000000
 
-[HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WinRM\service\WinRS]
 "AllowRemoteShellAccess"=dword:00000000
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\Windows\WorkFolders]
@@ -2630,6 +2647,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\WindowsFirewall\DomainProfile]
 "DefaultInboundAction"=dword:00000001
 "DefaultOutboundAction"=dword:00000000
+"DisableNotifications"=dword:00000001
 "EnableFirewall"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging]
@@ -2637,7 +2655,7 @@ Windows Registry Editor Version 5.00
 "LogFileSize"=dword:00004000
 "LogSuccessfulConnections"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\WindowsFirewall\FirewallRules]
 "{0BC6A788-6049-404C-8620-9CA84A90F9B6}"="v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=112|Name=VRRP|"
 "{0F63FC11-772D-4598-AB3A-3F9D739A7A61}"="v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=2|Name=IGMP|"
 "{17116813-ABCE-4858-B7A9-E89149F88B6C}"="v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort2_10=1-67|LPort2_10=69-65535|App=%SystemRoot%\\System32\\svchost.exe|Name=svchost tcp|"
@@ -2711,7 +2729,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\software\Policies\Microsoft\WindowsInkWorkspace]
 "AllowWindowsInkWorkspace"=dword:00000001
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsMediaPlayer]
+[HKEY_LOCAL_MACHINE\software\Policies\Microsoft\WindowsMediaPlayer]
 "GroupPrivacyAcceptance"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\software\WOW6432Node\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}]
@@ -2774,88 +2792,99 @@ Windows Registry Editor Version 5.00
 "SendSiteInfoToImproveServices"=dword:00000000
 "UserFeedbackAllowed"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Internet Explorer\Control Panel]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Internet Explorer\Control Panel]
 "FormSuggest Passwords"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Internet Explorer\Main]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Internet Explorer\Main]
 "FormSuggest Passwords"="no"
 "FormSuggest PW Ask"="no"
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\access\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\access\security]
 "blockcontentexecutionfrominternet"=dword:00000001
 "notbpromptunsignedaddin"=dword:00000001
+"requireaddinsig"=dword:00000001
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\access\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\access\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\portal]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common]
+"fbabehavior"=dword:00000001
+"fbaenabledhosts"=hex(2):00,00
+
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\portal]
 "linkpublishingdisabled"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\security]
 "defaultencryption12"="Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
 "drmencryptproperty"=dword:00000001
 "macroruntimescanscope"=dword:00000002
 "openxmlencryption"="Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256"
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\security\trusted locations]
 "allow user locations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\access]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\access]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\excel]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\excel]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\infopath]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\infopath]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\outlook]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\outlook]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\powerpoint]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\powerpoint]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\project]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\project]
 "noextensibilitycustomizationfromdocument"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\publisher]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\publisher]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\visio]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\visio]
 "noextensibilitycustomizationfromdocument"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\toolbars\word]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\toolbars\word]
 "noextensibilitycustomizationfromdocument"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\common\trustcenter]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\common\trustcenter]
 "trustbar"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\internet]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\internet]
 "donotloadpictures"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\options]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\options]
 "disableautorepublish"=dword:00000001
 "disableautorepublishwarning"=dword:00000000
 "extractdatadisableui"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\options\binaryoptions]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\options\binaryoptions]
 "fupdateext_78_1"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security]
 "blockcontentexecutionfrominternet"=dword:00000001
 "excelbypassencryptedmacroscan"=dword:00000000
 "extensionhardening"=dword:00000002
 "notbpromptunsignedaddin"=dword:00000001
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 "webservicefunctionwarnings"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security\external content]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security\external content]
 "disableddeserverlaunch"=dword:00000001
 "disableddeserverlookup"=dword:00000001
 "enableblockunsecurequeryfiles"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security\fileblock]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security\fileblock]
 "dbasefiles"=dword:00000002
 "difandsylkfiles"=dword:00000002
 "htmlandxmlssfiles"=dword:00000002
@@ -2871,42 +2900,43 @@ Windows Registry Editor Version 5.00
 "xl95workbooks"=dword:00000002
 "xl97workbooksandtemplates"=dword:00000002
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security\filevalidation]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security\filevalidation]
 "disableeditfrompv"=dword:00000001
 "enableonload"=dword:00000001
 "openinprotectedview"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security\protectedview]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security\protectedview]
 "disableattachmentsinpv"=dword:00000000
 "disableinternetfilesinpv"=dword:00000000
 "disableunsafelocationsinpv"=dword:00000000
 "enabledatabasefileprotectedview"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\excel\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\excel\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\ms project\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\ms project\security]
 "notbpromptunsignedaddin"=dword:00000001
+"requireaddinsig"=dword:00000001
 "vbawarnings"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\ms project\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\ms project\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\outlook]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\outlook]
 "disallowattachmentcustomization"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\outlook\options\general]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\outlook\options\general]
 "msgformat"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\outlook\options\mail]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\outlook\options\mail]
 "internet"=dword:00000000
 "junkmailenablelinks"=dword:00000000
 "junkmailprotection"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\outlook\rpc]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\outlook\rpc]
 "enablerpcencryption"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\outlook\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\outlook\security]
 "adminsecuritymode"=dword:00000003
 "allowactivexoneoffforms"=dword:00000000
 "allowuserstolowerattachments"=dword:00000000
@@ -2930,54 +2960,71 @@ Windows Registry Editor Version 5.00
 "usecrlchasing"=dword:00000001
 "warnaboutinvalid"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\powerpoint\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\powerpoint\security]
 "blockcontentexecutionfrominternet"=dword:00000001
 "notbpromptunsignedaddin"=dword:00000001
 "powerpointbypassencryptedmacroscan"=dword:00000000
+"requireaddinsig"=dword:00000001
 "runprograms"=dword:00000000
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\powerpoint\security\fileblock]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\powerpoint\security\fileblock]
 "binaryfiles"=dword:00000002
 "openinprotectedview"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\powerpoint\security\filevalidation]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\powerpoint\security\filevalidation]
 "disableeditfrompv"=dword:00000001
 "enableonload"=dword:00000001
 "openinprotectedview"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\powerpoint\security\protectedview]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\powerpoint\security\protectedview]
 "disableattachmentsinpv"=dword:00000000
 "disableinternetfilesinpv"=dword:00000000
 "disableunsafelocationsinpv"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\powerpoint\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\powerpoint\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\publisher\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\publisher\security]
 "notbpromptunsignedaddin"=dword:00000001
+"requireaddinsig"=dword:00000001
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\visio\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\visio\security]
 "blockcontentexecutionfrominternet"=dword:00000001
 "notbpromptunsignedaddin"=dword:00000001
+"requireaddinsig"=dword:00000001
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\visio\security\fileblock]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\visio\security\fileblock]
 "visio2000files"=dword:00000002
 "visio2003files"=dword:00000002
 "visio50andearlierfiles"=dword:00000002
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\visio\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\visio\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\word\security]
+[HKEY_CURRENT_USER\software\policies\microsoft\office\16.0\word\security]
+"allowdde"=-
 "blockcontentexecutionfrominternet"=dword:00000001
 "notbpromptunsignedaddin"=dword:00000001
+"requireaddinsig"=dword:00000001
+"vbadigsigtrustedpublishers"=dword:00000001
+"vbarequiredigsigwithcodesigningeku"=dword:00000000
+"vbarequirelmtrustedpublisher"=dword:00000000
 "vbawarnings"=dword:00000003
 "wordbypassencryptedmacroscan"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\word\security\fileblock]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\word\security\fileblock]
 "openinprotectedview"=dword:00000000
 "word2000files"=dword:00000002
 "word2003files"=dword:00000002
@@ -2988,56 +3035,58 @@ Windows Registry Editor Version 5.00
 "word97files"=dword:00000002
 "wordxpfiles"=dword:00000002
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\word\security\filevalidation]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\word\security\filevalidation]
 "disableeditfrompv"=dword:00000001
 "enableonload"=dword:00000001
 "openinprotectedview"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\word\security\protectedview]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\word\security\protectedview]
 "disableattachmentsinpv"=dword:00000000
 "disableinternetfilesinpv"=dword:00000000
 "disableunsafelocationsinpv"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\16.0\word\security\trusted locations]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\16.0\word\security\trusted locations]
 "allownetworklocations"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\common\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\common\security]
 "automationsecurity"=dword:00000002
 "automationsecuritypublisher"=dword:00000002
 "uficontrols"=dword:00000006
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\office\common\smart tag]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\office\common\smart tag]
 "neverloadmanifests"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\vba\security]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\vba\security]
+"allowvbaintranetreferences"=dword:00000000
+"disablestrictvbarefssecurity"=dword:00000000
 "loadcontrolsinforms"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows NT\Driver Signing]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows NT\Driver Signing]
 "BehaviorOnFailedVerify"=dword:00000002
 
 [HKEY_CURRENT_USER\software\policies\microsoft\windows nt\printers\wizard]
 "printers page url"=-
 "Downlevel Browse"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows NT\SharedFolders]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows NT\SharedFolders]
 "PublishDfsRoots"=dword:00000000
 "PublishSharedFolders"=dword:00000000
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows NT\Terminal Services]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services]
 "AllowSignedFiles"=dword:00000000
 "AllowUnsignedFiles"=dword:00000000
 "DisablePasswordSaving"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\CloudContent]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\CloudContent]
 "DisableThirdPartySuggestions"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\CurrentVersion\PushNotifications]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications]
 "NoToastApplicationNotificationOnLockScreen"=dword:00000001
 
 [HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Explorer]
 "DisableNotificationCenter"=dword:00000001
 
-[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Network Connections]
+[HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Network Connections]
 "NC_DeleteAllUserConnection"=dword:00000001
 
 [HKEY_CURRENT_USER\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting]
