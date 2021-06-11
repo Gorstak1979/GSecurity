@@ -501,6 +501,13 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt\command]
 @="powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot minimal & bcdedit /set {current} safebootalternateshell yes & shutdown -r -t 00 -f' -Verb runAs\""
 
+[HKEY_CLASSES_ROOT\*\shell\unblock]
+"MUIVerb"="Unblock"
+"Extended"=-
+
+[HKEY_CLASSES_ROOT\*\shell\unblock\command]
+@="PowerShell.exe -windowstyle hidden -Command \"Unblock-File -LiteralPath '%L' -ArgumentList '/s,/c,pushd,%V' -Verb RunAs\""
+
 ; Defender
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection]
