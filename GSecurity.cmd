@@ -169,7 +169,7 @@ Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v 
 Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy Objects\{EC1F4539-05EA-4B3F-81C3-A7B204C8A542}Machine\Software\Policies\Microsoft\Windows NT\DNSClient" /v "NameServer" /t REG_SZ /d "5.2.75.75 94.140.14.14 1.1.1.1" /f
 REM ; PAC file
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableLegacyAutoProxyFeature" /t REG_DWORD /d "0" /f
-Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "file://C:\Windows\GSecurity.pac" /f
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://raw.githubusercontent.com/Gorstak1979/PAC/main/GSecurity.pac" /f
 REM ; Dnscache service configuration
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "EnableAutoDoh" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "MaxCacheTtl" /t REG_DWORD /d "1" /f
