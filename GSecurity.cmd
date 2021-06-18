@@ -309,7 +309,6 @@ Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "WebRtcEventLogCo
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome\AutoplayAllowlist" /v "1" /t REG_SZ /d "[*.]mil" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome\AutoplayAllowlist" /v "2" /t REG_SZ /d "[*.]gov" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome\ExtensionInstallAllowlist" /v "1" /t REG_SZ /d "oiigbmnaadbkfbmpbfijlflahbdbdgdf" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome\ExtensionInstallBlocklist" /v "1" /t REG_SZ /d "*" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Chrome\URLBlocklist" /v "1" /t REG_SZ /d "javascript://*" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Google\Update" /v "AutoUpdateCheckPeriodMinutes" /t REG_DWORD /d "10080" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Assistance\Client\1.0" /v "NoActiveHelp" /t REG_DWORD /d "1" /f
@@ -374,7 +373,6 @@ Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SSLErrorOverrid
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SSLVersionMin" /t REG_SZ /d "tls1.2" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SyncDisabled" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "TrackingPrevention" /t REG_DWORD /d "2" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge\ExtensionInstallBlocklist" /v "1" /t REG_SZ /d "*" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7z.exe" /t REG_SZ /d "-EAF" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7zFM.exe" /t REG_SZ /d "-EAF" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7zG.exe" /t REG_SZ /d "-EAF" /f
