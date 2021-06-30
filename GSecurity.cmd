@@ -1633,6 +1633,12 @@ Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentif
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "Description" /t REG_SZ /d "AMD2" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\u0367126*" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "Description" /t REG_SZ /d "USB" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\wpd*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "Description" /t REG_SZ /d "OEM" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\oem*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "SaferFlags" /t REG_DWORD /d "0" /f
 REM ; Security policy
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "DefaultTemplate" /t REG_SZ /d "C:\Windows\Inf\secrecs.inf" /f
 Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "EnvironmentVariables" /t REG_MULTI_SZ /d "%%AppData%%\0%%UserProfile%%\0%%AllUsersProfile%%\0%%ProgramFiles%%\0%%SystemRoot%%\0%%SystemDrive%%\0%%Temp%%\0%%Tmp%%" /f
