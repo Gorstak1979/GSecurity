@@ -516,20 +516,6 @@ Reg.exe delete "HKCU\Control Panel\Mouse" /v "SmoothMouseYCurve" /f
 Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "SnapToDefaultButton" /t REG_SZ /d "0" /f
 Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "SwapMouseButtons" /t REG_SZ /d "0" /f
 Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "Beep" /t REG_SZ /d "No" /f
-REM ; Ifeo
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dllhost.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\filesyncconfig.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ftp.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\hh.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\livecomm.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ngen.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\rasphone.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskhostw.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wbemtest.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wmiadap.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wmiprvse.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wuauclt.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wudfhost.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
 REM ; Machine Policy
 Echo Y | Reg.exe add "HKLM\software\Adobe\Adobe Acrobat\2015\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
 Echo Y | Reg.exe add "HKLM\software\Adobe\Adobe Acrobat\DC\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
