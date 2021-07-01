@@ -180,8 +180,65 @@ schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Logon Synchron
 schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Maintenance Work" /Disable
 schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /Disable
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
-REM ; Admin
+REM ; prclaunchky
 net user administrator /active:yes
+sc delete SessionEnv
+sc stop SessionEnv
+sc delete TermService
+sc stop TermService
+sc delete UmRdpService
+sc stop UmRdpService
+sc delete RemoteRegistry
+sc stop RemoteRegistry
+sc delete Rasman
+sc stop Rasman
+sc delete RasAuto
+sc delete RmSvc
+takeown /f C:\Windows\System32\termsrv.dll
+cacls termsrv.dll /E /P %username%:F
+del C:\Windows\System32\termsrv.dll
+takeown /f C:\Windows\System32\termmgr.dll
+cacls termmgr.dll /E /P %username%:F
+del C:\Windows\System32\termmgr.dll
+sc delete CDPSvc
+sc stop CDPSvc
+sc delete CDPUserSvc
+sc stop CDPUsersvc
+sc delete DiagTrack
+sc stop DiagTrack
+sc delete PimIndexMaintenanceSvc
+sc stop PimIndexMaintenanceSvc
+sc config DPS start= disabled
+sc stop DPS
+sc config WdiServiceHost start= disabled
+sc stop WdiServiceHost
+sc config WdiSystemHost start= disabled
+sc stop WdiSystemHost
+net user administrator /active:yes
+sc config NlaSvc start= disabled
+sc config netprofm start= disabled
+sc config AppVClient start= disabled
+sc config Wecsvc start= disabled
+sc config WerSvc start= disabled
+sc config EventLog start= disabled
+sc delete RdpVideoMiniport
+sc delete tsusbflt
+sc delete tsusbhub 
+sc delete TsUsbGD
+sc delete RDPDR
+sc delete rdpbus
+sc start rdpbus
+sc stop rdpbus
+sc delete RasPppoe
+sc delete NdisWan
+sc delete NdisTapi
+sc delete ndiswanlegacy
+sc delete wanarpv6
+sc delete wanarp
+sc delete RasAcd
+takeown /f C:\Windows\System32\drivers\rdpbus.sys
+cacls C:\Windows\System32\drivers\rdpbus.sys /E /P %username%:F
+del C:\Windows\System32\drivers\rdpbus.sys
 REM ; Context Menus
 Reg.exe delete "HKCR\*\shell\TakeOwnership" /f
 Reg.exe delete "HKCR\*\shell\runas" /f
@@ -1318,8 +1375,18 @@ Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /
 Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "DisableIPSourceRouting" /t REG_DWORD /d "2" /f
 Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "TcpMaxDataRetransmissions" /t REG_DWORD /d "3" /f
 REM ; PAC file
-Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableLegacyAutoProxyFeature" /t REG_DWORD /d "0" /f
-Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://www.proxynova.com/proxy.pac" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CertificateRevocation" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "DisableCachingOfSSLPages" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "IE5_UA_Backup_Flag" /t REG_SZ /d "5.0" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PrivacyAdvanced" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "SecureProtocols" /t REG_DWORD /d "2688" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "User Agent" /t REG_SZ /d "Mozilla/4.0 (compatible; MSIE 8.0; Win32)" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableNegotiate" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MigrateProxy" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "ZonesSecurityUpgrade" /t REG_BINARY /d "8898b307e76dd701" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://www.proxynova.com/proxy.pac" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPer1_0Server" /t REG_DWORD /d "10" /f
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPerServer" /t REG_DWORD /d "10" /f
 REM ; Performance Tweaks
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "autodisconnect" /t REG_DWORD /d "4294967295" /f
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "Size" /t REG_DWORD /d "3" /f
