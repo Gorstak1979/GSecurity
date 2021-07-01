@@ -1375,18 +1375,8 @@ Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /
 Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "DisableIPSourceRouting" /t REG_DWORD /d "2" /f
 Echo Y | Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "TcpMaxDataRetransmissions" /t REG_DWORD /d "3" /f
 REM ; PAC file
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CertificateRevocation" /t REG_DWORD /d "1" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "DisableCachingOfSSLPages" /t REG_DWORD /d "0" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "IE5_UA_Backup_Flag" /t REG_SZ /d "5.0" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PrivacyAdvanced" /t REG_DWORD /d "1" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "SecureProtocols" /t REG_DWORD /d "2688" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "User Agent" /t REG_SZ /d "Mozilla/4.0 (compatible; MSIE 8.0; Win32)" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableNegotiate" /t REG_DWORD /d "1" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MigrateProxy" /t REG_DWORD /d "1" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "ZonesSecurityUpgrade" /t REG_BINARY /d "8898b307e76dd701" /f
 Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://www.proxynova.com/proxy.pac" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPer1_0Server" /t REG_DWORD /d "10" /f
-Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPerServer" /t REG_DWORD /d "10" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableLegacyAutoProxyFeature" /t REG_DWORD /d "0" /f
 REM ; Performance Tweaks
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "autodisconnect" /t REG_DWORD /d "4294967295" /f
 Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "Size" /t REG_DWORD /d "3" /f
