@@ -1,9 +1,20 @@
-﻿@Echo Off
-Title GSecurity & Color 0B
-cd %systemroot%\system32
-call :IsAdmin
-REM ; Make current folder active one
-pushd %~dp0
+﻿@echo off
+color 0a
+title GSecurity
+rem 17.07.2021
+call :isAdmin
+if %errorlevel% == 0 (
+goto :run
+) else (
+echo Requesting administrative privileges...
+goto :UACPrompt
+)
+:isAdmin
+fsutil dirty query %systemdrive% >nul
+goto:eof
+:run
+:: set the current directory to the batch file location
+cd /d %~dp0
 REM ; Remove user account
 net user defaultuser0 /delete
 REM ; Take ownership of desktop
@@ -14,7 +25,7 @@ icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 REM ; Debloat
 powershell -command "Get-AppxPackage -AllUsers | where-object {$_.name -notlike '*Store*' } | where-object {$_.name -notlike '*Calc*' } | where-object {$_.name -notlike '*Nvidia*' } | where-object {$_.name -notlike '*Realtek*' } | where-object {$_.name -notlike '*shell*' } | Remove-AppxPackage"
 powershell -command "Get-ProvisionedAppxPackage -Online | where-object {$_.name -notlike '*Store*' } | where-object {$_.name -notlike '*Calc*' } | where-object {$_.name -notlike '*Nvidia*' } | where-object {$_.name -notlike '*Realtek*' } | where-object {$_.name -notlike '*shell*' } | Remove-ProvisionedAppxPackage -Online"
-REM ; Routes (privacy)
+REM ; Privacy
 route -p add 204.79.197.200/32 0.0.0.0
 route -p add 23.218.212.69/32 0.0.0.0
 route -p add 204.160.124.125/32 0.0.0.0
@@ -71,7 +82,212 @@ route -p add 65.52.100.11/32 0.0.0.0
 route -p add 65.52.108.29/32 0.0.0.0
 route -p add 65.52.108.29/32 0.0.0.0
 route -p add 65.52.100.93/32 0.0.0.0
-REM ; Setup tasks
+if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ >NUL 2>&1
+echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
+echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
+REM ; Stop Services
+sc stop Alerter
+sc stop Browser
+sc stop bthserv
+sc stop cisvc
+sc stop ClipSrv
+sc stop CscService
+sc stop cscsvc
+sc stop DiagTrack
+sc stop ERSvc
+sc stop helpsvc
+sc stop HbHost
+sc stop HidServ
+sc stop HvHost
+sc stop iphlpsvc
+sc stop LanmanServer
+sc stop lfsvc
+sc stop LmHosts
+sc stop MapsBroker
+sc stop Messenger
+sc stop mnmsrvc
+sc stop NetDDE
+sc stop NetDDEdsdm
+sc stop Netlogon
+sc stop PeerDistSvc
+sc stop PhoneSvc
+sc stop RDSessMgr
+sc stop RemoteAccess
+sc stop RemoteRegistry
+sc stop Retaildemo
+sc stop RpcLocator
+sc stop RSVP
+sc stop SCardDrv
+sc stop SCardSvr
+sc stop Seclogon
+sc stop SEMgrsvc
+sc stop SensorService
+sc stop SensrSvc
+sc stop Smsrouter
+sc stop Snmptrap
+sc stop SSDPSRV
+sc stop SysmonLog
+sc stop TlntSvr
+sc stop uploadmgr
+sc stop Upnphost
+sc stop UPS
+sc stop vmicguestinterface
+sc stop vmicheartbeat
+sc stop vmickvpexchange
+sc stop vmicrdv
+sc stop vmicshutdown
+sc stop vmictimesync
+sc stop vmicvmsession
+sc stop vmicvss
+sc stop W32Time
+sc stop WebClient
+sc stop Wersvc
+sc stop winrm
+sc stop WmdmPmSp
+sc stop WmiApSrv
+sc stop WMPNetworkSvc
+sc stop WZCSVC
+REM ; Disable Services
+sc config Alerter start= disabled
+sc config Browser start= disabled
+sc config bthserv start= disabled
+sc config cisvc start= disabled
+sc config ClipSrv start= disabled
+sc config CscService start= disabled
+sc config cscsvc start= disabled
+sc config DiagTrack start= disabled
+sc config ERSvc start= disabled
+sc config helpsvc start= disabled
+sc config HbHost start= disabled
+sc config HidServ start= disabled
+sc config HvHost start= disabled
+sc config iphlpsvc start= disabled
+sc config LanmanServer start= disabled
+sc config lfsvc start= disabled
+sc config LmHosts start= disabled
+sc config MapsBroker start= disabled
+sc config Messenger start= disabled
+sc config mnmsrvc start= disabled
+sc config NetDDE start= disabled
+sc config NetDDEdsdm start= disabled
+sc config Netlogon start= disabled
+sc config PeerDistSvc start= disabled
+sc config PhoneSvc start= disabled
+sc config RDSessMgr start= disabled
+sc config RemoteAccess start= disabled
+sc config RemoteRegistry start= disabled
+sc config Retaildemo start= disabled
+sc config RpcLocator start= disabled
+sc config RSVP start= disabled
+sc config SCardDrv start= disabled
+sc config SCardSvr start= disabled
+sc config Seclogon start= disabled
+sc config SEMgrsvc start= disabled
+sc config SensorService start= disabled
+sc config SensrSvc start= disabled
+sc config Smsrouter start= disabled
+sc config Snmptrap start= disabled
+sc config SSDPSRV start= disabled
+sc config SysmonLog start= disabled
+sc config TlntSvr start= disabled
+sc config uploadmgr start= disabled
+sc config Upnphost start= disabled
+sc config UPS start= disabled
+sc config vmicguestinterface start= disabled
+sc config vmicheartbeat start= disabled
+sc config vmickvpexchange start= disabled
+sc config vmicrdv start= disabled
+sc config vmicshutdown start= disabled
+sc config vmictimesync start= disabled
+sc config vmicvmsession start= disabled
+sc config vmicvss start= disabled
+sc config W32Time start= disabled
+sc config WebClient start= disabled
+sc config Wersvc start= disabled
+sc config winrm start= disabled
+sc config WmdmPmSp start= disabled
+sc config WmiApSrv start= disabled
+sc config WMPNetworkSvc start= disabled
+sc config WZCSVC start= disabled
+REM ; End Tasks
+schtasks /end /tn "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+schtasks /end /tn "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
+schtasks /end /tn "\Microsoft\Windows\Autochk\Proxy"
+schtasks /end /tn "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
+schtasks /end /tn "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
+schtasks /end /tn "\Microsoft\Windows\Application Experience\StartupAppTask"
+schtasks /end /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
+schtasks /end /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver"
+schtasks /end /tn "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
+schtasks /end /tn "\Microsoft\Windows\Shell\FamilySafetyMonitor"
+schtasks /end /tn "\Microsoft\Windows\Maintenance\WinSAT"
+schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvProfileUpdaterOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvProfileUpdaterDaily_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR1_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR2_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR3_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+REM ; Disable Tasks
+schtasks /change /disable /tn "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+schtasks /change /disable /tn "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
+schtasks /change /disable /tn "\Microsoft\Windows\Autochk\Proxy"
+schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
+schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
+schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\StartupAppTask"
+schtasks /change /disable /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
+schtasks /change /disable /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver"
+schtasks /change /disable /tn "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
+schtasks /change /disable /tn "\Microsoft\Windows\Shell\FamilySafetyMonitor"
+schtasks /change /disable /tn "\Microsoft\Windows\Maintenance\WinSAT"
+schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvProfileUpdaterOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvProfileUpdaterDaily_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR1_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR2_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+schtasks /delete /F /TN "\NvTmRepCR3_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
+REM ; Delete Tasks
+schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
+schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
+schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
+schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
+schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
+schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
+schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
+schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
+schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
+schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
+schtasks /delete /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser"
+schtasks /delete /f /tn "\Microsoft\Windows\application experience\aitagent"
+schtasks /delete /f /tn "\Microsoft\Windows\application experience\programdataupdater"
+schtasks /delete /f /tn "\Microsoft\Windows\autochk\proxy"
+schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator"
+schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask"
+schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip"
+schtasks /delete /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector"
+schtasks /delete /f /tn "\Microsoft\Windows\maintenance\winsat"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\activateWindowssearch"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\configureinternettimeservice"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\ehdrminit"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\installplayready"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\mcupdate"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\ocuractivate"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\ocurdiscovery"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscovery">nul 2>&1
+schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrrecoverytask"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrscheduletask"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\registersearch"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\reindexsearchroot"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask"
+schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath"
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
 schtasks /DELETE /TN "AMDLinkUpdate" /f
@@ -872,11 +1088,13 @@ Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Ex
 Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "3" /t REG_SZ /d "conhost.exe" /f
 Exit
 
-:IsAdmin
-Reg.exe query "HKU\S-1-5-19\Environment"
-If Not %ERRORLEVEL% EQU 0 (
- Cls & Echo You must have administrator rights to continue ... 
- Pause & Exit
-)
-Cls
+:: Exit
+
+exit /b
+
+:UACPrompt
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+echo UAC.ShellExecute "cmd.exe", "/c %~s0 %~1", "", "runas", 1 >> "%temp%\getadmin.vbs"
+"%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
 goto:eof
