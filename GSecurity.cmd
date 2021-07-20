@@ -1,9 +1,9 @@
-﻿@echo off
-color 0b
-title GSecurity
-rem 18.07.2021
-:: set the current directory to the batch file location
-cd /d %~dp0
+﻿@Echo Off
+Title GSecurity & Color 0B
+cd %systemroot%\system32
+call :IsAdmin
+REM ; Make current folder active one
+pushd %~dp0
 REM ; Remove user account
 net user defaultuser0 /delete
 REM ; Take ownership of desktop
@@ -14,7 +14,7 @@ icacls "%USERPROFILE%\Desktop" /grant:r %username%:(OI)(CI)F /t /l /q /c
 REM ; Debloat
 powershell -command "Get-AppxPackage -AllUsers | where-object {$_.name -notlike '*Store*' } | where-object {$_.name -notlike '*Calc*' } | where-object {$_.name -notlike '*Nvidia*' } | where-object {$_.name -notlike '*Realtek*' } | where-object {$_.name -notlike '*shell*' } | Remove-AppxPackage"
 powershell -command "Get-ProvisionedAppxPackage -Online | where-object {$_.name -notlike '*Store*' } | where-object {$_.name -notlike '*Calc*' } | where-object {$_.name -notlike '*Nvidia*' } | where-object {$_.name -notlike '*Realtek*' } | where-object {$_.name -notlike '*shell*' } | Remove-ProvisionedAppxPackage -Online"
-REM ; Privacy
+REM ; Routes (privacy)
 route -p add 204.79.197.200/32 0.0.0.0
 route -p add 23.218.212.69/32 0.0.0.0
 route -p add 204.160.124.125/32 0.0.0.0
@@ -71,88 +71,7 @@ route -p add 65.52.100.11/32 0.0.0.0
 route -p add 65.52.108.29/32 0.0.0.0
 route -p add 65.52.108.29/32 0.0.0.0
 route -p add 65.52.100.93/32 0.0.0.0
-if not exist %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ mkdir %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\ >NUL 2>&1
-echo. > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl 2>NUL
-echo y|cacls.exe "%programdata%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /d SYSTEM >NUL 2>&1
-REM ; End Tasks
-schtasks /end /tn "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-schtasks /end /tn "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-schtasks /end /tn "\Microsoft\Windows\Autochk\Proxy"
-schtasks /end /tn "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-schtasks /end /tn "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-schtasks /end /tn "\Microsoft\Windows\Application Experience\StartupAppTask"
-schtasks /end /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-schtasks /end /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver"
-schtasks /end /tn "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-schtasks /end /tn "\Microsoft\Windows\Shell\FamilySafetyMonitor"
-schtasks /end /tn "\Microsoft\Windows\Maintenance\WinSAT"
-schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvProfileUpdaterOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvProfileUpdaterDaily_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR1_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR2_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR3_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-REM ; Disable Tasks
-schtasks /change /disable /tn "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-schtasks /change /disable /tn "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-schtasks /change /disable /tn "\Microsoft\Windows\Autochk\Proxy"
-schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-schtasks /change /disable /tn "\Microsoft\Windows\Application Experience\StartupAppTask"
-schtasks /change /disable /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-schtasks /change /disable /tn "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver"
-schtasks /change /disable /tn "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-schtasks /change /disable /tn "\Microsoft\Windows\Shell\FamilySafetyMonitor"
-schtasks /change /disable /tn "\Microsoft\Windows\Maintenance\WinSAT"
-schtasks /delete /F /TN "\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvProfileUpdaterOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvProfileUpdaterDaily_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR1_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR2_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-schtasks /delete /F /TN "\NvTmRepCR3_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}"
-REM ; Delete Tasks
-schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser"
-schtasks /delete /F /TN "\Microsoft\Windows\Application Experience\ProgramDataUpdater"
-schtasks /delete /F /TN "\Microsoft\Windows\Autochk\Proxy"
-schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"
-schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"
-schtasks /delete /F /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"
-schtasks /delete /F /TN "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"
-schtasks /delete /F /TN "\Microsoft\Windows\PI\Sqm-Tasks"
-schtasks /delete /F /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem"
-schtasks /delete /F /TN "\Microsoft\Windows\Windows Error Reporting\QueueReporting"
-schtasks /delete /f /tn "\Microsoft\Windows\application experience\Microsoft compatibility appraiser"
-schtasks /delete /f /tn "\Microsoft\Windows\application experience\aitagent"
-schtasks /delete /f /tn "\Microsoft\Windows\application experience\programdataupdater"
-schtasks /delete /f /tn "\Microsoft\Windows\autochk\proxy"
-schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\consolidator"
-schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\kernelceiptask"
-schtasks /delete /f /tn "\Microsoft\Windows\customer experience improvement program\usbceip"
-schtasks /delete /f /tn "\Microsoft\Windows\diskdiagnostic\Microsoft-Windows-diskdiagnosticdatacollector"
-schtasks /delete /f /tn "\Microsoft\Windows\maintenance\winsat"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\activateWindowssearch"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\configureinternettimeservice"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\dispatchrecoverytasks"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\ehdrminit"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\installplayready"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\mcupdate"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\mediacenterrecoverytask"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\objectstorerecoverytask"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\ocuractivate"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\ocurdiscovery"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscovery">nul 2>&1
-schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw1"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\pbdadiscoveryw2"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrrecoverytask"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\pvrscheduletask"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\registersearch"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\reindexsearchroot"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\sqlliterecoverytask"
-schtasks /delete /f /tn "\Microsoft\Windows\media center\updaterecordpath"
+REM ; Setup tasks
 schtasks /DELETE /TN "Adobe Flash Player PPAPI Notifier" /f
 schtasks /DELETE /TN "Adobe Flash Player Updater" /f
 schtasks /DELETE /TN "AMDLinkUpdate" /f
@@ -260,769 +179,240 @@ schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Logon Synchron
 schtasks /Change /TN "Microsoft\Windows\Work Folders\Work Folders Maintenance Work" /Disable
 schtasks /Change /TN "Microsoft\Windows\Workplace Join\Automatic-Device-Join" /Disable
 schtasks /Change /TN "Microsoft\Windows\WwanSvc\NotificationTask" /Disable
-REM ; GSecurity
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "AutoRepeatDelay" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "AutoRepeatRate" /t REG_SZ /d "500" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "BounceTime" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "DelayBeforeAcceptance" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "Flags" /t REG_SZ /d "126" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "Last BounceKey Setting" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "Last Valid Delay" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "Last Valid Repeat" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\Keyboard Response" /v "Last Valid Wait" /t REG_DWORD /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\MouseKeys" /v "Flags" /t REG_SZ /d "62" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\MouseKeys" /v "MaximumSpeed" /t REG_SZ /d "80" /f
-Reg.exe add "HKCU\Control Panel\Accessibility\MouseKeys" /v "TimeToMaximumSpeed" /t REG_SZ /d "3000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ActiveWndTrackTimeout" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "BlockSendInputResets" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "CaretTimeout" /t REG_DWORD /d "5000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "CaretWidth" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ClickLockTime" /t REG_DWORD /d "1200" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "CoolSwitchColumns" /t REG_SZ /d "7" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "CoolSwitchRows" /t REG_SZ /d "3" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "CursorBlinkRate" /t REG_SZ /d "530" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DockMoving" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DragFromMaximize" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DragFullWindows" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DragHeight" /t REG_SZ /d "4" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DragWidth" /t REG_SZ /d "4" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FocusBorderHeight" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FocusBorderWidth" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FontSmoothingGamma" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FontSmoothingOrientation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "FontSmoothingType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ForegroundFlashCount" /t REG_DWORD /d "7" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ForegroundLockTimeout" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LeftOverlapChars" /t REG_SZ /d "3" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "8" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "MouseWheelRouting" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "PaintDesktopVersion" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "Pattern" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "RightOverlapChars" /t REG_SZ /d "3" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ScreenSaveActive" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "SnapSizing" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "TileWallpaper" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WallPaper" /t REG_SZ /d "C:\Windows\web\wallpaper\Windows\img0.jpg" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WallpaperOriginX" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WallpaperOriginY" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WallpaperStyle" /t REG_SZ /d "10" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WheelScrollChars" /t REG_SZ /d "3" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WheelScrollLines" /t REG_SZ /d "3" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WindowArrangementActive" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "Win8DpiScaling" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DpiScalingVer" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "UserPreferencesMask" /t REG_BINARY /d "9e1e078012000000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "MaxVirtualDesktopDimension" /t REG_DWORD /d "3840" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "MaxMonitorDimension" /t REG_DWORD /d "3840" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "TranscodedImageCount" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LastUpdated" /t REG_DWORD /d "4294967295" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "TranscodedImageCache" /t REG_BINARY /d "7ac3010039a10c00000f000070080000bed52517deacd50143003a005c00570069006e0064006f00770073005c007700650062005c00770061006c006c00700061007000650072005c00570069006e0064006f00770073005c0069006d00670030002e006a007000670000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "2000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LowLevelHooksTimeout" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WaitToKillServiceTimeout" /t REG_SZ /d "5000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "DesktopDPIOverride" /t REG_SZ /d "-2" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LogPixels" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "JPEGImportQuality" /t REG_DWORD /d "598" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "ConfigureDoNotTrack" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "NetworkPredictionOptions" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SearchSuggestEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillAddressEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "ResolveNavigationErrorsUseWebService" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AlternateErrorPagesEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PersonalizationReportingEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PaymentMethodQueryEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillCreditCardEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AddressBarMicrosoftSearchInBingProviderEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "UserFeedbackAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "BlockThirdPartyCookies" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "DefaultGeolocationSetting" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Control Panel" /v "FormSuggest Passwords" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "FormSuggest PW Ask" /t REG_SZ /d "no" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "FormSuggest Passwords" /t REG_SZ /d "no" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Cache" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoToastApplicationNotificationOnLockScreen" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures" /v "EnhancedAntiSpoofing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseEnhancedPin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "DisableExternalDMAUnderLock" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseAdvancedStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "EnableBDEWithNoTPM" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPM" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMPIN" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMKey" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMKeyPIN" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Download" /v "RunInvalidSignatures" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Download" /v "CheckExeSignatures" /t REG_SZ /d "yes" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds" /v "DisableEnclosureDownload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "Isolation64Bit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "DisableEPMCompat" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "Isolation" /t REG_SZ /d "PMEM" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverrideAppRepUnknown" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Restrictions" /v "NoCrashDetection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Security" /v "DisableSecuritySettingsCheck" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Security\ActiveX" /v "BlockNonAdminActiveXInstall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Internet Settings" /v "PreventCertErrorOverrides" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" /v "FormSuggest Passwords" /t REG_SZ /d "no" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverrideAppRepUnknown" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Peernet" /v "Disabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" /v "DCSettingIndex" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" /v "ACSettingIndex" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\abfc2519-3608-4c2a-94ea-171b0ed546ab" /v "DCSettingIndex" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\abfc2519-3608-4c2a-94ea-171b0ed546ab" /v "ACSettingIndex" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\CA\Certificates" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\CA\CRLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\CA\CTLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\Certificates" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\CRLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Disallowed\CTLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Root\Certificates" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Root\CRLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\Root\CTLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\trust\Certificates" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\trust\CRLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\trust\CTLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\TrustedPeople\Certificates" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\TrustedPeople\CRLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SystemCertificates\TrustedPeople\CTLs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\TPM" /v "OSManagedAuthLevel" /t REG_DWORD /d "5" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoiceAboveLock" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Appx" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AxInstaller" /v "OnlyUseAXISForActiveXInstall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\BITS" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation" /v "AllowProtectedCreds" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_zones_map_edit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_options_edit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_HKLM_only" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CertificateRevocation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "WarnOnBadCertRecving" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableSSL3Fallback" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "SecureProtocols" /t REG_DWORD /d "2560" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Cache" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\0" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\1" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\2" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\3" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\4" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\4" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap" /v "UNCAsIntranet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "1C00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "1C00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2102" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1802" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "160A" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1406" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1804" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1209" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1206" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1809" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2500" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2103" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1606" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1A00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2708" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "120b" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1407" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1409" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1607" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2709" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2101" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1806" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "120c" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "140C" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1608" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1607" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "120b" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1809" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1606" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1407" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "160A" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1406" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2102" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2000" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1803" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1400" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1A00" /t REG_DWORD /d "196608" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2500" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1409" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1209" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1206" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2708" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1802" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2103" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2709" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1405" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2101" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1804" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1806" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "120c" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "140C" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "RequirePlatformSecurityFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "HVCIMATRequired" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "LsaCfgFlags" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "ConfigureSystemGuardLaunch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceClasses" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceClassesRetroactive" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceClasses" /v "1" /t REG_SZ /d "{d48179be-ec20-11d1-b6b8-00c04fa372a7}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceClasses" /v "2" /t REG_SZ /d "{4d36e965-e325-11ce-bfc1-08002be10318}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EnhancedStorageDevices" /v "TCGSecurityActivationDisabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application" /v "MaxSize" /t REG_DWORD /d "32768" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\Security" /v "MaxSize" /t REG_DWORD /d "196608" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\System" /v "MaxSize" /t REG_DWORD /d "32768" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Group Policy\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}" /v "NoGPOListChanges" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Group Policy\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}" /v "NoBackgroundPolicy" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "EnableUserControl" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\IPSec\Policy" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Kernel DMA Protection" /v "DeviceEnumerationPolicy" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation" /v "AllowInsecureGuestAuth" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Network Connections" /v "NC_PersonalFirewallConfig" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Network Connections" /v "NC_ShowSharedAccessUI" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator" /ve /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" /v "\\*\SYSVOL" /t REG_SZ /d "RequireMutualAuthentication=1,RequireIntegrity=1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" /v "\\*\NETLOGON" /t REG_SZ /d "RequireMutualAuthentication=1,RequireIntegrity=1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenSlideshow" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" /v "EnableScriptBlockLogging" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v "NonBestEffortLimit" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\RemovableStorageDevices\{53f56308-b6bf-11d0-94f2-00a0c91efb8b}" /v "Deny_Execute" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\RemovableStorageDevices\{53f5630b-b6bf-11d0-94f2-00a0c91efb8b}" /v "Deny_Execute" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\RemovableStorageDevices\{53f5630d-b6bf-11d0-94f2-00a0c91efb8b}" /v "Deny_Execute" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\RemovableStorageDevices\{53f56311-b6bf-11d0-94f2-00a0c91efb8b}" /v "Deny_Execute" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "authenticodeenabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "EnableBackupForWin8Apps" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnumerateLocalUsers" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /t REG_SZ /d "Block" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "LocalProfile" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "6to4_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "ISATAP_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "Teredo_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" /v "fBlockNonDomain" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\Local" /v "WCMPresent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowDigest" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowUnencryptedTraffic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "AllowUnencryptedTraffic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "DisableRunAs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "AllowBasic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "AllowAutoConfig" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service\WinRS" /v "AllowRemoteShellAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WorkplaceJoin" /ve /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WSDAPI\Discovery Proxies" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "PUAProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Policy Manager" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "3b576869-a4ec-4529-8536-b80a7769e899" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "d4f940ab-401b-4efc-aadc-ad5f3c50688a" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "92E97FA1-2EDF-4476-BDD6-9DD0B4DDDC7B" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "5beb7efe-fd9a-4556-801d-275e5ffc04cc" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "d3e037e1-3eb8-44c8-a917-57927947596d" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "26190899-1602-49e8-8b27-eb1d0a1ce869" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "c1db55ab-c21a-4637-bb3f-a12568109d35" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "e6db77e5-3df2-4cf1-b95a-636979351e5b" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v "EnableMulticast" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v "NameServer" /t REG_SZ /d "94.140.14.14 94.140.15.15" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\MitigationOptions" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "DisableWebPnPDownload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "RegisterSpoolerRemoteRpcEndPoint" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Rpc" /v "RestrictRemoteClients" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fAllowToGetHelp" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "MinEncryptionLevel" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fPromptForPassword" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fDisableCdm" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "DisablePasswordSaving" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fEncryptRPCTraffic" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fDenyTSConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v "fDisableCpm" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client" /v "fEnableUsbBlockDeviceBySetupClass" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client" /v "fEnableUsbNoAckIsochWriteToDevice" /t REG_DWORD /d "80" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client" /v "fEnableUsbSelectDeviceByInterface" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client\UsbBlockDeviceBySetupClasses" /v "1000" /t REG_SZ /d "{3376f4ce-ff8d-40a2-a80f-bb4359d1415c}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services\Client\UsbSelectDeviceByInterfaces" /v "1000" /t REG_SZ /d "{6bdd1fc6-810f-11d0-bec7-08002be2092f}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Windows File Protection" /v "KnownDllList" /t REG_SZ /d "nlhtml.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall" /v "PolicyVersion" /t REG_DWORD /d "538" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalIPsecPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFilePath" /t REG_SZ /d "%%systemroot%%\system32\LogFiles\Firewall\pfirewall.log" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace" /v "AllowWindowsInkWorkspace" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft Services\AdmPwd" /v "AdmPwdEnabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Policies\EarlyLaunch" /v "DriverLoadPolicy" /t REG_DWORD /d "3" /f
-REM ; Autoruns
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Terminal Server\Wds\rdpwd\AutorunsDisabled" /v "StartupPrograms" /t REG_SZ /d "rdpclip" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\SafeBoot\AutorunsDisabled" /v "AlternateShell" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\AutorunsDisabled" /v "Edge_DisableSmartScreen" /t REG_SZ /d "REG ADD \"HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter\" /F /V \"EnabledV9\" /T REG_DWORD /D \"00000000\"" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\AutorunsDisabled" /v "Edge_UseDarkTheme" /t REG_SZ /d "REG ADD \"HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main\" /F /V \"Theme\" /T REG_DWORD /D \"00000001\"" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\AutorunsDisabled" /v "Explorer_Privacy_WebsiteIDAccess_Disable" /t REG_SZ /d "REG ADD \"HKCU\Control Panel\International\User Profile\" /F /V \"HttpAcceptLanguageOptOut\" /T REG_DWORD /D \"00000001\"" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /ve /t REG_SZ /d "Microsoft Edge" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /v "StubPath" /t REG_SZ /d "\"C:\Program Files (x86)\Microsoft\Edge\Application\90.0.818.56\Installer\setup.exe\" --configure-user-settings --verbose-logging --system-level --msedge" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /v "Localized Name" /t REG_SZ /d "Microsoft Edge" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /v "IsInstalled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /v "Version" /t REG_SZ /d "43,0,0,0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "ComponentID" /t REG_SZ /d "DOTNETFRAMEWORKS" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "DontAsk" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "IsInstalled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "StubPath" /t REG_SZ /d "C:\Windows\System32\Rundll32.exe C:\Windows\System32\mscories.dll,Install" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "ComponentID" /t REG_SZ /d "DOTNETFRAMEWORKS" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "DontAsk" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "IsInstalled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{89B4C1CD-B018-4511-B0A1-5476DBF70820}" /v "StubPath" /t REG_SZ /d "C:\Windows\SysWOW64\Rundll32.exe C:\Windows\SysWOW64\mscories.dll,Install" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{1FD49718-1D00-4B19-AF5F-070AF6D5D54C}" /ve /t REG_SZ /d "IEToEdge BHO" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{1FD49718-1D00-4B19-AF5F-070AF6D5D54C}" /v "NoExplorer" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{1FD49718-1D00-4B19-AF5F-070AF6D5D54C}" /ve /t REG_SZ /d "IEToEdge BHO" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{1FD49718-1D00-4B19-AF5F-070AF6D5D54C}" /v "NoExplorer" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\camsvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\camsvc" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\edgeupdate" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\edgeupdate" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\edgeupdatem" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\edgeupdatem" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\HfcDisableService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\HfcDisableService" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAfsService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAfsService" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MicrosoftEdgeElevationService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MicrosoftEdgeElevationService" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\PrintNotify" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\RstMwService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\RstMwService" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\SharedAccess" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\SharedAccess" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\cht4vbd" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\cht4vbd" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaLPSS2i_GPIO2" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaLPSS2i_GPIO2" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaLPSS2i_I2C" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaLPSS2i_I2C" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAC" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAC" /v "AutorunsDisabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAfs" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\iaStorAfs" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\mshidumdf" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\mshidumdf" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MSTEE" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MSTEE" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\ReFS" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\ReFS" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\terminpt" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\terminpt" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\TsUsbGD" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\TsUsbGD" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\vmgid" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\vmgid" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Font Drivers\AutorunsDisabled" /v "Adobe Type Manager" /t REG_SZ /d "atmfd.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CLSID\{083863F1-70DE-11D0-BD40-00A0C911CE86}\Instance\AutorunsDisabled\{3D07A539-35CA-447C-9B05-8D85CE924F9E}" /v "CLSID" /t REG_SZ /d "{3D07A539-35CA-447C-9B05-8D85CE924F9E}" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CLSID\{083863F1-70DE-11D0-BD40-00A0C911CE86}\Instance\AutorunsDisabled\{3D07A539-35CA-447C-9B05-8D85CE924F9E}" /v "FilterData" /t REG_BINARY /d "020000000000200007000000000000003070693300000000000000000100000000000000000000003074793300000000580100006801000031706933000000000000000003000000000000000000000030747933000000007801000088010000317479330000000098010000A8010000327479330000000098010000B8010000327069330800000000000000010000000000000000000000307479330000000078010000A8010000337069330800000000000000010000000000000000000000307479330000000078010000C8010000347069330800000000000000010000000000000000000000307479330000000078010000D8010000357069330800000000000000010000000000000000000000307479330000000078010000E80100003670693308000000000000000200000000000000000000003074793300000000F80100000802000031747933000000001802000028020000E912B3AE5733CA43B70197EC198E2B62DB26A67EDA547B43BE9FF73073ADFA3CE1762AF70AEBD011ACE40000C0CC16BAA0D920CA3E3ED1119BF900C04FBBDEBF20806DE046DBCF11B4D100805F6CBBEAE3762AF70AEBD011ACE40000C0CC16BA3CA43D66E8039A4E9CD5BF11ED0DEF7620F6B3A192978D4D81A486AF2577209076D591277A8E6F469E905D3F3083738BE373CA01E6DC7545AFE12BF1C902CAF380EA0A67823AD011B79B00AA003767A7224A8D6E0C31D011B79A00AA003767A7898A8BB849B0804CADCF5898985E22C1AADD2AF5F036F54395EA6D866484262A" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CLSID\{083863F1-70DE-11D0-BD40-00A0C911CE86}\Instance\AutorunsDisabled\{3D07A539-35CA-447C-9B05-8D85CE924F9E}" /v "FriendlyName" /t REG_SZ /d "Closed Captions Analysis Filter" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /ve /t REG_SZ /d "Security" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "DisplayName" /t REG_EXPAND_SZ /d "@(runtime.system32)\scecli.dll,-7650" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "DllName" /t REG_EXPAND_SZ /d "scecli.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "EnableAsynchronousProcessing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "ExtensionDebugLevel" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "ExtensionRsopPlanningDebugLevel" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "GenerateGroupPolicy" /t REG_SZ /d "SceGenerateGroupPolicy" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "MaxNoGPOListChangesInterval" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "NoGPOListChanges" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "NoUserPolicy" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "ProcessGroupPolicy" /t REG_SZ /d "SceProcessSecurityPolicyGPO" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{827D319E-6EAC-11D2-A4EA-00C04F79F83A}" /v "ProcessGroupPolicyEx" /t REG_SZ /d "SceProcessSecurityPolicyGPOEx" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{FC491EF1-C4AA-4CE1-B329-414B101DB823}" /v "DisplayName" /t REG_EXPAND_SZ /d "@dggpext.dll,-600" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{FC491EF1-C4AA-4CE1-B329-414B101DB823}" /v "DllName" /t REG_EXPAND_SZ /d "dggpext.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{FC491EF1-C4AA-4CE1-B329-414B101DB823}" /v "EnableAsynchronousProcessing" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{FC491EF1-C4AA-4CE1-B329-414B101DB823}" /v "NoUserPolicy" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{FC491EF1-C4AA-4CE1-B329-414B101DB823}" /v "ProcessGroupPolicy" /t REG_SZ /d "ProcessConfigCIPolicyGroupPolicy" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{F312195E-3D9D-447A-A3F5-08DFFA24735E}" /v "DisplayName" /t REG_EXPAND_SZ /d "@dggpext.dll,-600" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{F312195E-3D9D-447A-A3F5-08DFFA24735E}" /v "DllName" /t REG_EXPAND_SZ /d "dggpext.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{F312195E-3D9D-447A-A3F5-08DFFA24735E}" /v "EnableAsynchronousProcessing" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{F312195E-3D9D-447A-A3F5-08DFFA24735E}" /v "NoUserPolicy" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\AutorunsDisabled\{F312195E-3D9D-447A-A3F5-08DFFA24735E}" /v "ProcessGroupPolicy" /t REG_SZ /d "ProcessVirtualizationBasedSecurityGroupPolicy" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Print\Monitors\AutorunsDisabled\Standard TCP/IP Port" /v "Driver" /t REG_SZ /d "tcpmon.dll" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Print\Monitors\AutorunsDisabled\Standard TCP/IP Port\Ports" /v "LprAckTimeout" /t REG_DWORD /d "180" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Print\Monitors\AutorunsDisabled\Standard TCP/IP Port\Ports" /v "StatusUpdateEnabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Print\Monitors\AutorunsDisabled\Standard TCP/IP Port\Ports" /v "StatusUpdateInterval" /t REG_DWORD /d "10" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Lsa\AutorunsDisabled" /v "Notification Packages" /t REG_MULTI_SZ /d "scecli" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\SystemCertificates\AuthRoot\Certificates\B1BC968BD4F49D622AA89A81F2150152A41D829C" /v "Blob" /t REG_BINARY /d "190000000100000010000000A823B4A20180BEB460CAB955C24D7E21030000000100000014000000B1BC968BD4F49D622AA89A81F2150152A41D829C7E00000001000000080000000000042BEB77D5017A000000010000000C000000300A06082B060105050703097F000000010000000C000000300A06082B060105050703091D00000001000000100000006EE7F3B060D10E90A31BA3471B999236140000000100000014000000607B661A450D97CA89502F7D04CD34A8FFFCFD4B620000000100000020000000EBD41040E4BB3EC742C9E381D31EF2A41A48B6685C96E7CEF3C1DF6CD4331C990B000000010000003000000047006C006F00620061006C005300690067006E00200052006F006F00740020004300410020002D002000520031000000530000000100000040000000303E301F06092B06010401A032010130123010060A2B0601040182373C0101030200C0301B060567810C010330123010060A2B0601040182373C0101030200C0090000000100000068000000306606082B0601050507030206082B06010505070303060A2B0601040182370A030406082B0601050507030406082B0601050508020206082B0601050507030606082B0601050507030706082B0601050507030906082B0601050507030106082B060105050703080F00000001000000140000005A6D07B6371D966A2FB6BA92828CE5512A49513D200000000100000079030000308203753082025DA003020102020B040000000001154B5AC394300D06092A864886F70D01010505003057310B300906035504061302424531193017060355040A1310476C6F62616C5369676E206E762D73613110300E060355040B1307526F6F74204341311B301906035504031312476C6F62616C5369676E20526F6F74204341301E170D3938303930313132303030305A170D3238303132383132303030305A3057310B300906035504061302424531193017060355040A1310476C6F62616C5369676E206E762D73613110300E060355040B1307526F6F74204341311B301906035504031312476C6F62616C5369676E20526F6F7420434130820122300D06092A864886F70D01010105000382010F003082010A0282010100DA0EE6998DCEA3E34F8A7EFBF18B83256BEA481FF12AB0B9951104BDF063D1E26766CF1CDDCF1B482BEE8D898E9AAF298065ABE9C72D12CBAB1C4C7007A13D0A30CD158D4FF8DDD48C50151CEF50EEC42EF7FCE952F2917DE06DD535308E5E4373F241E9D56AE3B2893A5639386F063C88695B2A4DC5A754B86C89CC9BF93CCAE5FD89F5123C927896D6DC746E934461D18DC746B2750E86E8198AD56D6CD5781695A2E9C80A38EBF224134F73549313853A1BBC1E34B58B058CB9778BB1DB1F2091AB09536E90CE7B3774B97047912251631679AEB1AE412608C8192BD146AA48D6642AD78334FF2C2AC16C19434A0785E7D37CF62168EFEAF2529F7F9390CF0203010001A3423040300E0603551D0F0101FF040403020106300F0603551D130101FF040530030101FF301D0603551D0E04160414607B661A450D97CA89502F7D04CD34A8FFFCFD4B300D06092A864886F70D01010505000382010100D673E77C4F76D08DBFECBAA2BE34C52832B57CFC6C9C2C2BBD099E53BF6B5EAA1148B6E508A3B3CA3D614DD34609B33EC3A0E363551BF2BAEFAD39E143B938A3E62F8A263BEFA05056F9C60AFD38CDC40B705194979804DFC35F94D515C914419CC45D7564150DFF5530EC868FFF0DEF2CB96346F6AAFCDFBC69FD2E1248649AE095F0A6EF298F01B115B50C1DA5FE692C6924781EB3A71C7162EECAC897AC175D8AC2F847866E2AC4563195D06789852BF96CA65D469D0CAA82E49951DD70B7DB563D61E46AE15CD6F6FE3DDE41CC07AE6352BF5353F42BE9C7FDB6F7825F85D24118DB81B3041CC51FA4806F1520C9DE0C880A1DD66655E2FC48C9292669E0" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shellex\ContextMenuHandlers\AutorunsDisabled\NvCplDesktopContext" /ve /t REG_SZ /d "{3D1975AF-48C6-4f8e-A182-BE0E08FA86A9}" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\IntcAzAudAddService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\IntcAzAudAddService" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Intel(R) Capability Licensing Service TCP IP Interface" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Intel(R) Capability Licensing Service TCP IP Interface" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Intel(R) TPM Provisioning Service" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Intel(R) TPM Provisioning Service" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\jhi_service" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\jhi_service" /v "AutorunsDisabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MEIx64" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\MEIx64" /v "AutorunsDisabled" /t REG_DWORD /d "3" /f
-REM ; Disable cmd and block powershell
-Reg.exe add "HKCU\Software\Policies\Microsoft\Windows\System" /f
-Reg.exe add "HKCU\Software\Policies\Microsoft\Windows\System" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /t REG_SZ /d "powershell.exe" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "2" /t REG_SZ /d "powershell_ise.exe" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "3" /t REG_SZ /d "conhost.exe" /f
 REM ; Context Menus
 Reg.exe delete "HKCR\*\shell\TakeOwnership" /f
 Reg.exe delete "HKCR\*\shell\runas" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership" /ve /t REG_SZ /d "Take Ownership" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership" /ve /t REG_SZ /d "Take Ownership" /f
 Reg.exe delete "HKCR\*\shell\TakeOwnership" /v "Extended" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l' -Verb runAs\"" /f
-Reg.exe add "HKCR\*\shell\TakeOwnership\command" /v "IsolatedCommand" /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l' -Verb runAs\"" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership" /ve /t REG_SZ /d "Take Ownership" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "AppliesTo" /t REG_SZ /d "NOT (System.ItemPathDisplay:=\"C:\Users\" OR System.ItemPathDisplay:=\"C:\ProgramData\" OR System.ItemPathDisplay:=\"C:\Windows\" OR System.ItemPathDisplay:=\"C:\Windows\System32\" OR System.ItemPathDisplay:=\"C:\Program Files\" OR System.ItemPathDisplay:=\"C:\Program Files (x86)\")" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\*\shell\TakeOwnership\command" /v "IsolatedCommand" /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership" /ve /t REG_SZ /d "Take Ownership" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "AppliesTo" /t REG_SZ /d "NOT (System.ItemPathDisplay:=\"C:\Users\" OR System.ItemPathDisplay:=\"C:\ProgramData\" OR System.ItemPathDisplay:=\"C:\Windows\" OR System.ItemPathDisplay:=\"C:\Windows\System32\" OR System.ItemPathDisplay:=\"C:\Program Files\" OR System.ItemPathDisplay:=\"C:\Program Files (x86)\")" /f
 Reg.exe delete "HKCR\Directory\shell\TakeOwnership" /v "Extended" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "Position" /t REG_SZ /d "middle" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" /r /d y && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l /q' -Verb runAs\"" /f
-Reg.exe add "HKCR\Directory\shell\TakeOwnership\command" /v "IsolatedCommand" /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" /r /d y && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l /q' -Verb runAs\"" /f
-Reg.exe add "HKCR\Drive\shell\runas" /ve /t REG_SZ /d "Take Ownership" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership" /v "Position" /t REG_SZ /d "middle" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" /r /d y && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l /q' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\Directory\shell\TakeOwnership\command" /v "IsolatedCommand" /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/c takeown /f \\\"%%1\\\" /r /d y && icacls \\\"%%1\\\" /grant *S-1-3-4:F /t /c /l /q' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas" /ve /t REG_SZ /d "Take Ownership" /f
 Reg.exe delete "HKCR\Drive\shell\runas" /v "Extended" /f
-Reg.exe add "HKCR\Drive\shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Drive\shell\runas" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Drive\shell\runas" /v "Position" /t REG_SZ /d "middle" /f
-Reg.exe add "HKCR\Drive\shell\runas" /v "AppliesTo" /t REG_SZ /d "NOT (System.ItemPathDisplay:=\"C:\\\")" /f
-Reg.exe add "HKCR\Drive\shell\runas\command" /ve /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\\\" /r /d y && icacls \"%%1\\\" /grant *S-1-3-4:F /t /c" /f
-Reg.exe add "HKCR\Drive\shell\runas\command" /v "IsolatedCommand" /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\\\" /r /d y && icacls \"%%1\\\" /grant *S-1-3-4:F /t /c" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "MUIVerb" /t REG_SZ /d "Control Panel" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "Position" /t REG_SZ /d "Bottom" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout" /ve /t REG_SZ /d "Control Panel (Category)" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{26EE0668-A00A-44D7-9371-BEB064C98683}" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout" /ve /t REG_SZ /d "All Control Panel Items (Icons)" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{21EC2020-3AEA-1069-A2DD-08002B30309D}" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout" /ve /t REG_SZ /d "All Tasks (God mode)" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{ED7BA470-8E54-465E-825C-99712043E01C}" /f
-Reg.exe add "HKCR\Msi.Package\shell\Extract All...\command" /ve /t REG_SZ /d "msiexec.exe /a \"%%1\" /qb TARGETDIR=\"%%1 Contents\"" /f
-Reg.exe add "HKCR\*\shell\hash" /v "MUIVerb" /t REG_SZ /d "Hash" /f
-Reg.exe add "HKCR\*\shell\hash" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\*\shell\hash\shell\01menu" /v "MUIVerb" /t REG_SZ /d "SHA1" /f
-Reg.exe add "HKCR\*\shell\hash\shell\01menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA1 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\02menu" /v "MUIVerb" /t REG_SZ /d "SHA256" /f
-Reg.exe add "HKCR\*\shell\hash\shell\02menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA256 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\03menu" /v "MUIVerb" /t REG_SZ /d "SHA384" /f
-Reg.exe add "HKCR\*\shell\hash\shell\03menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA384 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\04menu" /v "MUIVerb" /t REG_SZ /d "SHA512" /f
-Reg.exe add "HKCR\*\shell\hash\shell\04menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA512 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\05menu" /v "MUIVerb" /t REG_SZ /d "MACTripleDES" /f
-Reg.exe add "HKCR\*\shell\hash\shell\05menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm MACTripleDES | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\06menu" /v "MUIVerb" /t REG_SZ /d "MD5" /f
-Reg.exe add "HKCR\*\shell\hash\shell\06menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm MD5 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\07menu" /v "MUIVerb" /t REG_SZ /d "RIPEMD160" /f
-Reg.exe add "HKCR\*\shell\hash\shell\07menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm RIPEMD160 | format-list" /f
-Reg.exe add "HKCR\*\shell\hash\shell\08menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
-Reg.exe add "HKCR\*\shell\hash\shell\08menu" /v "MUIVerb" /t REG_SZ /d "Show all" /f
-Reg.exe add "HKCR\*\shell\hash\shell\08menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA1 | format-list;get-filehash -literalpath '%%1' -algorithm SHA256 | format-list;get-filehash -literalpath '%%1' -algorithm SHA384 | format-list;get-filehash -literalpath '%%1' -algorithm SHA512 | format-list;get-filehash -literalpath '%%1' -algorithm MACTripleDES | format-list;get-filehash -literalpath '%%1' -algorithm MD5 | format-list;get-filehash -literalpath '%%1' -algorithm RIPEMD160 | format-list" /f
-Reg.exe add "HKCR\Msi.Package\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Msi.Package\shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\msiexec.exe\" /i \"%%1\" %%*" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "icon" /t REG_SZ /d "explorer.exe" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "Position" /t REG_SZ /d "Bottom" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\01menu" /v "MUIVerb" /t REG_SZ /d "Restart Explorer Now" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\01menu\command" /ve /t REG_EXPAND_SZ /d "cmd.exe /c taskkill /f /im explorer.exe  & start explorer.exe" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu" /v "MUIVerb" /t REG_SZ /d "Restart Explorer with Pause" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu\command" /ve /t REG_EXPAND_SZ /d "cmd.exe /c @echo off & echo. & echo Stopping explorer.exe process . . . & echo. & taskkill /f /im explorer.exe & echo. & echo. & echo Waiting to start explorer.exe process when you are ready . . . & pause && start explorer.exe && exit" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "MUIVerb" /t REG_SZ /d "Compact" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "Position" /t REG_SZ /d "middle" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact\Command" /ve /t REG_SZ /d "Compact /c /q /i /exe:lzx \"%%1\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /ve /t REG_SZ /d "Install this update" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas\command" /ve /t REG_SZ /d "cmd /k C:\Windows\SysWOW64\Dism.exe /online /add-package /packagepath:\"%%1\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "MultipleInvokePromptMinimum" /t REG_DWORD /d "200" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "MUIVerb" /t REG_SZ /d "Repair Windows Image" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "Icon" /t REG_SZ /d "WmiPrvSE.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "Position" /t REG_SZ /d "Bottom" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth" /v "MUIVerb" /t REG_SZ /d "Check Health of Windows Image" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, Dism /Online /Cleanup-Image /CheckHealth' -Verb runAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth" /v "MUIVerb" /t REG_SZ /d "Repair Windows Image" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, Dism /Online /Cleanup-Image /RestoreHealth' -Verb runAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "MUIVerb" /t REG_SZ /d "Reset Permissions" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "Position" /t REG_SZ /d "middle" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions\Command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset & pause' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "MUIVerb" /t REG_SZ /d "Reset Permissions" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "Position" /t REG_SZ /d "middle" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\01ResetPermissionsRootFolder" /v "MUIVerb" /t REG_SZ /d "Reset permissions of this folder only" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\01ResetPermissionsRootFolder\command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset & pause' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\02ResetPermissionsAllFolders" /v "MUIVerb" /t REG_SZ /d "Reset permissions of this folder, subfolders and files" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\02ResetPermissionsAllFolders\command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset /t /c /l & pause' -Verb RunAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\VBSFile\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\VBSFile\Shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\WScript.exe\" \"%%1\" %%*" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Msi.Package\shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Msi.Package\shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\msiexec.exe\" /i \"%%1\" %%*" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Microsoft.PowerShellScript.1\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Microsoft.PowerShellScript.1\Shell\runas\command" /ve /t REG_EXPAND_SZ /d "powershell.exe \"-Command\" \"if((Get-ExecutionPolicy ) -ne 'AllSigned') { Set-ExecutionPolicy -Scope Process Bypass }; & '%%1'\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "MUIVerb" /t REG_SZ /d "SFC /Scannow" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "Icon" /t REG_SZ /d "cmd.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "Position" /t REG_SZ /d "Bottom" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow" /v "MUIVerb" /t REG_SZ /d "Run SFC /Scannow" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, sfc.exe /scannow' -Verb runAs\"" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog" /v "Icon" /t REG_SZ /d "notepad.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog" /v "MUIVerb" /t REG_SZ /d "View log for SFC" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog\Command" /ve /t REG_SZ /d "PowerShell (Select-String [SR] $env:windir\Logs\CBS\CBS.log -s).Line >\"$env:userprofile\Desktop\SFC_LOG.txt\"; Start-Process -FilePath \"notepad.exe\" -ArgumentList \"$env:userprofile\Desktop\SFC_LOG.txt\"" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hidden items" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas" /v "Position" /t REG_SZ /d "middle" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas" /v "AppliesTo" /t REG_SZ /d "NOT (System.ItemPathDisplay:=\"C:\\\")" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas\command" /ve /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\\\" /r /d y && icacls \"%%1\\\" /grant *S-1-3-4:F /t /c" /f
+Echo Y | Reg.exe add "HKCR\Drive\shell\runas\command" /v "IsolatedCommand" /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\\\" /r /d y && icacls \"%%1\\\" /grant *S-1-3-4:F /t /c" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "MUIVerb" /t REG_SZ /d "Control Panel" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout" /ve /t REG_SZ /d "Control Panel (Category)" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\001flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{26EE0668-A00A-44D7-9371-BEB064C98683}" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout" /ve /t REG_SZ /d "All Control Panel Items (Icons)" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\002flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{21EC2020-3AEA-1069-A2DD-08002B30309D}" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout" /ve /t REG_SZ /d "All Tasks (God mode)" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout" /v "Icon" /t REG_SZ /d "imageres.dll,-27" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\ControlPanel\shell\003flyout\command" /ve /t REG_SZ /d "explorer.exe shell:::{ED7BA470-8E54-465E-825C-99712043E01C}" /f
+Echo Y | Reg.exe add "HKCR\Msi.Package\shell\Extract All...\command" /ve /t REG_SZ /d "msiexec.exe /a \"%%1\" /qb TARGETDIR=\"%%1 Contents\"" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash" /v "MUIVerb" /t REG_SZ /d "Hash" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\01menu" /v "MUIVerb" /t REG_SZ /d "SHA1" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\01menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA1 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\02menu" /v "MUIVerb" /t REG_SZ /d "SHA256" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\02menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA256 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\03menu" /v "MUIVerb" /t REG_SZ /d "SHA384" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\03menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA384 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\04menu" /v "MUIVerb" /t REG_SZ /d "SHA512" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\04menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA512 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\05menu" /v "MUIVerb" /t REG_SZ /d "MACTripleDES" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\05menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm MACTripleDES | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\06menu" /v "MUIVerb" /t REG_SZ /d "MD5" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\06menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm MD5 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\07menu" /v "MUIVerb" /t REG_SZ /d "RIPEMD160" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\07menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm RIPEMD160 | format-list" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\08menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\08menu" /v "MUIVerb" /t REG_SZ /d "Show all" /f
+Echo Y | Reg.exe add "HKCR\*\shell\hash\shell\08menu\command" /ve /t REG_SZ /d "powershell -noexit get-filehash -literalpath '%%1' -algorithm SHA1 | format-list;get-filehash -literalpath '%%1' -algorithm SHA256 | format-list;get-filehash -literalpath '%%1' -algorithm SHA384 | format-list;get-filehash -literalpath '%%1' -algorithm SHA512 | format-list;get-filehash -literalpath '%%1' -algorithm MACTripleDES | format-list;get-filehash -literalpath '%%1' -algorithm MD5 | format-list;get-filehash -literalpath '%%1' -algorithm RIPEMD160 | format-list" /f
+Echo Y | Reg.exe add "HKCR\Msi.Package\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Msi.Package\shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\msiexec.exe\" /i \"%%1\" %%*" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "icon" /t REG_SZ /d "explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\01menu" /v "MUIVerb" /t REG_SZ /d "Restart Explorer Now" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\01menu\command" /ve /t REG_EXPAND_SZ /d "cmd.exe /c taskkill /f /im explorer.exe  & start explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu" /v "MUIVerb" /t REG_SZ /d "Restart Explorer with Pause" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\Restart Explorer\shell\02menu\command" /ve /t REG_EXPAND_SZ /d "cmd.exe /c @echo off & echo. & echo Stopping explorer.exe process . . . & echo. & taskkill /f /im explorer.exe & echo. & echo. & echo Waiting to start explorer.exe process when you are ready . . . & pause && start explorer.exe && exit" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "MUIVerb" /t REG_SZ /d "Compact" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact" /v "Position" /t REG_SZ /d "middle" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\Compact\Command" /ve /t REG_SZ /d "Compact /c /q /i /exe:lzx \"%%1\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /ve /t REG_SZ /d "Install this update" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\CABFolder\Shell\runas\command" /ve /t REG_SZ /d "cmd /k C:\Windows\SysWOW64\Dism.exe /online /add-package /packagepath:\"%%1\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /ve /t REG_SZ /d "Command Prompt (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd" /v "Icon" /t REG_SZ /d "cmd.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedCmd\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/k,pushd,%%V' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "MultipleInvokePromptMinimum" /t REG_DWORD /d "200" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\background\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Drive\shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /ve /t REG_SZ /d "Windows PowerShell (Run as Administrator)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "NeverDefault" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS" /v "Icon" /t REG_SZ /d "PowerShell.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\LibraryFolder\Shell\OpenElevatedPS\command" /ve /t REG_SZ /d "PowerShell.exe -windowstyle hidden -Command \"Start-Process cmd.exe -ArgumentList '/s,/c,pushd,%%V && powershell' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "MUIVerb" /t REG_SZ /d "Repair Windows Image" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "Icon" /t REG_SZ /d "WmiPrvSE.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth" /v "MUIVerb" /t REG_SZ /d "Check Health of Windows Image" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\CheckHealth\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, Dism /Online /Cleanup-Image /CheckHealth' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth" /v "MUIVerb" /t REG_SZ /d "Repair Windows Image" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\DismContextMenu\shell\RestoreHealth\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, Dism /Online /Cleanup-Image /RestoreHealth' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "MUIVerb" /t REG_SZ /d "Reset Permissions" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "NoWorkingDirectory" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions" /v "Position" /t REG_SZ /d "middle" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\*\shell\ResetNTFSPermissions\Command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset & pause' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "MUIVerb" /t REG_SZ /d "Reset Permissions" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions" /v "Position" /t REG_SZ /d "middle" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\01ResetPermissionsRootFolder" /v "MUIVerb" /t REG_SZ /d "Reset permissions of this folder only" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\01ResetPermissionsRootFolder\command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset & pause' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\02ResetPermissionsAllFolders" /v "MUIVerb" /t REG_SZ /d "Reset permissions of this folder, subfolders and files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Directory\shell\ResetNTFSPermissions\Shell\02ResetPermissionsAllFolders\command" /ve /t REG_SZ /d "powershell.exe -windowstyle hidden -command \"Start-Process cmd.exe -ArgumentList '/c icacls \\\"%%1\\\" /reset /t /c /l & pause' -Verb RunAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\VBSFile\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\VBSFile\Shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\WScript.exe\" \"%%1\" %%*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Msi.Package\shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Msi.Package\shell\runas\command" /ve /t REG_EXPAND_SZ /d "\"%%SystemRoot%%\System32\msiexec.exe\" /i \"%%1\" %%*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Microsoft.PowerShellScript.1\Shell\runas" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\Microsoft.PowerShellScript.1\Shell\runas\command" /ve /t REG_EXPAND_SZ /d "powershell.exe \"-Command\" \"if((Get-ExecutionPolicy ) -ne 'AllSigned') { Set-ExecutionPolicy -Scope Process Bypass }; & '%%1'\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "MUIVerb" /t REG_SZ /d "SFC /Scannow" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "Icon" /t REG_SZ /d "cmd.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow" /v "MUIVerb" /t REG_SZ /d "Run SFC /Scannow" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\01Scannow\Command" /ve /t REG_SZ /d "PowerShell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/k, sfc.exe /scannow' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog" /v "Icon" /t REG_SZ /d "notepad.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog" /v "MUIVerb" /t REG_SZ /d "View log for SFC" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Classes\DesktopBackground\Shell\SFCScannow\shell\02ViewLog\Command" /ve /t REG_SZ /d "PowerShell (Select-String [SR] $env:windir\Logs\CBS\CBS.log -s).Line >\"$env:userprofile\Desktop\SFC_LOG.txt\"; Start-Process -FilePath \"notepad.exe\" -ArgumentList \"$env:userprofile\Desktop\SFC_LOG.txt\"" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hidden items" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "Position" /t REG_SZ /d "Bottom" /f
 Reg.exe delete "HKCR\Directory\Background\shell\HiddenFiles" /v "Extended" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "CommandStateSync" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Description" /t REG_SZ /d "@shell32.dll,-37573" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "ExplorerCommandHandler" /t REG_SZ /d "{f7300245-1f4b-41ba-8948-6fd392064494}" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hide/Show Hidden items" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "MUIVerb" /t REG_SZ /d "Hide protected OS files" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu" /v "MUIVerb" /t REG_SZ /d "Show protected OS files" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hidden items" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "Position" /t REG_SZ /d "Bottom" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "CommandStateSync" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Description" /t REG_SZ /d "@shell32.dll,-37573" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "ExplorerCommandHandler" /t REG_SZ /d "{f7300245-1f4b-41ba-8948-6fd392064494}" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hide/Show Hidden items" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "MUIVerb" /t REG_SZ /d "Hide protected OS files" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x1menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu" /v "MUIVerb" /t REG_SZ /d "Show protected OS files" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\HiddenFiles\shell\x2menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hidden items" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "Position" /t REG_SZ /d "Bottom" /f
 Reg.exe delete "HKCR\Folder\shell\HiddenFiles" /v "Extended" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "CommandStateSync" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Description" /t REG_SZ /d "@shell32.dll,-37573" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "ExplorerCommandHandler" /t REG_SZ /d "{f7300245-1f4b-41ba-8948-6fd392064494}" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hide/Show Hidden items" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "MUIVerb" /t REG_SZ /d "Hide protected OS files" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu" /v "MUIVerb" /t REG_SZ /d "Show protected OS files" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
-Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
-Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "CommandStateSync" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "Description" /t REG_SZ /d "@shell32.dll,-37571" /f
-Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "ExplorerCommandHandler" /t REG_SZ /d "{4ac6c205-2853-4bf5-b47c-919a42a48a16}" /f
-Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "MUIVerb" /t REG_SZ /d "@shell32.dll,-37570" /f
-Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "CommandStateSync" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "Description" /t REG_SZ /d "@shell32.dll,-37571" /f
-Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "ExplorerCommandHandler" /t REG_SZ /d "{4ac6c205-2853-4bf5-b47c-919a42a48a16}" /f
-Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "MUIVerb" /t REG_SZ /d "@shell32.dll,-37570" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "icon" /t REG_SZ /d "bootux.dll,-1032" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "MUIVerb" /t REG_SZ /d "Safe Mode" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "CommandStateSync" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Description" /t REG_SZ /d "@shell32.dll,-37573" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "ExplorerCommandHandler" /t REG_SZ /d "{f7300245-1f4b-41ba-8948-6fd392064494}" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\Windows.ShowHiddenFiles" /v "MUIVerb" /t REG_SZ /d "Hide/Show Hidden items" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "MUIVerb" /t REG_SZ /d "Hide protected OS files" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu" /v "CommandFlags" /t REG_DWORD /d "32" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x1menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 0 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu" /v "MUIVerb" /t REG_SZ /d "Show protected OS files" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu" /v "Icon" /t REG_SZ /d "imageres.dll,-5314" /f
+Echo Y | Reg.exe add "HKCR\Folder\shell\HiddenFiles\shell\x2menu\command" /ve /t REG_SZ /d "cmd /c, REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V Hidden /T REG_DWORD /D 1 /F & REG ADD \"HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" /V ShowSuperHidden /T REG_DWORD /D 1 /F & taskkill /f /im explorer.exe & start explorer.exe" /f
+Echo Y | Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "CommandStateSync" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "Description" /t REG_SZ /d "@shell32.dll,-37571" /f
+Echo Y | Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "ExplorerCommandHandler" /t REG_SZ /d "{4ac6c205-2853-4bf5-b47c-919a42a48a16}" /f
+Echo Y | Reg.exe add "HKCR\AllFilesystemObjects\shell\Windows.ShowFileExtensions" /v "MUIVerb" /t REG_SZ /d "@shell32.dll,-37570" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "CommandStateSync" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "Description" /t REG_SZ /d "@shell32.dll,-37571" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "ExplorerCommandHandler" /t REG_SZ /d "{4ac6c205-2853-4bf5-b47c-919a42a48a16}" /f
+Echo Y | Reg.exe add "HKCR\Directory\Background\shell\Windows.ShowFileExtensions" /v "MUIVerb" /t REG_SZ /d "@shell32.dll,-37570" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "icon" /t REG_SZ /d "bootux.dll,-1032" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "MUIVerb" /t REG_SZ /d "Safe Mode" /f
 Reg.exe delete "HKCR\DesktopBackground\Shell\SafeMode" /v "Position" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "SubCommands" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode" /ve /t REG_SZ /d "Restart in Normal Mode" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /deletevalue {current} safeboot & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode" /ve /t REG_SZ /d "Restart in Safe Mode" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot minimal & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking" /ve /t REG_SZ /d "Restart in Safe Mode with Networking" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot network & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt" /ve /t REG_SZ /d "Restart in Safe Mode with Command Prompt" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt" /v "HasLUAShield" /t REG_SZ /d "" /f
-Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot minimal & bcdedit /set {current} safebootalternateshell yes & shutdown -r -t 00 -f' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode" /v "SubCommands" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode" /ve /t REG_SZ /d "Restart in Normal Mode" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\001-NormalMode\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /deletevalue {current} safeboot & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode" /ve /t REG_SZ /d "Restart in Safe Mode" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\002-SafeMode\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot minimal & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking" /ve /t REG_SZ /d "Restart in Safe Mode with Networking" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\003-SafeModeNetworking\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot network & bcdedit /deletevalue {current} safebootalternateshell & shutdown -r -t 00 -f' -Verb runAs\"" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt" /ve /t REG_SZ /d "Restart in Safe Mode with Command Prompt" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt" /v "HasLUAShield" /t REG_SZ /d "" /f
+Echo Y | Reg.exe add "HKCR\DesktopBackground\Shell\SafeMode\shell\004-SafeModeCommandPrompt\command" /ve /t REG_SZ /d "powershell -windowstyle hidden -command \"Start-Process cmd -ArgumentList '/s,/c,bcdedit /set {current} safeboot minimal & bcdedit /set {current} safebootalternateshell yes & shutdown -r -t 00 -f' -Verb runAs\"" /f
 REM ; Defender
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "PUAProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /t REG_SZ /d "Block" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /t REG_DWORD /d "6" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpBafsExtendedTimeout" /t REG_DWORD /d "50" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" /v "DisallowExploitProtectionOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpyNetReporting" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "0" /f
-REM ; Device restrictions
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceIDs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceIDsRetroactive" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyInstanceIDs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyInstanceIDsRetroactive" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "AllowDeviceClasses" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "AllowAdminInstall" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyRemovableDevices" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyUnspecified" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\AllowDeviceClasses" /v "1" /t REG_SZ /d "{4d36e968-e325-11ce-bfc1-08002be10318}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\AllowDeviceClasses" /v "2" /t REG_SZ /d "{4d36e96c-e325-11ce-bfc1-08002be10318}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\AllowDeviceClasses" /v "3" /t REG_SZ /d "{eec5ad98-8080-425f-922a-dabf3de3f69a}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs" /v "1" /t REG_SZ /d "ROOT\RDPBUS" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyInstanceIDs" /v "1" /t REG_SZ /d "ROOT\RDPBUS" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "PUAProtection" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /t REG_SZ /d "Block" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /t REG_DWORD /d "6" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpBafsExtendedTimeout" /t REG_DWORD /d "50" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" /v "DisallowExploitProtectionOverride" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpyNetReporting" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "0" /f
 REM ; Display Scaling
-Reg.exe add "HKCU\Control Panel\Desktop" /v "Win8DpiScaling" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LogPixels" /t REG_DWORD /d "96" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Desktop" /v "Win8DpiScaling" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Desktop" /v "LogPixels" /t REG_DWORD /d "96" /f
 REM ; Firewall rules deletion
 Reg.exe delete "HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Defaults\FirewallPolicy\FirewallRules" /f
 Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Defaults\FirewallPolicy\FirewallRules" /f
@@ -1034,3925 +424,459 @@ Reg.exe delete "HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\Firew
 Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\RestrictedServices\Static\System" /f
 Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /f
 REM ; Firewall settings
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0BC6A788-6049-404C-8620-9CA84A90F9B6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=112|Name=VRRP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0F63FC11-772D-4598-AB3A-3F9D739A7A61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=2|Name=IGMP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{17116813-ABCE-4858-B7A9-E89149F88B6C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort2_10=1-67|LPort2_10=69-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost tcp|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1AB67954-115D-4DFD-84D8-49E004B70A56}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|App=%%SystemRoot%%\explorer.exe|Name=explorer|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2544C3F8-BA9E-4614-AC6B-A4358E25173B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort2_10=0-66|LPort2_10=69-1687|LPort2_10=1689-55554|LPort2_10=55556-65535|Name=4Torrents55555|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32BEF19F-0DB3-4BEA-B185-B7C669DEDB5C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort2_10=0-66|LPort2_10=69-1687|LPort2_10=1689-55554|LPort2_10=55556-65535|Name=4Torrents55555|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3FB5D65C-BB7B-42BD-BD7D-1735BFCE144B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=0-52|RPort2_10=54-66|RPort2_10=69-79|RPort2_10=82-442|RPort2_10=444-1000|Name=TCP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CCAC58A-3834-4DB0-AFDD-E8CC4D206B72}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=17|RPort2_10=1-52|RPort2_10=54-66|RPort2_10=68-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost udp|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CE8D585-B3FD-45D6-A549-50641B7AA09E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=60|Name=IPv6-Opts|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4FA87E52-9D33-46B4-9B1E-F43DF96E676F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=43|Name=IPv6-Route|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BF200DF-6F9D-483F-A1B5-C0A479FD1C16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=1|Name=ICMPv4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6C0065E8-6B53-4880-B115-6D2109BE121D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=59|Name=IPv6-NoNxt|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7242246C-02FC-4FE0-8C87-23A869806620}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=60|Name=IPv6-Opts|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7E711471-0197-4CDF-8A8F-285D204E8913}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=2|Name=IGMP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8B541AB8-A1FB-4AB4-978F-903483AB0603}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=58|Name=ICMPv6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9347CAC4-6908-4E8B-9D45-4954CD686CEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=59|Name=IPv6-NoNxt|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A4C2280E-D96D-474C-B7F8-5E551B50D803}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=47|Name=GRE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ACEB7955-9176-45E9-9BCE-3890B231D802}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=41|Name=IPv6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B4B43298-454A-4775-B7F9-D149EE70AC22}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=43|Name=IPv6-Route|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C0504930-7FC9-45D0-A4C0-0183C69168E8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=113|Name=PGM|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CAC95F10-BE12-4508-8F75-4450051399D8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|App=%%SystemRoot%%\explorer.exe|Name=explorer|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CD2E1B81-F907-434F-9855-A0D6ADC47EA2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=115|Name=L2TP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D3507B32-E394-4E1C-BA60-375DC173A87C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=44|Name=IPv6-Frag|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D554D4E5-28A3-4785-808B-7CCCB3732B40}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=47|Name=GRE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D69FCB0D-6042-4155-A0D8-71167AC1FF00}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=1|Name=ICMPv4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D6DBF400-55D5-46F2-9360-961063CA41F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=112|Name=VRRP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D956505D-BC90-412D-81C5-195D127761D7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=113|Name=PGM|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DFEBB9A0-90D2-42E9-A551-D3D3BCE876DB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=58|Name=ICMPv6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E61EC587-47AB-4195-856D-A11A843A0EF2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=115|Name=L2TP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E75B5D96-DA86-40F7-AEB3-F5B69409CB07}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=0|Name=HOPOPT|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E7EDF93C-E442-4E1F-94E2-79A1B371D763}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=41|Name=IPv6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EDA4A164-6B30-4C99-841D-1536CA429AFC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort2_10=1-67|LPort2_10=69-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost udp|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F2A0DA0C-2ACD-434F-B64F-9E224920DCAD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=17|RPort2_10=0-52|RPort2_10=54-66|RPort2_10=69-79|RPort2_10=82-442|RPort2_10=444-1000|Name=UDP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F585C2D8-420B-466C-B1DF-7D3B8DCDAE04}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=44|Name=IPv6-Frag|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FDAE6651-26AC-47C4-83D2-B02F68966FB4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=1-52|RPort2_10=54-66|RPort2_10=68-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost tcp|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF684A18-2CBA-4CBB-A614-542BC1331834}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=0|Name=HOPOPT|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-Shadow-In-TCP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=6|App=%%SystemRoot%%\system32\RdpSa.exe|Name=@FirewallAPI.dll,-28778|Desc=@FirewallAPI.dll,-28779|EmbedCtxt=@FirewallAPI.dll,-28752|Edge=TRUE|Defer=App|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-TCP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28775|Desc=@FirewallAPI.dll,-28756|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-UDP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28776|Desc=@FirewallAPI.dll,-28777|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0588C70A-82B3-4109-96F0-66CA916AA9BF}" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=47|Name=VPN|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{826ADC5F-180B-4A3B-8E8A-9D293DE153B1}" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=115|Name=VPN2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0DF47EBD-0F23-4CAF-B448-F2E10B058940}" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=80-81|RPort=443|RPort=1723|RPort2_10=3128-3129|RPort=8080|Name=TCP|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-GP-LSASS-Out-TCP" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=6|Profile=Domain|App=%%SystemRoot%%\system32\lsass.exe|Name=@FirewallAPI.dll,-25407|Desc=@FirewallAPI.dll,-25408|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-DNS-Out-UDP" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=17|RPort=53|App=%%SystemRoot%%\system32\svchost.exe|Svc=dnscache|Name=@FirewallAPI.dll,-25405|Desc=@FirewallAPI.dll,-25406|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-GP-Out-TCP" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=6|Profile=Domain|App=%%SystemRoot%%\system32\svchost.exe|Svc=gpsvc|Name=@FirewallAPI.dll,-25403|Desc=@FirewallAPI.dll,-25404|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-GP-NP-Out-TCP" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=6|Profile=Domain|RPort=445|App=System|Name=@FirewallAPI.dll,-25401|Desc=@FirewallAPI.dll,-25401|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IPv6-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=41|App=System|Name=@FirewallAPI.dll,-25352|Desc=@FirewallAPI.dll,-25358|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IPHTTPS-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=IPTLSOut|RPort2_10=IPHTTPSOut|App=%%SystemRoot%%\system32\svchost.exe|Svc=iphlpsvc|Name=@FirewallAPI.dll,-25427|Desc=@FirewallAPI.dll,-25429|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-Teredo-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=17|App=%%SystemRoot%%\system32\svchost.exe|Svc=iphlpsvc|Name=@FirewallAPI.dll,-25327|Desc=@FirewallAPI.dll,-25333|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-DHCPV6-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=17|LPort=546|RPort=547|App=%%SystemRoot%%\system32\svchost.exe|Svc=dhcp|Name=@FirewallAPI.dll,-25305|Desc=@FirewallAPI.dll,-25306|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-DHCP-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=17|LPort=68|RPort=67|App=%%SystemRoot%%\system32\svchost.exe|Svc=dhcp|Name=@FirewallAPI.dll,-25302|Desc=@FirewallAPI.dll,-25303|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IGMP-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=2|App=System|Name=@FirewallAPI.dll,-25377|Desc=@FirewallAPI.dll,-25382|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LD-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=132:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25083|Desc=@FirewallAPI.dll,-25088|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LR2-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=143:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25076|Desc=@FirewallAPI.dll,-25081|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LR-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=131:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25069|Desc=@FirewallAPI.dll,-25074|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LQ-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=130:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25062|Desc=@FirewallAPI.dll,-25067|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-RS-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=133:*|RA4=LocalSubnet|RA6=LocalSubnet|RA6=ff02::2|RA6=fe80::/64|App=System|Name=@FirewallAPI.dll,-25008|Desc=@FirewallAPI.dll,-25011|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-RA-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=134:*|LA6=fe80::/64|RA4=LocalSubnet|RA6=LocalSubnet|RA6=ff02::1|RA6=fe80::/64|App=System|Name=@FirewallAPI.dll,-25013|Desc=@FirewallAPI.dll,-25018|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-NDA-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=136:*|App=System|Name=@FirewallAPI.dll,-25027|Desc=@FirewallAPI.dll,-25032|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-NDS-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=135:*|App=System|Name=@FirewallAPI.dll,-25020|Desc=@FirewallAPI.dll,-25025|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-PP-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=4:*|App=System|Name=@FirewallAPI.dll,-25117|Desc=@FirewallAPI.dll,-25118|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-TE-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=3:*|App=System|Name=@FirewallAPI.dll,-25114|Desc=@FirewallAPI.dll,-25115|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-PTB-Out" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=Out|Protocol=58|ICMP6=2:*|App=System|Name=@FirewallAPI.dll,-25002|Desc=@FirewallAPI.dll,-25007|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IPv6-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=41|App=System|Name=@FirewallAPI.dll,-25351|Desc=@FirewallAPI.dll,-25357|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IPHTTPS-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=6|LPort2_10=IPTLSIn|LPort2_10=IPHTTPSIn|App=System|Name=@FirewallAPI.dll,-25426|Desc=@FirewallAPI.dll,-25428|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-Teredo-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=17|LPort=Teredo|App=%%SystemRoot%%\system32\svchost.exe|Svc=iphlpsvc|Name=@FirewallAPI.dll,-25326|Desc=@FirewallAPI.dll,-25332|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-DHCPV6-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=17|LPort=546|RPort=547|App=%%SystemRoot%%\system32\svchost.exe|Svc=dhcp|Name=@FirewallAPI.dll,-25304|Desc=@FirewallAPI.dll,-25306|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-DHCP-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=17|LPort=68|RPort=67|App=%%SystemRoot%%\system32\svchost.exe|Svc=dhcp|Name=@FirewallAPI.dll,-25301|Desc=@FirewallAPI.dll,-25303|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-IGMP-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=2|App=System|Name=@FirewallAPI.dll,-25376|Desc=@FirewallAPI.dll,-25382|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP4-DUFRAG-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=1|ICMP4=3:4|App=System|Name=@FirewallAPI.dll,-25251|Desc=@FirewallAPI.dll,-25257|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LD-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=132:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25082|Desc=@FirewallAPI.dll,-25088|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LR2-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=143:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25075|Desc=@FirewallAPI.dll,-25081|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LR-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=131:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25068|Desc=@FirewallAPI.dll,-25074|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-LQ-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=130:*|RA4=LocalSubnet|RA6=LocalSubnet|App=System|Name=@FirewallAPI.dll,-25061|Desc=@FirewallAPI.dll,-25067|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-RS-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=133:*|App=System|Name=@FirewallAPI.dll,-25009|Desc=@FirewallAPI.dll,-25011|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-RA-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=134:*|RA6=fe80::/64|App=System|Name=@FirewallAPI.dll,-25012|Desc=@FirewallAPI.dll,-25018|EmbedCtxt=@FirewallAPI.dll,-25000|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-NDA-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=136:*|App=System|Name=@FirewallAPI.dll,-25026|Desc=@FirewallAPI.dll,-25032|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-NDS-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=135:*|App=System|Name=@FirewallAPI.dll,-25019|Desc=@FirewallAPI.dll,-25025|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-PP-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=4:*|App=System|Name=@FirewallAPI.dll,-25116|Desc=@FirewallAPI.dll,-25118|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-TE-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=3:*|App=System|Name=@FirewallAPI.dll,-25113|Desc=@FirewallAPI.dll,-25115|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-PTB-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=2:*|App=System|Name=@FirewallAPI.dll,-25001|Desc=@FirewallAPI.dll,-25007|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "CoreNet-ICMP6-DU-In" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=58|ICMP6=1:*|App=System|Name=@FirewallAPI.dll,-25110|Desc=@FirewallAPI.dll,-25112|EmbedCtxt=@FirewallAPI.dll,-25000|Edge=TRUE|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4DF1173F-B2E2-44BC-A21F-FC895FE69C55}" /t REG_SZ /d "v2.30|Action=Allow|Active=TRUE|Dir=In|Protocol=6|LPort=55555|Name=torrents (TCP 55555)|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BCE3406E-0378-4142-8BE4-B89443F1092E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.64.186.225|Name=windowsSpyBlockerExtra-13.64.186.225|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{845BB81A-11F6-49D8-A7A5-09C5FF9EBE28}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.70.180.171|Name=windowsSpyBlockerExtra-13.70.180.171|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4F7B36CE-193A-4A2E-849C-BDD990F8E34E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.76.218.117|Name=windowsSpyBlockerExtra-13.76.218.117|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E93484FD-DC09-470B-B56B-A2BBE8C77BA3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.76.219.191|Name=windowsSpyBlockerExtra-13.76.219.191|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1D79900B-8D89-4793-A85E-7714E6B4CC14}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.76.219.210|Name=windowsSpyBlockerExtra-13.76.219.210|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF84A4AA-66F4-48A8-AD87-59F5B1EB3BC5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.77.112.132|Name=windowsSpyBlockerExtra-13.77.112.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9FECD937-8F13-46A4-9911-795DA6B30DB9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.77.115.36|Name=windowsSpyBlockerExtra-13.77.115.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FC3EBE32-C315-4B48-BD09-F75AF50E3935}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.235.126|Name=windowsSpyBlockerExtra-13.78.235.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C01F5EE7-BF56-47B8-BBA5-3DBC314B286E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.235.247|Name=windowsSpyBlockerExtra-13.78.235.247|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9BFCC39D-233B-4850-81F5-B71DEB727652}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.79.239.69|Name=windowsSpyBlockerExtra-13.79.239.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{636A69EF-65A2-4531-B2DF-77F6D766F760}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.79.239.82|Name=windowsSpyBlockerExtra-13.79.239.82|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DC0B012D-0053-43A9-B784-456FF1398748}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.80.7.77|Name=windowsSpyBlockerExtra-13.80.7.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FCD741D6-C99A-4937-ACBD-6007D7080E02}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.80.12.54|Name=windowsSpyBlockerExtra-13.80.12.54|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{43C7EB6A-3FA2-4450-88DA-CACB833FE7B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.81.5.53|Name=windowsSpyBlockerExtra-13.81.5.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BE9A5671-39A3-446E-8FBB-C91D70D32EC5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.98.37|Name=windowsSpyBlockerExtra-13.83.98.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D2F3F128-23AE-478D-915A-01BE21BA4A62}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.86.252.235|Name=windowsSpyBlockerExtra-13.86.252.235|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6D83D490-A704-46B4-98CE-46EABDBE9D68}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.88.28.53|Name=windowsSpyBlockerExtra-13.88.28.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6114BEA5-C02E-476F-9AFA-B4A51B79CA3F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.88.139.208|Name=windowsSpyBlockerExtra-13.88.139.208|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7732A1D6-241C-4F60-B16E-E68BF84CB69C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.88.145.128|Name=windowsSpyBlockerExtra-13.88.145.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C62C61DA-C86A-4F5C-B9CE-7E578E5C3688}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.89.51.159|Name=windowsSpyBlockerExtra-13.89.51.159|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E661D983-A819-4E0A-A8BD-223F71F753A0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.89.202.241|Name=windowsSpyBlockerExtra-13.89.202.241|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5FA3BEA6-CF1D-4284-8728-BB48D8CB2A67}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.95.147.73|Name=windowsSpyBlockerExtra-13.95.147.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EC1010E6-2CF9-4CD3-945D-BBBF1D7A81C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.105.74.49|Name=windowsSpyBlockerExtra-13.105.74.49|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CA0F4063-BADD-4BAC-BBC0-DBAE14A8418D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.3.128|Name=windowsSpyBlockerExtra-13.107.3.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0E1AFD3E-52D8-4396-A603-426D354B9906}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.3.254|Name=windowsSpyBlockerExtra-13.107.3.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A58B9BC8-E74F-4F75-85C0-D1808C12B8FA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.5.80|Name=windowsSpyBlockerExtra-13.107.5.80|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DD8970AC-EE6D-47F9-8522-DCBBC66609B8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.5.88|Name=windowsSpyBlockerExtra-13.107.5.88|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5E0B9514-C2E4-4229-AA30-C2E83614D6D2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.5.91|Name=windowsSpyBlockerExtra-13.107.5.91|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6B482702-8168-4FC0-ACD2-48A59D2D3D94}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.6.156|Name=windowsSpyBlockerExtra-13.107.6.156|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9209DED2-4144-4DA8-8688-E4BC07D91A27}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.6.158|Name=windowsSpyBlockerExtra-13.107.6.158|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9A90EA18-0666-43AD-837A-E0629038F19A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.6.163|Name=windowsSpyBlockerExtra-13.107.6.163|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{94E1B9F9-A8A2-448B-9B2D-F4B42B392120}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.6.254|Name=windowsSpyBlockerExtra-13.107.6.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{02FDEF5A-C68C-48BB-BE2D-F01C005B89BE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.13.88|Name=windowsSpyBlockerExtra-13.107.13.88|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{54788C38-B12D-44BE-83FF-7B7F203C3A1E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.18.11|Name=windowsSpyBlockerExtra-13.107.18.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C9BACEB0-BAC5-4805-9F91-2DDA7F68503E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.18.254|Name=windowsSpyBlockerExtra-13.107.18.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BD87E7AA-E33B-43A3-98BF-AF2E1B2F8D36}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.19.254|Name=windowsSpyBlockerExtra-13.107.19.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9AF57CAF-617D-4C6A-B25D-FA56F346635C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.21.200|Name=windowsSpyBlockerExtra-13.107.21.200|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1465E010-80B2-4D3D-9B21-296C2E3094A0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.21.229|Name=windowsSpyBlockerExtra-13.107.21.229|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{381FDD37-466E-4569-BB4C-B5C90D919E63}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.11|Name=windowsSpyBlockerExtra-13.107.42.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DA6F7D6D-7DFD-4769-8ED6-15C514B68374}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.12|Name=windowsSpyBlockerExtra-13.107.42.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CA6824B2-13DD-44A4-B557-2107C367B5DA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.13|Name=windowsSpyBlockerExtra-13.107.42.13|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{77D03169-325A-4DB8-8C29-A2EDBE6BE54C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.14|Name=windowsSpyBlockerExtra-13.107.42.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{379E975B-5DF9-44EA-8955-221C3216D1CF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.23|Name=windowsSpyBlockerExtra-13.107.42.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C4D61331-E74F-480F-9B6E-BDCD45762621}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.42.254|Name=windowsSpyBlockerExtra-13.107.42.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{05952B66-83AD-4F0E-B223-9A18D6DCDAC6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.43.12|Name=windowsSpyBlockerExtra-13.107.43.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{79EA0B25-2F90-4AC1-8A30-E9498686A288}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.43.14|Name=windowsSpyBlockerExtra-13.107.43.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B7073202-92D7-4B06-B8C8-1E23BBED5F81}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.43.23|Name=windowsSpyBlockerExtra-13.107.43.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{36D3D551-A16D-4618-B25C-4A5FE3355A2C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.46.88|Name=windowsSpyBlockerExtra-13.107.46.88|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{49F7B3C9-C592-47BC-88B4-466984EC3072}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.47.88|Name=windowsSpyBlockerExtra-13.107.47.88|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{487B1912-D47B-458E-BB24-15D5FD66C0C6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.49.254|Name=windowsSpyBlockerExtra-13.107.49.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{92E17D6B-2B3F-47E7-9E2E-D8EEB35CE430}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.128.254|Name=windowsSpyBlockerExtra-13.107.128.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{469BF01C-AA1E-4106-8693-3DF5E37AF49D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.136.254|Name=windowsSpyBlockerExtra-13.107.136.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4D5630B3-FBD0-4B87-BAEA-AD34941A00F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.140.254|Name=windowsSpyBlockerExtra-13.107.140.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{56C8AB4E-DFE9-4549-9FF9-EC2890C71A9D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.246.10|Name=windowsSpyBlockerExtra-13.107.246.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3A7DC845-7717-4545-8852-C79224C0FACD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.246.254|Name=windowsSpyBlockerExtra-13.107.246.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AA78F73-2249-4AA9-98FE-0BA3787068B9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.255.72|Name=windowsSpyBlockerExtra-13.107.255.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{54511C83-38AB-412B-B416-95A4BA1D16F6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.255.73|Name=windowsSpyBlockerExtra-13.107.255.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2C3BDA85-319B-4E0E-AD0A-283183CECC1D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.255.74|Name=windowsSpyBlockerExtra-13.107.255.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{68BE0F7B-B69E-4333-9CFE-C6FD3B483BB9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.255.76|Name=windowsSpyBlockerExtra-13.107.255.76|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{739ACCC9-0D7E-4420-939E-AA985E6CD245}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.246.225|Name=windowsSpyBlockerExtra-20.36.246.225|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6758E518-2A8D-48EF-82BF-7AC06A7086BF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.253.92|Name=windowsSpyBlockerExtra-20.36.253.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5CACCEB8-90D1-4DFD-A94B-0DF0A66152D7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.38.122.68|Name=windowsSpyBlockerExtra-20.38.122.68|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BDCB0B24-B8F9-4C04-A42E-23D1AEFB9805}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.43.92.14|Name=windowsSpyBlockerExtra-20.43.92.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{82BDD2C2-4E9B-4CC9-B2FE-21019B0054B5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.208.51|Name=windowsSpyBlockerExtra-20.44.208.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E1F29468-75A3-47AF-A75C-F72AEB0BE5EB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.232.74|Name=windowsSpyBlockerExtra-20.44.232.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C249C3CC-5516-4AA4-9187-4BD02E6B32E1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.46.146.84|Name=windowsSpyBlockerExtra-20.46.146.84|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01335576-A2ED-4749-9AC7-DA0B7C3CDC9A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.64.202|Name=windowsSpyBlockerExtra-20.54.64.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{818754BD-3A5E-447E-AC81-C513F60B7B9E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.140.48.69|Name=windowsSpyBlockerExtra-20.140.48.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A68D7571-76B7-438A-B205-3E01D80D3032}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.150.29.228|Name=windowsSpyBlockerExtra-20.150.29.228|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7D8643A9-0CDB-45E4-95FC-8B682AB97F42}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.150.36.228|Name=windowsSpyBlockerExtra-20.150.36.228|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B8E10A3F-0D3D-460D-BDF9-FEBF81451CD3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.150.50.4|Name=windowsSpyBlockerExtra-20.150.50.4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2BC9229F-FBED-4181-99E4-27ACB7183F4F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.188.76.57|Name=windowsSpyBlockerExtra-20.188.76.57|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3686E7D0-57D4-4062-859C-F2433C16FF3C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.189.79.72|Name=windowsSpyBlockerExtra-20.189.79.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B23C3526-CFF9-4F15-8E2B-43D012A09124}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.189.118.208|Name=windowsSpyBlockerExtra-20.189.118.208|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1E5548C1-7222-4B62-B0F0-DF59BE71A784}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.190.137.98|Name=windowsSpyBlockerExtra-20.190.137.98|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{87BE2225-39C0-4B50-A9B2-C116F6C943CD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.96.52.53|Name=windowsSpyBlockerExtra-23.96.52.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9F482CC3-C224-48D9-9A79-04C720CA7FE0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.96.208.208|Name=windowsSpyBlockerExtra-23.96.208.208|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3B0CFE0D-3A05-4783-84C0-26D8407815DE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.97.61.137|Name=windowsSpyBlockerExtra-23.97.61.137|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{24DD9383-F4B4-43D8-A382-B95AB33BB697}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.97.178.173|Name=windowsSpyBlockerExtra-23.97.178.173|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C1BD3128-B7B5-407E-8C70-9A0E08A0750E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.97.209.97|Name=windowsSpyBlockerExtra-23.97.209.97|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F328FE0C-5684-4C1E-BB48-D71B229F1030}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.109.44|Name=windowsSpyBlockerExtra-23.99.109.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B9BA0C53-0FE0-403D-9623-B38C71A839BD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.109.64|Name=windowsSpyBlockerExtra-23.99.109.64|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{391D05B9-7CA2-4B8E-81FE-E4DB05E21C70}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.116.116|Name=windowsSpyBlockerExtra-23.99.116.116|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B6EC64DB-F146-4D8B-97AB-61C214EF813F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.121.207|Name=windowsSpyBlockerExtra-23.99.121.207|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A9995E8E-7B75-47D0-A6C7-145B2688813A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.206.110|Name=windowsSpyBlockerExtra-23.99.206.110|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2C8A9593-FED3-4553-BF07-97C7485A22F7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.100.122.175|Name=windowsSpyBlockerExtra-23.100.122.175|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A3993484-6041-4DD5-809D-108E96AE7CD1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.101.156.198|Name=windowsSpyBlockerExtra-23.101.156.198|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CC41D1D7-B54C-4844-A8BA-4E98302E8730}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.101.158.111|Name=windowsSpyBlockerExtra-23.101.158.111|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{216F7E82-0A36-494E-9E72-D8EBCC90107E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.102.47.40|Name=windowsSpyBlockerExtra-23.102.47.40|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF722550-4ADB-4E4E-89F3-5B200A39F179}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.249.61|Name=windowsSpyBlockerExtra-40.67.249.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A60DB98F-0EE0-459A-BF8B-780E176C7FA3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.176.16|Name=windowsSpyBlockerExtra-40.69.176.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B1A3A3E8-7B0B-4EBE-BDCD-10D16F0C4505}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.0.108|Name=windowsSpyBlockerExtra-40.70.0.108|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{92FEC51C-4B15-4342-AEE9-026C250FD5D1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.158.26|Name=windowsSpyBlockerExtra-40.70.158.26|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5CE9EA84-A8EC-4765-A548-BE812FA692F5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.74.35.71|Name=windowsSpyBlockerExtra-40.74.35.71|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0C4FFC27-97EB-41E1-987E-B58C959560A7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.74.70.63|Name=windowsSpyBlockerExtra-40.74.70.63|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6656463B-89D0-419C-9D3E-4941D8E2CD28}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.225.248|Name=windowsSpyBlockerExtra-40.77.225.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F98BA410-8EA0-403E-BF49-4D0A84B068EE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.230.45|Name=windowsSpyBlockerExtra-40.77.230.45|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E241F24F-0613-4EAC-AF46-505BD3CC3BC1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.48.16|Name=windowsSpyBlockerExtra-40.79.48.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3E6D4BE2-2C33-49A1-9BEB-B8DE3D5712BC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.138.41|Name=windowsSpyBlockerExtra-40.79.138.41|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{68B63196-3134-4CB0-9889-83348E3AEB16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.80.145.78|Name=windowsSpyBlockerExtra-40.80.145.78|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{26440B01-A93E-4FB0-B964-D2036CA3B6D6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.81.94.65|Name=windowsSpyBlockerExtra-40.81.94.65|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DD38D725-8A70-4EED-90BB-B9B4B84080B1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.81.188.85|Name=windowsSpyBlockerExtra-40.81.188.85|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C6DD0509-1584-44B0-A610-C7CB5A698F3D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.83.74.46|Name=windowsSpyBlockerExtra-40.83.74.46|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A64AF7DA-613C-4480-A409-0BBBA13132F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.83.127.51|Name=windowsSpyBlockerExtra-40.83.127.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62BB855F-15E8-4D21-956E-032D41AC9E32}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.83.150.233|Name=windowsSpyBlockerExtra-40.83.150.233|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62F6F261-FAA5-4DD9-911D-ADF4AA652652}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.85.78.63|Name=windowsSpyBlockerExtra-40.85.78.63|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D3AB5104-B1EF-4D76-9427-A9644E88341A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.85.83.182|Name=windowsSpyBlockerExtra-40.85.83.182|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B9E9DB8A-9E94-4346-BA90-12CF76553B68}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.89.135.48|Name=windowsSpyBlockerExtra-40.89.135.48|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FCE404AA-A7B1-4157-95EB-D6FFE361C6F9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.183|Name=windowsSpyBlockerExtra-40.90.22.183|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A7E38AA5-0166-4461-980D-0B8EB0B2CCA2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.184|Name=windowsSpyBlockerExtra-40.90.22.184|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CE6D405D-BDD7-433A-9C64-DC2D39C2E8D5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.185|Name=windowsSpyBlockerExtra-40.90.22.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F4E5D838-0552-4407-A1EF-C0F4154196A4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.186|Name=windowsSpyBlockerExtra-40.90.22.186|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5C19D3B6-707C-4706-BD71-B017B22EEEB5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.187|Name=windowsSpyBlockerExtra-40.90.22.187|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D92616B3-76BE-4034-90B7-D3A6597F3D05}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.188|Name=windowsSpyBlockerExtra-40.90.22.188|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7C156CFA-E1AD-4493-BEA5-036926AE4207}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.189|Name=windowsSpyBlockerExtra-40.90.22.189|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{26D673D2-0FE2-48FF-9059-626B689501BE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.190|Name=windowsSpyBlockerExtra-40.90.22.190|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ECEF1B94-853D-423A-9846-7B69682064B9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.191|Name=windowsSpyBlockerExtra-40.90.22.191|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4A0106C3-8075-474A-AF38-958502D9508D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.192|Name=windowsSpyBlockerExtra-40.90.22.192|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F5448F60-0798-4027-914B-F4926AB822B1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.22.198|Name=windowsSpyBlockerExtra-40.90.22.198|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B8583765-F6F1-465A-89D3-05B18E7E4566}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.23.0-40.90.23.255|Name=windowsSpyBlockerExtra-40.90.23.0-40.90.23.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{05C2873F-4B97-4E00-B1AD-B95C5163762A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.130.192|Name=windowsSpyBlockerExtra-40.90.130.192|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5FBDCCB2-B39C-4A0E-963E-6460BEA1107A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.133.97|Name=windowsSpyBlockerExtra-40.90.133.97|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E553FFD7-1C37-47F6-B747-272B740D3169}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.133.112|Name=windowsSpyBlockerExtra-40.90.133.112|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BEDA5A5C-B7F4-4AAF-8BDF-98608F6743BC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.1|Name=windowsSpyBlockerExtra-40.90.136.1|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{74A3E0B0-F384-407C-A2E2-DEB74BB1CE4C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.3|Name=windowsSpyBlockerExtra-40.90.136.3|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0BA9D94E-A0BB-4CB8-8893-F1393056E997}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.19|Name=windowsSpyBlockerExtra-40.90.136.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{44051DBF-8842-4D28-95D9-C5CB2606A915}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.20|Name=windowsSpyBlockerExtra-40.90.136.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2DB01E00-BEB9-48BD-A63E-7CAC31544E7C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.163|Name=windowsSpyBlockerExtra-40.90.136.163|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5CAAE197-0F1B-4239-AB1F-05E5C96AED6F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.166|Name=windowsSpyBlockerExtra-40.90.136.166|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B7205609-C57D-47B8-8BAC-663D3F4266AB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.136.180|Name=windowsSpyBlockerExtra-40.90.136.180|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1F5AA713-B4BF-4B7C-B4E6-9EF5E8F577A5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.120|Name=windowsSpyBlockerExtra-40.90.137.120|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8D55D95D-FD27-415B-9134-BFB5B537B5E2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.122|Name=windowsSpyBlockerExtra-40.90.137.122|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E513A84E-45EF-4DB3-8D84-6B800278C866}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.124|Name=windowsSpyBlockerExtra-40.90.137.124|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B535B0DF-8625-4984-AD66-A136DE489560}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.125|Name=windowsSpyBlockerExtra-40.90.137.125|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{46478E40-35AA-463E-978D-B2A3974A8C38}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.126|Name=windowsSpyBlockerExtra-40.90.137.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CDDCEC92-9508-4C98-AA18-90E9AA783AFD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.137.127|Name=windowsSpyBlockerExtra-40.90.137.127|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ADF1383F-6664-46D0-83BC-26AC923BB1C1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.190.179|Name=windowsSpyBlockerExtra-40.90.190.179|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{220596A2-A846-4512-921A-FE146E90998B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.218.0|Name=windowsSpyBlockerExtra-40.90.218.0|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{58C87773-C22E-4F24-92CB-2C97EAF0BDAD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.76.238|Name=windowsSpyBlockerExtra-40.91.76.238|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7F99FA6B-A9E2-4375-9459-023D8313B757}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.78.9|Name=windowsSpyBlockerExtra-40.91.78.9|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{210841EE-EA1F-4569-894A-0477F715665B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.97.161.50|Name=windowsSpyBlockerExtra-40.97.161.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7C833BF2-3758-484A-B4B0-44D01F077A22}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.4.2|Name=windowsSpyBlockerExtra-40.101.4.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DAD78E00-89A3-4267-8FD8-04ED7BA4C9BD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.12.130|Name=windowsSpyBlockerExtra-40.101.12.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E470FD81-2FB3-46C4-84CD-086F8FDF145C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.18.18|Name=windowsSpyBlockerExtra-40.101.18.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F9E9CB04-3CE1-4923-AE6B-4DF47F0AF680}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.18.226|Name=windowsSpyBlockerExtra-40.101.18.226|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5C741276-D3B7-4233-960C-20253B7F23D9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.18.242|Name=windowsSpyBlockerExtra-40.101.18.242|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4884BC9A-A4E9-4023-A4B9-5D2E75BE49EF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.19.146|Name=windowsSpyBlockerExtra-40.101.19.146|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F91D7636-E1CE-4D42-A9D1-0462FA72D15B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.46.178|Name=windowsSpyBlockerExtra-40.101.46.178|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F8D983C4-1473-4914-B5B2-74E89BEFEA8E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.80.178|Name=windowsSpyBlockerExtra-40.101.80.178|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DE964CC6-777A-4533-A63D-9E098CD67462}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.83.18|Name=windowsSpyBlockerExtra-40.101.83.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6760BB57-3B63-43EA-BE80-995E8D1C74C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.83.194|Name=windowsSpyBlockerExtra-40.101.83.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C041E5EB-FFB9-49BB-887E-97F61F452EE6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.121.18|Name=windowsSpyBlockerExtra-40.101.121.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5A24DA9A-06AE-4CF7-BFB1-CAE8447AF40D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.121.34|Name=windowsSpyBlockerExtra-40.101.121.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7B4D6173-1818-4867-A498-2A99CD0B5E9E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.124.34|Name=windowsSpyBlockerExtra-40.101.124.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5B532938-2208-4656-B8B0-6BC38225E6EF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.124.194|Name=windowsSpyBlockerExtra-40.101.124.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{005E17C4-AC66-4E31-B08A-1436977B2733}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.128.178|Name=windowsSpyBlockerExtra-40.101.128.178|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4925F075-2B46-41F4-8B0C-91E11F1944A5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.136.2|Name=windowsSpyBlockerExtra-40.101.136.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{95D8734D-FBA4-4926-9F45-DA9283F687F2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.137.2|Name=windowsSpyBlockerExtra-40.101.137.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{81D5E2DE-E21B-4F69-B05A-3CDB631B4371}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.137.18|Name=windowsSpyBlockerExtra-40.101.137.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1344A9E0-5DD8-48B2-ACE2-43CAF389C61E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.137.66|Name=windowsSpyBlockerExtra-40.101.137.66|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{16DF7B94-83DD-46DD-9039-9E4FCD039ADF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.138.2|Name=windowsSpyBlockerExtra-40.101.138.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{05A6587F-FEE3-4242-A9F5-48921D82564E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.101.138.18|Name=windowsSpyBlockerExtra-40.101.138.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{442085AF-D7DB-4AB6-8456-A550B62068DC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.102.34.194|Name=windowsSpyBlockerExtra-40.102.34.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E0ABBD9B-853C-40F7-82FB-752A41BDD4E1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.72.19|Name=windowsSpyBlockerExtra-40.112.72.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E7115499-15DA-493F-816A-8237A9549B3A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.72.44|Name=windowsSpyBlockerExtra-40.112.72.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EAB57A63-2466-4599-A425-951C2D5DD794}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.75.175|Name=windowsSpyBlockerExtra-40.112.75.175|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5A6C5B27-61F1-4CF9-8E15-54861405A7DE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.90.122|Name=windowsSpyBlockerExtra-40.112.90.122|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2E885518-FB50-4057-AE93-71926FCF97C6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.91.29|Name=windowsSpyBlockerExtra-40.112.91.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FDFF9FD7-CCD9-4FAB-B2FE-A30D16CE921F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.113.0.16|Name=windowsSpyBlockerExtra-40.113.0.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D7B75F19-528F-4E17-A04F-20F8AC4A3D0D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.113.97.222|Name=windowsSpyBlockerExtra-40.113.97.222|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B97E90B1-C4AA-43EB-9B78-47FFD681C44E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.113.109.30|Name=windowsSpyBlockerExtra-40.113.109.30|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E905F6CE-F4DF-4367-998C-0CEF5DCEDB0B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.114.54.223|Name=windowsSpyBlockerExtra-40.114.54.223|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F38B5BE6-AC33-4702-B963-F1184E40D02F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.114.140.1|Name=windowsSpyBlockerExtra-40.114.140.1|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{125A3EC6-C5AB-4274-8C8B-3B2DB477D485}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.114.224.200|Name=windowsSpyBlockerExtra-40.114.224.200|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C17A5D8A-DCA5-4F98-9684-B6931F9A93D9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.114.241.141|Name=windowsSpyBlockerExtra-40.114.241.141|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{42BE9378-FE49-446A-B40C-5BFF8891C07C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.115.33.128|Name=windowsSpyBlockerExtra-40.115.33.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{041381CB-82C2-47BC-8499-9113E0990B0B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.117.96.136|Name=windowsSpyBlockerExtra-40.117.96.136|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B533111C-1F76-4B92-AF2F-9B6EB03C03CA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.117.190.72|Name=windowsSpyBlockerExtra-40.117.190.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F519B311-078B-48A7-9339-D3915FD67D83}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.118.61.1|Name=windowsSpyBlockerExtra-40.118.61.1|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9CAA32F0-8B17-4FC8-B528-3D951F51D909}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.118.103.7|Name=windowsSpyBlockerExtra-40.118.103.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CC2C0566-87C6-46BA-8657-D2B57C7F28AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.118.106.130|Name=windowsSpyBlockerExtra-40.118.106.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7E0CEE59-7DAE-44C0-990A-8297E25F7E01}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.119.6.179|Name=windowsSpyBlockerExtra-40.119.6.179|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{86A0C7D8-D43F-4D15-BB27-7A702B5BC3FD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.121.213.159|Name=windowsSpyBlockerExtra-40.121.213.159|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5B6C038F-DBB6-4E63-AB0E-18D01F2BA605}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.122.160.14|Name=windowsSpyBlockerExtra-40.122.160.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D255D1E9-963D-4916-B24F-3FAD6ADDE8EB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.126.1.166|Name=windowsSpyBlockerExtra-40.126.1.166|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CE703827-3CA8-467A-A870-BEBC283C65C1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.126.9.5|Name=windowsSpyBlockerExtra-40.126.9.5|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF09C421-C708-44BC-BBA9-BC8C3028367D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.127.128.174|Name=windowsSpyBlockerExtra-40.127.128.174|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5D88C7F0-8426-46E8-8460-CD16173D2443}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.127.142.76|Name=windowsSpyBlockerExtra-40.127.142.76|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CCDE7D16-3B6E-4BB4-B25F-4A917A3BF489}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.127.195.156|Name=windowsSpyBlockerExtra-40.127.195.156|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{08BE9921-250A-4B60-B689-C55C714F09FD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.127.243.65|Name=windowsSpyBlockerExtra-40.127.243.65|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{791BD651-9470-4B92-9CA3-6C9BBC88DFA4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.11.168.160|Name=windowsSpyBlockerExtra-51.11.168.160|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{634CC9D8-A61C-4EDF-AC22-F6C45A3A5431}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.11.168.232|Name=windowsSpyBlockerExtra-51.11.168.232|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DBA0EDDA-CBC4-43EE-8EEC-F244CA6BC3FB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.139.180|Name=windowsSpyBlockerExtra-51.104.139.180|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1E92597E-768B-43FC-835E-BE661897CE2F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.144.132|Name=windowsSpyBlockerExtra-51.104.144.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5FDA6AFE-2684-49B1-BF8B-8B4BBA84B098}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.105.208.173|Name=windowsSpyBlockerExtra-51.105.208.173|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{98B405A6-8CE0-4A1B-88B3-C5C56B709D00}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.132.208.181|Name=windowsSpyBlockerExtra-51.132.208.181|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1124CB8E-49C9-450E-A8EF-4B7AE41E1B3D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.136.15.177|Name=windowsSpyBlockerExtra-51.136.15.177|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6FF0C60B-40A3-49E5-9414-B0BE517E043E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.136.37.147|Name=windowsSpyBlockerExtra-51.136.37.147|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CC53C537-DBF4-40BE-8623-ACF05077E065}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.137.137.111|Name=windowsSpyBlockerExtra-51.137.137.111|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8D450377-2DA9-4E6D-9B19-1298D52355F9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.138.106.75|Name=windowsSpyBlockerExtra-51.138.106.75|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{77A175CC-4320-4262-B6A5-DE67AA603DA6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.140.65.84|Name=windowsSpyBlockerExtra-51.140.65.84|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{321D97FC-5849-4A89-A336-18349B5B586C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.140.98.69|Name=windowsSpyBlockerExtra-51.140.98.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{470F0586-7824-4DBB-AA8F-403BAC5677B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.140.127.197|Name=windowsSpyBlockerExtra-51.140.127.197|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{232073E9-5E1E-4A07-994E-6A9C56C56300}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.141.26.229|Name=windowsSpyBlockerExtra-51.141.26.229|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{45122E2E-1BB0-4D93-8208-934309463F61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.141.32.51|Name=windowsSpyBlockerExtra-51.141.32.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{90547F5B-5CE1-42D6-A27D-E93274023933}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.141.166.104|Name=windowsSpyBlockerExtra-51.141.166.104|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{340252FE-8B51-4477-B4A0-FDB757F87272}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.143.49.132|Name=windowsSpyBlockerExtra-51.143.49.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C56DD2A2-3BC1-496C-94A0-1BA78417BE3D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.144.108.120|Name=windowsSpyBlockerExtra-51.144.108.120|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B1E0E82A-CB28-4FA9-B969-A380B4EDEE16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.145.123.29|Name=windowsSpyBlockerExtra-51.145.123.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B89127E4-7FF2-48F3-B198-EE773082D63D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.135.114|Name=windowsSpyBlockerExtra-52.97.135.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FD159F34-B0D3-418E-97E1-9BCC0770874B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.146.34|Name=windowsSpyBlockerExtra-52.97.146.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D8D5E2D5-A490-4A82-913B-50F1DB8DDBE5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.150.2|Name=windowsSpyBlockerExtra-52.97.150.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2E85710D-59E9-40C2-884D-78C320E8C57B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.151.50|Name=windowsSpyBlockerExtra-52.97.151.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7034CF0C-5C5F-41A4-BDE1-7A9C652E3658}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.151.82|Name=windowsSpyBlockerExtra-52.97.151.82|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A615E292-1BE8-4483-8233-DDF1D408DA23}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.152.114|Name=windowsSpyBlockerExtra-52.97.152.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D83BF584-DFC3-4F41-99E1-852C46D275CC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.155.114|Name=windowsSpyBlockerExtra-52.97.155.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D620013A-9A9A-4493-BF9B-5A29B984B8D0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.163.2|Name=windowsSpyBlockerExtra-52.97.163.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9E2C8B57-063F-4EB0-85E9-31C5363AB21B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.171.194|Name=windowsSpyBlockerExtra-52.97.171.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{69FC94E7-E633-4B75-B00C-9E4709744BF1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.186.114|Name=windowsSpyBlockerExtra-52.97.186.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FD6D69DD-C271-48FA-B955-07904272562A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.189.98|Name=windowsSpyBlockerExtra-52.97.189.98|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C1F4053C-C075-4DDD-828A-4F77B5853684}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.97.232.194|Name=windowsSpyBlockerExtra-52.97.232.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{71028F8A-50D8-4F47-8EAE-581D34F3D087}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.98.5.194|Name=windowsSpyBlockerExtra-52.98.5.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C70C123C-BE28-4230-A3A8-0A09166C8453}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.98.66.98|Name=windowsSpyBlockerExtra-52.98.66.98|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B7C22077-B376-4509-A073-0A4884424FE0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.8.19|Name=windowsSpyBlockerExtra-52.109.8.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6112420A-8D46-4F54-9835-D46F9D063B7B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.8.20|Name=windowsSpyBlockerExtra-52.109.8.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BFAF642B-4C91-4846-8451-93FBC902E6A9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.8.21|Name=windowsSpyBlockerExtra-52.109.8.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F464ED3D-332E-4130-8841-600C2418B388}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.18|Name=windowsSpyBlockerExtra-52.109.12.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{64552D1F-82FD-4438-BDAA-8CEC11DA1132}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.19|Name=windowsSpyBlockerExtra-52.109.12.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{841CCEC0-875D-4D1B-89B6-FF0D3BEBA60D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.20|Name=windowsSpyBlockerExtra-52.109.12.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3CEC2E7E-0F70-42E8-B6BC-FF43FED92EC4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.21|Name=windowsSpyBlockerExtra-52.109.12.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D8882300-CB13-4390-9043-C76C6DB2E30A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.22|Name=windowsSpyBlockerExtra-52.109.12.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F189A8F6-28C5-4A01-88CE-DD89E939B93F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.23|Name=windowsSpyBlockerExtra-52.109.12.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{980B5DFC-407E-4697-AD96-7EF13B9C9EA4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.12.24|Name=windowsSpyBlockerExtra-52.109.12.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{903AC76B-2258-4F34-845C-82D572E0A949}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.68.21|Name=windowsSpyBlockerExtra-52.109.68.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{61D546E8-04D4-4038-B358-A8F3DE25665B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.8|Name=windowsSpyBlockerExtra-52.109.76.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{369ECC34-7A23-436E-AFA4-A02AF19AA220}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.30|Name=windowsSpyBlockerExtra-52.109.76.30|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D8DA1C21-1E34-4561-A0EF-FA53208930A6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.31|Name=windowsSpyBlockerExtra-52.109.76.31|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F965A69E-9072-4AEE-A75D-E736DA60B474}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.32|Name=windowsSpyBlockerExtra-52.109.76.32|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C8848651-10D3-4F99-BA98-59EAA97C8ED8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.33|Name=windowsSpyBlockerExtra-52.109.76.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{879D1439-A84E-4B65-BB74-2FA5A074A1A5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.34|Name=windowsSpyBlockerExtra-52.109.76.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C7E6FA0B-623A-48D1-9BA3-DC8D2076C8B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.35|Name=windowsSpyBlockerExtra-52.109.76.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8405614B-4839-4BCC-9C4A-185D3E95EA8C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.36|Name=windowsSpyBlockerExtra-52.109.76.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{39935D49-D4A2-4782-B379-A30FA49DB063}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.76.40|Name=windowsSpyBlockerExtra-52.109.76.40|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{769BCC3D-CEFC-4D8F-A500-5434E6539B7C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.6|Name=windowsSpyBlockerExtra-52.109.88.6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A5BC70CB-085F-4FB0-AE13-8189C1F97B88}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.10|Name=windowsSpyBlockerExtra-52.109.88.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7DE135E5-18ED-4A08-B6DE-10FA5D1521C2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.34|Name=windowsSpyBlockerExtra-52.109.88.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{71D82E25-C021-4599-9BA8-5C103F971F79}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.35|Name=windowsSpyBlockerExtra-52.109.88.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F5DFB7B8-9312-47C6-A00A-171886DFC41C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.36|Name=windowsSpyBlockerExtra-52.109.88.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A91C3037-3EE9-493B-8490-9BA9B4A660FF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.37|Name=windowsSpyBlockerExtra-52.109.88.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{719A29A2-F468-478F-BA3F-475403BD3DE1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.38|Name=windowsSpyBlockerExtra-52.109.88.38|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A5D1E6C2-6C76-49BD-9459-F4708D811311}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.39|Name=windowsSpyBlockerExtra-52.109.88.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B1B9B402-C324-4083-80D6-E5F1F443EB00}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.40|Name=windowsSpyBlockerExtra-52.109.88.40|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2E5C2C48-6836-46C6-B99C-9367DF5D0D6C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.88.44|Name=windowsSpyBlockerExtra-52.109.88.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7B4C3C95-06A3-40F8-8287-C5813FABECE9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.17|Name=windowsSpyBlockerExtra-52.109.120.17|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{02E5D204-067D-4557-8E18-60831239C2E9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.18|Name=windowsSpyBlockerExtra-52.109.120.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{60FB18E3-424B-4F50-8A2A-3505E99A5CA0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.19|Name=windowsSpyBlockerExtra-52.109.120.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{22AA9F41-666F-4016-AE4A-097E32E4A740}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.20|Name=windowsSpyBlockerExtra-52.109.120.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D4FA251A-8E62-46BE-B993-81B4722A31D0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.21|Name=windowsSpyBlockerExtra-52.109.120.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EF231162-B568-4D94-B0D7-00D229BA2695}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.22|Name=windowsSpyBlockerExtra-52.109.120.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{729907A6-7FF7-44EF-B8E4-CDD81C43DCE7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.120.23|Name=windowsSpyBlockerExtra-52.109.120.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1AEA2B69-EDCD-49B6-8998-CA18019D154B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.18|Name=windowsSpyBlockerExtra-52.109.124.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B81E1557-73E8-484E-B9C5-E491D75DEEFC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.19|Name=windowsSpyBlockerExtra-52.109.124.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{75B33CF0-93E0-4C04-977A-ED5530872821}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.20|Name=windowsSpyBlockerExtra-52.109.124.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E32C87F2-087B-45E7-A7EC-615DCD8A94DF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.21|Name=windowsSpyBlockerExtra-52.109.124.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8C452ECD-9306-46B8-BB0A-FA9366168525}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.22|Name=windowsSpyBlockerExtra-52.109.124.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{840FA04D-6F7A-4C96-8E39-6499AC7A5FB2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.23|Name=windowsSpyBlockerExtra-52.109.124.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{80408F9F-517A-44D5-B234-D14AB3290560}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.109.124.24|Name=windowsSpyBlockerExtra-52.109.124.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B9EBCA40-2249-44B3-85A0-015C686173D4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.113.194.131|Name=windowsSpyBlockerExtra-52.113.194.131|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2877AED1-5D36-4077-9882-9AEE45E0DDAE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.113.194.132|Name=windowsSpyBlockerExtra-52.113.194.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{98F52A30-7DEA-4D80-9097-3EBFAC50B2A0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.6.46|Name=windowsSpyBlockerExtra-52.114.6.46|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FA9C2576-A34E-4563-A6F4-8B08EBD9CE44}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.6.47|Name=windowsSpyBlockerExtra-52.114.6.47|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{74A189EB-6054-4967-B63D-D45CE83BFFDC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.7.36|Name=windowsSpyBlockerExtra-52.114.7.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{551E537F-07DC-4850-8746-8A0E1F53353C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.7.37|Name=windowsSpyBlockerExtra-52.114.7.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DC295D82-C52F-4304-8725-96CA1C78AF40}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.7.38|Name=windowsSpyBlockerExtra-52.114.7.38|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01E82F36-5513-40D6-87ED-3CEBCC41E7A9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.7.39|Name=windowsSpyBlockerExtra-52.114.7.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{97D10C7B-6E2D-4971-9964-EC6F048DB880}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.5|Name=windowsSpyBlockerExtra-52.114.32.5|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{857D8491-903A-4E14-BF31-EE00B37DD1CE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.6|Name=windowsSpyBlockerExtra-52.114.32.6|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01CC5279-0D8F-425D-B805-7C789AC69E5F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.7|Name=windowsSpyBlockerExtra-52.114.32.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D05D055B-8E73-4B37-902B-FAF8A8AB2795}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.8|Name=windowsSpyBlockerExtra-52.114.32.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6A87F48E-1CBE-4217-B364-CFB81087A9CB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.24|Name=windowsSpyBlockerExtra-52.114.32.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A0E348C6-EB99-4703-AF96-6A4937CA37DC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.32.25|Name=windowsSpyBlockerExtra-52.114.32.25|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FB2CC967-98C4-4D93-B261-CAD54009F3B5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.36.1|Name=windowsSpyBlockerExtra-52.114.36.1|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A005F5A4-077E-4BE2-B307-91B652DD8DA5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.36.2|Name=windowsSpyBlockerExtra-52.114.36.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{33BBA819-AD89-49C0-94B3-EC44E12D97AC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.36.3|Name=windowsSpyBlockerExtra-52.114.36.3|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A2F1D175-FE66-492B-98C3-D1E5AFF73618}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.36.4|Name=windowsSpyBlockerExtra-52.114.36.4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DA026F6B-C8DC-42D8-9B15-DF15C4D4465E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.74.43|Name=windowsSpyBlockerExtra-52.114.74.43|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2EF30DB7-4833-4606-94E1-B2ED5A0499CB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.74.44|Name=windowsSpyBlockerExtra-52.114.74.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{206E87AC-F3BE-4CFD-9D76-C36885FC60C5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.74.45|Name=windowsSpyBlockerExtra-52.114.74.45|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{203F7CED-7C7B-4BC9-9A6A-91EFF09E7D70}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.75.78|Name=windowsSpyBlockerExtra-52.114.75.78|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{48C36988-E2A7-4716-AB2C-C152E0014E57}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.75.79|Name=windowsSpyBlockerExtra-52.114.75.79|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{82753F74-8B58-439B-9B82-5DDB7F38CCEF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.75.149|Name=windowsSpyBlockerExtra-52.114.75.149|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E8FB2F57-2B96-4253-A44F-2D1113EEFEEF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.75.150|Name=windowsSpyBlockerExtra-52.114.75.150|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C5085C58-C4A0-48B2-BA0F-DBA9ED0C1343}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.76.34|Name=windowsSpyBlockerExtra-52.114.76.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5132E800-0F34-43D4-B694-36449A231306}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.76.35|Name=windowsSpyBlockerExtra-52.114.76.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D6A16C20-4435-44B8-A2D7-540EE1FB7FEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.76.37|Name=windowsSpyBlockerExtra-52.114.76.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F0B53E14-764E-4A94-848B-32F8A07D4500}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.77.33|Name=windowsSpyBlockerExtra-52.114.77.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7B220605-6336-4BC4-BC95-6AE21F7917BB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.77.34|Name=windowsSpyBlockerExtra-52.114.77.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E0766AF5-0BAB-4894-800F-C4A4C46AADC4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.77.137|Name=windowsSpyBlockerExtra-52.114.77.137|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{86B147E6-F7A2-45F6-975F-D6AA11ABAD54}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.77.164|Name=windowsSpyBlockerExtra-52.114.77.164|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{25964439-337A-4F09-9D6E-CCF3F74F109C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.19|Name=windowsSpyBlockerExtra-52.114.88.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{58B00D3C-E419-480C-9FA8-BB3EA807141F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.20|Name=windowsSpyBlockerExtra-52.114.88.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6126C934-9621-41B8-8DBF-E647A228D219}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.21|Name=windowsSpyBlockerExtra-52.114.88.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B756A03F-0801-4D4D-A682-58E4814F64FD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.22|Name=windowsSpyBlockerExtra-52.114.88.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B0D8A5F8-D2CA-4867-AD7C-55965905DC59}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.28|Name=windowsSpyBlockerExtra-52.114.88.28|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DECCB351-CBB9-4645-B9F7-4E3C4D84F0F9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.88.29|Name=windowsSpyBlockerExtra-52.114.88.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BEC7E9FD-A3FF-4669-9189-D0E94D4C715A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.7|Name=windowsSpyBlockerExtra-52.114.128.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0364AB0A-8B70-4017-A35C-48CB85F81453}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.8|Name=windowsSpyBlockerExtra-52.114.128.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1F9BEE52-5757-46B1-A26E-199B8A0C221C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.9|Name=windowsSpyBlockerExtra-52.114.128.9|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F0574B7E-43D4-473E-8678-96B40FC00649}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.10|Name=windowsSpyBlockerExtra-52.114.128.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{67F6EF91-CBD7-422F-9F41-D455C244CEA8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.43|Name=windowsSpyBlockerExtra-52.114.128.43|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5F4EEF68-41A6-49CB-86FE-A870C94C4F6B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.44|Name=windowsSpyBlockerExtra-52.114.128.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CD43AAB9-A8B4-4E14-AE0F-6694C0B60577}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.58|Name=windowsSpyBlockerExtra-52.114.128.58|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4E25B958-C7BF-4718-B30A-1840CE6570ED}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.69|Name=windowsSpyBlockerExtra-52.114.128.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{014A56C3-3F8E-488A-919E-5E3B2440E388}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.70|Name=windowsSpyBlockerExtra-52.114.128.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4BB84AB1-AC58-42F6-9911-2BA8C7164DD3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.71|Name=windowsSpyBlockerExtra-52.114.128.71|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{26C3951E-5F5C-4524-B057-AA894CB27FE9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.72|Name=windowsSpyBlockerExtra-52.114.128.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C24F737A-9336-4D9A-BEBE-98AD996F9CB6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.73|Name=windowsSpyBlockerExtra-52.114.128.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BF7EC40D-42BE-4942-9872-36941CA0E343}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.74|Name=windowsSpyBlockerExtra-52.114.128.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3989EE0D-2443-48B6-BF38-7F5E8B1AAEEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.128.75|Name=windowsSpyBlockerExtra-52.114.128.75|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{11DF3612-B1E8-4FB2-B915-CC5B378A6FD2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.11|Name=windowsSpyBlockerExtra-52.114.132.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CE7A49C4-DA98-4998-8005-64439D94F378}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.12|Name=windowsSpyBlockerExtra-52.114.132.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C3CDFCBE-1F35-44DE-BD7D-72710D3824C8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.14|Name=windowsSpyBlockerExtra-52.114.132.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AF5CBD85-25A5-438F-B61F-78FC37A5AF97}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.20|Name=windowsSpyBlockerExtra-52.114.132.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F115CA39-3DB5-4A1E-BD4A-5FC329D516D7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.21|Name=windowsSpyBlockerExtra-52.114.132.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F570D9B5-C834-4055-9027-F0ADA74C42D4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.22|Name=windowsSpyBlockerExtra-52.114.132.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F1FE0066-2B60-48D8-A66D-235F14BD7EF7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.23|Name=windowsSpyBlockerExtra-52.114.132.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{87E5626B-B49E-46D0-9336-4D8340B2016E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.34|Name=windowsSpyBlockerExtra-52.114.132.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A2CC0BDE-4803-422A-B460-852F2B42DD39}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.47|Name=windowsSpyBlockerExtra-52.114.132.47|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2458036E-7BA0-4191-9E16-83110F033452}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.73|Name=windowsSpyBlockerExtra-52.114.132.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7EAC26E7-7276-4D5B-8A65-46B8302AF0A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.74|Name=windowsSpyBlockerExtra-52.114.132.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6B1F2535-BDD3-48A3-B7DA-D2B0E1550FC1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.132.91|Name=windowsSpyBlockerExtra-52.114.132.91|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FC786374-FA46-4C21-8674-C669ADA8B441}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.133.60|Name=windowsSpyBlockerExtra-52.114.133.60|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A2293116-BF46-45A4-B23C-E5E2DE196D34}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.133.61|Name=windowsSpyBlockerExtra-52.114.133.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{973725D6-1A13-4A74-9353-06CFF3AD2671}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.50|Name=windowsSpyBlockerExtra-52.114.158.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{78E4E05A-0076-4ED5-ADB3-5B2D17D3856D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.51|Name=windowsSpyBlockerExtra-52.114.158.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32F69A99-87D0-4E2F-854D-A1AFAA8DA87D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.52|Name=windowsSpyBlockerExtra-52.114.158.52|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B6AB8636-67A9-444B-A7AD-F092B68EAC72}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.53|Name=windowsSpyBlockerExtra-52.114.158.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E58B12BC-906B-41EE-8F01-012613275F61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.91|Name=windowsSpyBlockerExtra-52.114.158.91|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FBC3C84E-E027-4736-B7D7-8B6BDF49F910}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.92|Name=windowsSpyBlockerExtra-52.114.158.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0C544FEE-57C4-42BD-9BA0-086AAD3F53A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.158.102|Name=windowsSpyBlockerExtra-52.114.158.102|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A182EE81-12A7-41BF-8A7D-F6DEDD927B05}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.22|Name=windowsSpyBlockerExtra-52.114.159.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B8333DCE-CF91-49A4-968E-88AC5693CB83}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.23|Name=windowsSpyBlockerExtra-52.114.159.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1FA86DF5-1C47-45FB-AB49-E9C1B18552AB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.32|Name=windowsSpyBlockerExtra-52.114.159.32|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{71BFDDC6-630E-4580-B0AA-BBAE67A50931}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.33|Name=windowsSpyBlockerExtra-52.114.159.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{58095A51-FF19-4C2C-A1DE-9E36FC6D4A7B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.34|Name=windowsSpyBlockerExtra-52.114.159.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{58BE5330-3FD8-424D-8153-C79A02D036AD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.35|Name=windowsSpyBlockerExtra-52.114.159.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3751BE21-1B08-46E5-9702-07E92C90E649}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.114.159.112|Name=windowsSpyBlockerExtra-52.114.159.112|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F3070004-EEBA-4519-BA08-EB8C9BA831F5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.136.230.174|Name=windowsSpyBlockerExtra-52.136.230.174|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A2BFFFBC-27FC-4FBF-8E1B-E0C358FD0ED1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.138.148.87|Name=windowsSpyBlockerExtra-52.138.148.87|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{26A19721-1EB2-4161-8EE2-D13064591F68}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.138.148.89|Name=windowsSpyBlockerExtra-52.138.148.89|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{09F69A02-B529-433F-A8E0-57F18F0AFABE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.138.148.159|Name=windowsSpyBlockerExtra-52.138.148.159|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3D8C2DC5-609C-45E9-999B-F6B7F0942973}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.80.173|Name=windowsSpyBlockerExtra-52.142.80.173|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A422F3EE-6451-442E-90E9-C186E8EBDAFA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.84.61|Name=windowsSpyBlockerExtra-52.142.84.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A0873B12-CBAB-4774-8DF0-952DBFC916C1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.114.2|Name=windowsSpyBlockerExtra-52.142.114.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1E328996-580A-493D-9CEB-0DFD07156273}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.114.176|Name=windowsSpyBlockerExtra-52.142.114.176|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BF72B007-2C7A-4B58-8F90-607679B68468}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.119.134|Name=windowsSpyBlockerExtra-52.142.119.134|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6C6C4F1E-93F2-4A0E-8884-9F1EBEBB4E7B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.41.171|Name=windowsSpyBlockerExtra-52.156.41.171|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{830D251A-4AAB-4701-95C0-60F8631150EE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.48.67|Name=windowsSpyBlockerExtra-52.156.48.67|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{608859DF-3DED-48F3-AE51-F5357AB1E357}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.146.245|Name=windowsSpyBlockerExtra-52.156.146.245|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{98F20BD7-4B57-46A7-B717-8D449C0A63F1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.196.151|Name=windowsSpyBlockerExtra-52.156.196.151|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{823586A8-F7A6-4A04-A485-EA037E4840CF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.204.185|Name=windowsSpyBlockerExtra-52.156.204.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C87D15D6-6218-4E56-9809-EB9968E3D4F7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.24.209|Name=windowsSpyBlockerExtra-52.158.24.209|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E1CFA3E1-8481-45E3-BA88-8DF626EE37AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.24.229|Name=windowsSpyBlockerExtra-52.158.24.229|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{25EC5D37-94E0-4277-8BF3-A7E587B7DBD3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.25.39|Name=windowsSpyBlockerExtra-52.158.25.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{825B64CF-F262-4318-8C0E-AE564896CE29}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.238.42|Name=windowsSpyBlockerExtra-52.158.238.42|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{348F0443-ED49-4AC9-BCB1-522BF94E983B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.163.118.68|Name=windowsSpyBlockerExtra-52.163.118.68|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A3A1B1C4-FF36-4CAC-A55D-8154F8D5F94C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.164.191.55|Name=windowsSpyBlockerExtra-52.164.191.55|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BA0445B-1626-4F32-8B0C-253E2DCF062D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.164.227.208|Name=windowsSpyBlockerExtra-52.164.227.208|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FCAAADFB-7B4E-463C-97D3-B32C80ABC36A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.164.251.44|Name=windowsSpyBlockerExtra-52.164.251.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AE9F28E-9007-4B06-8E5E-1617D6FD6193}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.166.110.64|Name=windowsSpyBlockerExtra-52.166.110.64|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CAC0B577-6340-4424-AAD7-8ACEB79BD13F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.166.110.215|Name=windowsSpyBlockerExtra-52.166.110.215|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{717EE9E9-5888-4219-B28B-A2E0A6D31F0B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.166.120.77|Name=windowsSpyBlockerExtra-52.166.120.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F3A4D368-3C4A-47F8-91FA-550E9F569460}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.18.95|Name=windowsSpyBlockerExtra-52.167.18.95|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1A095BE1-FF79-4B12-9AB9-15E3A0C3B35D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.88.112|Name=windowsSpyBlockerExtra-52.167.88.112|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{821647FF-211F-4419-A46C-004F116DC176}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.249.196|Name=windowsSpyBlockerExtra-52.167.249.196|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32DC0C90-3FC3-40C2-926A-AA0A6CAB72D6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.168.24.174|Name=windowsSpyBlockerExtra-52.168.24.174|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{093A75A4-024F-44F0-9C72-2CFFA7CE0209}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.71.150|Name=windowsSpyBlockerExtra-52.169.71.150|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4A7C30CD-35AB-4193-A804-8896A3DF7129}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.170.57.27|Name=windowsSpyBlockerExtra-52.170.57.27|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6D78A795-B1A7-4D14-8604-7EF04C7711F1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.170.194.77|Name=windowsSpyBlockerExtra-52.170.194.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3A6CA89D-9945-462D-B769-A2D7A38BF2C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.171.136.200|Name=windowsSpyBlockerExtra-52.171.136.200|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E11C73AB-F0CC-468B-B05D-615DE13A9C9A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.173.152.64|Name=windowsSpyBlockerExtra-52.173.152.64|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{36999197-34CC-455B-81A5-E3EF343C7F64}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.175.30.196|Name=windowsSpyBlockerExtra-52.175.30.196|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{818F21EF-CCB8-4ABE-B5F0-13542E4760E1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.176.224.96|Name=windowsSpyBlockerExtra-52.176.224.96|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1A680572-2663-470D-A803-B5AD8376FAA1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.161.41|Name=windowsSpyBlockerExtra-52.178.161.41|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A61DB964-6E02-4818-9632-58340C23B210}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.163.85|Name=windowsSpyBlockerExtra-52.178.163.85|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4F0830D3-69E9-417F-A7FB-FD910A9A19B8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.193.116|Name=windowsSpyBlockerExtra-52.178.193.116|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1DDED2F3-F06B-42D7-9551-F8AF34B88AE2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.179.13.204|Name=windowsSpyBlockerExtra-52.179.13.204|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{702A6399-D17A-4047-96B8-2A397E7EAD68}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.183.104.36|Name=windowsSpyBlockerExtra-52.183.104.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D6883563-8D11-4179-A1EE-3CB72313F981}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.82.129|Name=windowsSpyBlockerExtra-52.184.82.129|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{555E724D-33F1-4FB0-A07D-69BCCAFB30A2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.92.48|Name=windowsSpyBlockerExtra-52.184.92.48|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D74CC830-AF31-4278-8470-97A907167F50}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.168.116|Name=windowsSpyBlockerExtra-52.184.168.116|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BD4B347F-379F-46AA-B372-C7E4B7DD085F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.186.25.68|Name=windowsSpyBlockerExtra-52.186.25.68|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4EC8B50C-BFC3-472B-992F-241334021BF9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.188.77.27|Name=windowsSpyBlockerExtra-52.188.77.27|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8A632EA9-1FB7-4168-8E2D-94C60603E6B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.225.136.36|Name=windowsSpyBlockerExtra-52.225.136.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32E1EE88-36B4-4D82-B240-C948D1ECAFFE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.10.183|Name=windowsSpyBlockerExtra-52.230.10.183|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AE57E9C5-38EF-4280-AD97-DB212FDFF924}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.240.94|Name=windowsSpyBlockerExtra-52.230.240.94|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4A0E0DAF-8AD9-4C13-A1A5-D2C386715B3F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.231.32.10|Name=windowsSpyBlockerExtra-52.231.32.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{196A2A96-46DB-454C-AA84-BD7B28791D7E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.232.16.77|Name=windowsSpyBlockerExtra-52.232.16.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AE74B85B-2934-4610-AD92-A9CF3CC674C1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.232.19.76|Name=windowsSpyBlockerExtra-52.232.19.76|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CE59760-191C-4F47-84B9-B2C2858F1B5A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.232.69.150|Name=windowsSpyBlockerExtra-52.232.69.150|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1C9F94CA-4285-4C9B-BF3F-1E26610873BB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.233.199.249|Name=windowsSpyBlockerExtra-52.233.199.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2A5B5230-0110-46FF-A512-DBF2420BEECF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.137.4|Name=windowsSpyBlockerExtra-52.239.137.4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{433A45AE-0FEC-45B1-B45C-053AF7F706A2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.150.170|Name=windowsSpyBlockerExtra-52.239.150.170|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{33BABCFD-2A2D-45D2-9EB5-B31FB346DF48}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.151.138|Name=windowsSpyBlockerExtra-52.239.151.138|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{47BB25FA-A4EA-4775-AA0A-9A7EE74BC079}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.151.170|Name=windowsSpyBlockerExtra-52.239.151.170|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{981AC805-6172-4169-9B99-FD42356DAFD0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.156.74|Name=windowsSpyBlockerExtra-52.239.156.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8BFC5581-5711-4E66-8130-62B8C8CEF3F5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.156.138|Name=windowsSpyBlockerExtra-52.239.156.138|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C725D999-FD50-4F71-A148-F58FE7B9DCE7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.157.138|Name=windowsSpyBlockerExtra-52.239.157.138|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{38F2E91C-2C4F-46DA-8931-4764526AED55}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.157.202|Name=windowsSpyBlockerExtra-52.239.157.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ABFD992E-5AE9-4195-9213-942BA9733104}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.177.36|Name=windowsSpyBlockerExtra-52.239.177.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{44625775-7900-4C8D-AF66-98A7BB4D3311}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.177.68|Name=windowsSpyBlockerExtra-52.239.177.68|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F029C2FB-DE91-42E8-B038-A7E3479BF3A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.177.100|Name=windowsSpyBlockerExtra-52.239.177.100|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{41993726-8A56-43F7-BA3A-54FE76D7D53F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.177.228|Name=windowsSpyBlockerExtra-52.239.177.228|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{922DC052-1E35-4FE3-9668-33540FC5AE16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.184.10|Name=windowsSpyBlockerExtra-52.239.184.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A80D71A3-972D-4D52-A521-C1ED216E1AD5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.184.42|Name=windowsSpyBlockerExtra-52.239.184.42|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{89D51A84-A525-47D3-8FC4-C4FC4F7C516B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.239.207.100|Name=windowsSpyBlockerExtra-52.239.207.100|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0B9E59C4-DF80-4C25-8A31-B56AAC794D2B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.247.37.26|Name=windowsSpyBlockerExtra-52.247.37.26|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{748DD0B8-F69F-4DD3-8BC9-01E32AEDF866}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.255.148.73|Name=windowsSpyBlockerExtra-52.255.148.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F7073865-C049-4B54-893A-FAB2DD010716}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.16.212|Name=windowsSpyBlockerExtra-64.4.16.212|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{78A59292-8D59-495F-B83D-B58FF88DA28A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.16.214|Name=windowsSpyBlockerExtra-64.4.16.214|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0C392418-A4F8-4936-8D27-900497A69170}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.16.216|Name=windowsSpyBlockerExtra-64.4.16.216|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FD6417D5-FC39-4D23-B783-8E1671BE0FCB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.16.218|Name=windowsSpyBlockerExtra-64.4.16.218|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3BE9C2FD-90D5-4808-9D98-3B157CBAE597}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.23.0-64.4.23.255|Name=windowsSpyBlockerExtra-64.4.23.0-64.4.23.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{03CEF679-B691-45F0-93D3-FCB28B22CFF0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.54.18|Name=windowsSpyBlockerExtra-64.4.54.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{369D596D-025F-446A-AAD5-128CA9A3EC2A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.54.22|Name=windowsSpyBlockerExtra-64.4.54.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0B925738-47D0-4442-B463-B68163D3C66A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.54.253|Name=windowsSpyBlockerExtra-64.4.54.253|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B4F08297-F639-47E3-8C80-8C901A68F465}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.54.254|Name=windowsSpyBlockerExtra-64.4.54.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C083F1D9-CFE4-445E-B253-171DFA71CFFB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.98.231|Name=windowsSpyBlockerExtra-65.52.98.231|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9C8DC492-076D-472E-956A-A94239476FF4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.226.14|Name=windowsSpyBlockerExtra-65.52.226.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BEB6553-47A2-4ED7-A54A-8CFE5FC35F9E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.187.128|Name=windowsSpyBlockerExtra-65.54.187.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E99C8D6A-6A69-44B9-92B0-465E57CF8ED7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.187.130|Name=windowsSpyBlockerExtra-65.54.187.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CB59CAB-DB9E-478A-89E9-5D4C68144B1E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.187.131|Name=windowsSpyBlockerExtra-65.54.187.131|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{18B65AF1-2A7D-458A-8A1A-B338580988B9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.187.132|Name=windowsSpyBlockerExtra-65.54.187.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E6821929-EA4B-4FF4-8B2C-11A7C8B649E4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.187.134|Name=windowsSpyBlockerExtra-65.54.187.134|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{96E1AFAB-673F-49F6-95D5-48D855177AEF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.54.198.196|Name=windowsSpyBlockerExtra-65.54.198.196|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CBEA70CB-18C6-4ACF-A597-2ADFD58AB139}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.108.23|Name=windowsSpyBlockerExtra-65.55.108.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0E90B87A-3F10-4F31-80D1-42DEC3F5C183}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.130.50|Name=windowsSpyBlockerExtra-65.55.130.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{032C5AE2-CE48-4C75-A7E9-CBBB7B8F1653}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.223.0-65.55.223.255|Name=windowsSpyBlockerExtra-65.55.223.0-65.55.223.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B8F832D5-8439-4217-ACBC-10D4AE38F46B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.40.210.32|Name=windowsSpyBlockerExtra-104.40.210.32|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C1F0498F-3FE4-4374-B05D-40602C7F5635}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.40.211.35|Name=windowsSpyBlockerExtra-104.40.211.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1D77790A-A743-4CDE-AA93-E79CCD0FBFD6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.41.219.140|Name=windowsSpyBlockerExtra-104.41.219.140|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{50DB0C41-6BF4-4541-B14B-92696B34889F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.42.41.237|Name=windowsSpyBlockerExtra-104.42.41.237|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E6B8E0C2-FC31-4FFB-B24F-18EE8384976B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.203.255|Name=windowsSpyBlockerExtra-104.43.203.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{94D221A3-77A5-4B61-BB41-BBC624FC85B7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.44.80.172|Name=windowsSpyBlockerExtra-104.44.80.172|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C00B33EF-FA67-4A57-BC06-3751128140F4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.44.88.24|Name=windowsSpyBlockerExtra-104.44.88.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9670F16C-CC4C-4794-9427-732C8BCFA805}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.44.88.28|Name=windowsSpyBlockerExtra-104.44.88.28|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AB1BBAB8-A830-4949-8EF6-9307E3B2916F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.44.88.103|Name=windowsSpyBlockerExtra-104.44.88.103|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E161524A-6703-4409-8A11-F6F43376D436}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.45.18.177|Name=windowsSpyBlockerExtra-104.45.18.177|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9935E1B0-38EB-4974-A215-2AD21C0508BE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.46.91.34|Name=windowsSpyBlockerExtra-104.46.91.34|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DD81BD43-7925-4C66-A30B-8BD544FC3F87}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.208.248.16|Name=windowsSpyBlockerExtra-104.208.248.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4E754DF5-248E-4C6F-872A-270F14376D99}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.209.172.133|Name=windowsSpyBlockerExtra-104.209.172.133|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9F966E62-BD5E-4335-AA72-0401FA9352CC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.210.62.125|Name=windowsSpyBlockerExtra-104.210.62.125|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4C4C4F1A-5897-488B-8B58-1C4537C5B90A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.211.96.15|Name=windowsSpyBlockerExtra-104.211.96.15|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{41469C0D-CAC5-449F-B311-2B771FBC8D43}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.214.77.221|Name=windowsSpyBlockerExtra-104.214.77.221|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9362C0D7-3387-4ABA-B8D4-84BD0B3F19FB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.214.150.122|Name=windowsSpyBlockerExtra-104.214.150.122|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2FF99B0D-51FE-42BA-9F40-C066D8204DC7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.214.220.181|Name=windowsSpyBlockerExtra-104.214.220.181|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4FA66EAC-8795-44B4-ACEE-BFDC33902428}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.215.146.200|Name=windowsSpyBlockerExtra-104.215.146.200|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C2FBD9E9-F24F-4EB8-85DE-DB3946857C06}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.14.227|Name=windowsSpyBlockerExtra-131.253.14.227|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DA828C80-2AF2-4897-9764-B776FF8CDA8C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.14.229|Name=windowsSpyBlockerExtra-131.253.14.229|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C231978A-0546-43E1-AFC5-4242B5AF3DBD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.14.230|Name=windowsSpyBlockerExtra-131.253.14.230|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B69C0ADE-AFA3-4F2B-B17A-9BFB7061031C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.14.231|Name=windowsSpyBlockerExtra-131.253.14.231|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E548B66C-5630-4D79-BDC5-57298783E546}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.33.203|Name=windowsSpyBlockerExtra-131.253.33.203|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FFDFBDC7-9F8E-4CC2-B092-AA7CDB1D73B7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.33.254|Name=windowsSpyBlockerExtra-131.253.33.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F5E3AFC4-E63E-486C-BA71-CBAA90771900}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.61.0-131.253.61.255|Name=windowsSpyBlockerExtra-131.253.61.0-131.253.61.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A0C16B8D-7E43-410A-9C1A-0EFAFF64393C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.178.97|Name=windowsSpyBlockerExtra-134.170.178.97|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EDC5FD0C-E3ED-4EE3-8E23-2DEF3CA04881}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.185.70|Name=windowsSpyBlockerExtra-134.170.185.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9ED8F661-5E63-4CC0-843D-4D25F91B37C5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.188.248|Name=windowsSpyBlockerExtra-134.170.188.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B3AFFBB9-A2CC-4C2C-8BBF-8CE5AE87F1DF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.116.44.10|Name=windowsSpyBlockerExtra-137.116.44.10|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B19102F5-B948-4C78-89A7-E0AD4B0F30CB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.116.234.82|Name=windowsSpyBlockerExtra-137.116.234.82|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6EA72FFD-19A2-46E4-A9B5-6B800787385C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.117.142.136|Name=windowsSpyBlockerExtra-137.117.142.136|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AEF25B1-5A5D-4EFB-A83D-C6E09E763DDD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.117.144.39|Name=windowsSpyBlockerExtra-137.117.144.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7124E06E-DF93-4EB2-ADEE-ABF01CB3B501}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.117.228.253|Name=windowsSpyBlockerExtra-137.117.228.253|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7CE8C118-891F-4DE8-B2F1-5ED91B78E28D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.117.235.16|Name=windowsSpyBlockerExtra-137.117.235.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AC0A6F82-C026-4889-B922-9E77131C711B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.117.243.30|Name=windowsSpyBlockerExtra-137.117.243.30|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A46A2FBD-3DE4-41F7-BEF0-3C8FD00B9C8E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.135.251.63|Name=windowsSpyBlockerExtra-137.135.251.63|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B6AC6499-4DC8-4B27-9AE2-BFA7A288327F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=138.91.122.49|Name=windowsSpyBlockerExtra-138.91.122.49|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AB3E3D24-66FC-4175-A9EC-1526B9AAE3A3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=138.91.136.108|Name=windowsSpyBlockerExtra-138.91.136.108|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{95C60BE0-4EE4-4608-B663-4CE9C1F72555}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=138.91.140.216|Name=windowsSpyBlockerExtra-138.91.140.216|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F9726614-79A6-4602-8EB4-7BBBB3CF95CC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=138.91.141.104|Name=windowsSpyBlockerExtra-138.91.141.104|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2154CBE0-E650-40B5-A588-3D7C220258C0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.56.0-157.55.56.255|Name=windowsSpyBlockerExtra-157.55.56.0-157.55.56.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{90FBDEEE-16F0-4A5A-A856-27B3A30DD53D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.7|Name=windowsSpyBlockerExtra-157.55.109.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9298E338-E10B-4814-9DDC-69FA83BC3E5D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.224|Name=windowsSpyBlockerExtra-157.55.109.224|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B2F66D1A-4BB7-4028-B418-51FAE86D65D8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.226|Name=windowsSpyBlockerExtra-157.55.109.226|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1B751B9F-9204-4FE5-83A7-0C7EC51AD5C2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.228|Name=windowsSpyBlockerExtra-157.55.109.228|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DC653144-33D2-44BB-BAB0-E2F8FD15696C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.230|Name=windowsSpyBlockerExtra-157.55.109.230|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{988D33C9-C932-461E-9B4B-A098E6D7427C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.109.232|Name=windowsSpyBlockerExtra-157.55.109.232|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4468E266-A380-4F27-B88D-B086A3D42E57}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.129.21|Name=windowsSpyBlockerExtra-157.55.129.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{71EE2E03-C493-47E6-86D6-5976E2784F57}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.134.136|Name=windowsSpyBlockerExtra-157.55.134.136|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{41FF75BB-95CA-487C-BAC9-D92D7D6BC461}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.134.138|Name=windowsSpyBlockerExtra-157.55.134.138|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{360FAA07-ED31-4172-AC41-5B87958E7D56}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.134.140|Name=windowsSpyBlockerExtra-157.55.134.140|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{55D8B243-8F7A-40D5-828D-F3EE0B74E2AE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.134.142|Name=windowsSpyBlockerExtra-157.55.134.142|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{280E1DF7-141B-410E-A74C-82DAAF8B1719}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.135.128|Name=windowsSpyBlockerExtra-157.55.135.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BD784266-9504-46EA-A7FA-81D50B760447}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.135.130|Name=windowsSpyBlockerExtra-157.55.135.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{314E1B54-042C-4F62-953E-DC61FB3833E6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.135.132|Name=windowsSpyBlockerExtra-157.55.135.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DDDAFD61-2168-4B5A-A565-44C46EE372BF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.135.134|Name=windowsSpyBlockerExtra-157.55.135.134|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{64449DE1-A0F3-4320-8477-118C84BBE369}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.57.5|Name=windowsSpyBlockerExtra-157.56.57.5|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F1E1FD5F-9FCA-4941-B9CB-51AC459943C8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.62.57.154|Name=windowsSpyBlockerExtra-168.62.57.154|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{339B3A2E-8683-48F7-8D23-FF40A7EB0586}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.62.58.130|Name=windowsSpyBlockerExtra-168.62.58.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9AB4ADD8-8C7E-47CF-8CF7-84CF6F0D76B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.62.200.169|Name=windowsSpyBlockerExtra-168.62.200.169|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BF5C4E1D-3336-4E7B-86DF-FDBA517BC3C8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.63.18.79|Name=windowsSpyBlockerExtra-168.63.18.79|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A7C556D4-AD99-4F84-BA22-13D2B6C3E8A7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.63.67.155|Name=windowsSpyBlockerExtra-168.63.67.155|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2279E829-2C93-4FBA-94C5-E4CBBB2B5B02}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.63.102.42|Name=windowsSpyBlockerExtra-168.63.102.42|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{81FA2B98-23AF-4F9A-B2BB-E638BB606B7D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.237.208.126|Name=windowsSpyBlockerExtra-191.237.208.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A34BE907-9346-4B82-A767-8AF34AE10594}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.239.213.197|Name=windowsSpyBlockerExtra-191.239.213.197|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01D783F4-81A7-4754-A250-19510428F5CC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=204.79.197.0-204.79.197.255|Name=windowsSpyBlockerExtra-204.79.197.0-204.79.197.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{497CCFA0-A646-4E07-9A74-A334950C1811}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=204.152.141.244|Name=windowsSpyBlockerExtra-204.152.141.244|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FDC5824C-D837-46AC-A279-B8D752040182}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.7.252|Name=windowsSpyBlockerExtra-207.46.7.252|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{984B73C1-80B4-46E4-A533-1A53E207B8D1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.26.12|Name=windowsSpyBlockerExtra-207.46.26.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{28735128-F62C-4AFC-84B2-6F998D50D9CF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.26.14|Name=windowsSpyBlockerExtra-207.46.26.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F0D323B9-2E7A-43B2-AEC8-64C0C482BB74}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.26.16|Name=windowsSpyBlockerExtra-207.46.26.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C8F2C9FB-C77F-443D-936B-DEBFD6402ACC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.26.18|Name=windowsSpyBlockerExtra-207.46.26.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C814AFC5-5BBE-4EC1-87AF-46343185AF80}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.101.29|Name=windowsSpyBlockerExtra-207.46.101.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1587EC73-C0BF-48EB-AD4C-D1C3ED8CF7DF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.153.155|Name=windowsSpyBlockerExtra-207.46.153.155|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1431EEAB-24B4-436F-80B4-9B4F0F693739}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.194.14|Name=windowsSpyBlockerExtra-207.46.194.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{476660E7-1A29-4213-8463-851284E3C23C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.194.25|Name=windowsSpyBlockerExtra-207.46.194.25|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CA65DA0B-C55D-43FC-BAF2-AB9FC5EAD326}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.194.33|Name=windowsSpyBlockerExtra-207.46.194.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B22F31E1-EAE9-4CEF-9E0D-8C7F1A4EE80C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.194.40|Name=windowsSpyBlockerExtra-207.46.194.40|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D28E77FA-AA13-4CD2-A1A7-84FFD4E8905F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.223.94|Name=windowsSpyBlockerExtra-207.46.223.94|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A54BB8A5-26FF-4924-BCD6-12DB14D9E187}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.66.56.243|Name=windowsSpyBlockerSpy-13.66.56.243|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0D803573-BC3D-4F2B-AF8C-71B2C87B3387}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.31.193|Name=windowsSpyBlockerSpy-13.68.31.193|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A9053817-9012-4685-AA60-7A23D785BC60}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.82.8|Name=windowsSpyBlockerSpy-13.68.82.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5661CB69-8DC4-48C0-80E5-F23B9B98209D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.92.143|Name=windowsSpyBlockerSpy-13.68.92.143|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D66C3254-B84F-4B12-8BD9-A43292135E3F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.73.26.107|Name=windowsSpyBlockerSpy-13.73.26.107|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A85ACECF-4495-46AF-A945-DF134E3D44A4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.130.220|Name=windowsSpyBlockerSpy-13.78.130.220|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D45B3053-9651-4406-9C91-35A0B220787F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.232.226|Name=windowsSpyBlockerSpy-13.78.232.226|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{609FFB77-955C-4D59-B87C-E2905D6FADDB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.233.133|Name=windowsSpyBlockerSpy-13.78.233.133|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5EE3139C-259F-4580-93F5-B31DFFB10346}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.88.21.125|Name=windowsSpyBlockerSpy-13.88.21.125|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{590521A2-E1A8-4BD4-96BA-0DCAE62DE353}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.92.194.212|Name=windowsSpyBlockerSpy-13.92.194.212|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F50E55FA-9152-4792-99DB-41A552A8FB6E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.86.43|Name=windowsSpyBlockerSpy-20.44.86.43|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FC00DD56-AA93-486E-A106-DA54600CF9F0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.49.150.241|Name=windowsSpyBlockerSpy-20.49.150.241|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EDD7943E-3D4B-4B0D-AB40-F84BBB44EA89}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.189.74.153|Name=windowsSpyBlockerSpy-20.189.74.153|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F6C52080-0263-4ED7-AE80-054186562A26}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.99.49.121|Name=windowsSpyBlockerSpy-23.99.49.121|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0F661CC7-8C00-48CC-8D0D-78B3DA09288A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.102.4.253|Name=windowsSpyBlockerSpy-23.102.4.253|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{00659737-EF11-4348-8DF2-10743038BF23}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.102.21.4|Name=windowsSpyBlockerSpy-23.102.21.4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C8C26936-F4F3-4951-AC53-BCD73A1A7D94}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.103.182.126|Name=windowsSpyBlockerSpy-23.103.182.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FEF10510-A3D0-414F-9E59-55D7B9EFCA27}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.68.222.212|Name=windowsSpyBlockerSpy-40.68.222.212|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{80032BDA-1132-4385-AE86-12582AF6270A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.153.67|Name=windowsSpyBlockerSpy-40.69.153.67|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F3340E9A-CE19-4687-9D7C-9DB2A6C8E234}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.184.83|Name=windowsSpyBlockerSpy-40.70.184.83|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F3247CB4-F3A0-4695-80EC-C238952BAB0F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.220.248|Name=windowsSpyBlockerSpy-40.70.220.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F4B23A7C-C55B-45A3-B0F8-4D1E56CCA538}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.221.249|Name=windowsSpyBlockerSpy-40.70.221.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6F961CDF-2E09-4547-8244-665ECD1BE7B4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.228.47|Name=windowsSpyBlockerSpy-40.77.228.47|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{149A04C5-5FA7-43ED-91F8-D48B659ABCF6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.228.87|Name=windowsSpyBlockerSpy-40.77.228.87|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D38B6C12-8540-4A95-AEF0-EBC162E01095}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.228.92|Name=windowsSpyBlockerSpy-40.77.228.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A667D191-C58D-42E5-AA59-88609DDC2BFE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.232.101|Name=windowsSpyBlockerSpy-40.77.232.101|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DFAA3C60-3D66-42C9-935B-C8281FC70112}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.78.128.150|Name=windowsSpyBlockerSpy-40.78.128.150|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C7800B99-41B7-4D3C-AF63-5E1847B19F79}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.85.125|Name=windowsSpyBlockerSpy-40.79.85.125|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F66DBD9B-033C-4B63-B2FB-6F19083EC12C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.90.221.9|Name=windowsSpyBlockerSpy-40.90.221.9|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{90500BF1-F1F8-4136-A9C7-2D520F542783}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.112.209.200|Name=windowsSpyBlockerSpy-40.112.209.200|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C1EAEA6D-C00C-4F75-9E33-9A481C24214B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.115.3.210|Name=windowsSpyBlockerSpy-40.115.3.210|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F8118B56-6C12-46A0-B21F-0E19F60E3087}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.115.119.185|Name=windowsSpyBlockerSpy-40.115.119.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ACD829FE-7B9D-4ED5-B739-A235DE9AEB2C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.119.211.203|Name=windowsSpyBlockerSpy-40.119.211.203|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF248878-21B7-4412-A2A3-F154BA6B2055}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.124.34.70|Name=windowsSpyBlockerSpy-40.124.34.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B46C20AC-85CB-425C-8750-B156FFFFB008}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.127.240.158|Name=windowsSpyBlockerSpy-40.127.240.158|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ED9B6956-5DCD-48B1-858A-25FD3AAC4E3A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.136.2|Name=windowsSpyBlockerSpy-51.104.136.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{65930193-3A52-4D8F-84CE-0CA68D14B691}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.124.78.146|Name=windowsSpyBlockerSpy-51.124.78.146|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{511ACCDD-F673-458B-9326-AF4A919D0259}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.140.40.236|Name=windowsSpyBlockerSpy-51.140.40.236|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DE587229-70E0-4529-BAC9-FC6206935D7F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.140.157.153|Name=windowsSpyBlockerSpy-51.140.157.153|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BCBC03D-777B-4276-A76F-EA5FE0590922}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.143.53.152|Name=windowsSpyBlockerSpy-51.143.53.152|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E53CB240-31E2-40C2-A84B-F0635F83E59A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.143.111.7|Name=windowsSpyBlockerSpy-51.143.111.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62B599C8-1B54-4781-B82A-E1B96652419D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.143.111.81|Name=windowsSpyBlockerSpy-51.143.111.81|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AE79240B-63A6-4A0A-BE4B-05362A1CD8AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.138.204.217|Name=windowsSpyBlockerSpy-52.138.204.217|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CB067168-BA85-4A9F-B4F2-4AC58E9E425F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.138.216.83|Name=windowsSpyBlockerSpy-52.138.216.83|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01337BAE-7392-4BD5-8F4D-4951E87B848B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.172.105|Name=windowsSpyBlockerSpy-52.155.172.105|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{73A42596-7418-4F8F-8BD7-41E42BB47B8C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.157.234.37|Name=windowsSpyBlockerSpy-52.157.234.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4950AE87-42FC-4BFC-ABEE-D19648C12802}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.208.111|Name=windowsSpyBlockerSpy-52.158.208.111|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4F9AD971-58DE-4BE3-9F47-4ABE99B3B2E2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.164.241.205|Name=windowsSpyBlockerSpy-52.164.241.205|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DEA08CB8-7FF8-40A6-91DC-B0E20B81A4A2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.189.83|Name=windowsSpyBlockerSpy-52.169.189.83|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{450DD83F-2B7A-49EC-ACD5-A73E37AC1B0F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.170.83.19|Name=windowsSpyBlockerSpy-52.170.83.19|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1280C4B0-D7BE-4EE4-81B5-AD6A0E2016C8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.174.22.246|Name=windowsSpyBlockerSpy-52.174.22.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{17A60F30-58DD-4615-954F-78D47A863A23}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.147.240|Name=windowsSpyBlockerSpy-52.178.147.240|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{77CDBCB1-F21C-4AA4-9B0B-4CF90044513A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.151.212|Name=windowsSpyBlockerSpy-52.178.151.212|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E15A138E-5801-4DF7-BCAA-BA5F8B8476FF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.178.16|Name=windowsSpyBlockerSpy-52.178.178.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{598E467E-4737-473C-A5CB-91CCC66A76C2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.223.23|Name=windowsSpyBlockerSpy-52.178.223.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EB572AD9-C90A-4CAD-9CBA-2A32E3EF470A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.183.114.173|Name=windowsSpyBlockerSpy-52.183.114.173|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D4AE3674-3EF4-4A20-B2AD-FDE1BD0AEB6B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.221.185|Name=windowsSpyBlockerSpy-52.184.221.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F7506642-A002-40F2-9FE7-22F3DF047AF0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.39.152|Name=windowsSpyBlockerSpy-52.229.39.152|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A0113E05-FCBC-4CD5-AFA3-6CFB529BC107}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.85.180|Name=windowsSpyBlockerSpy-52.230.85.180|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3BA50346-A4BB-4F1F-A7BD-B5226CC4D8D2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.236.42.239|Name=windowsSpyBlockerSpy-52.236.42.239|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{41ACCF58-9308-4C55-82BA-670E2925B054}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.236.43.202|Name=windowsSpyBlockerSpy-52.236.43.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DB61A82E-FB83-4DA5-8FED-F610D22741D0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.7|Name=windowsSpyBlockerSpy-65.52.100.7|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B05A4218-A764-48DB-A841-24FE38B3A1A1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.9|Name=windowsSpyBlockerSpy-65.52.100.9|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A61B9DA7-B966-4C8D-8BFB-795A1F55E9EB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.11|Name=windowsSpyBlockerSpy-65.52.100.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6FA2ECF5-1FBA-48C9-87C2-3E7B2FF55159}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.91|Name=windowsSpyBlockerSpy-65.52.100.91|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6F92821E-2FDA-4AF8-BCF0-81EFA45C4AF0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.92|Name=windowsSpyBlockerSpy-65.52.100.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0C0E9C80-BCA7-445C-BE4D-BFA82884EFA2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.93|Name=windowsSpyBlockerSpy-65.52.100.93|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FA7D2A84-70D1-4A5C-AC93-3AE3F6DD05FB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.100.94|Name=windowsSpyBlockerSpy-65.52.100.94|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A31DE345-8246-4F17-BFD5-53289D579D06}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.161.64|Name=windowsSpyBlockerSpy-65.52.161.64|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E7E776BE-CEF6-41F6-8059-2B6FA85AAADE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.29.238|Name=windowsSpyBlockerSpy-65.55.29.238|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A9D8B442-F7C0-4ED2-B21D-0430133BEB93}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.44.51|Name=windowsSpyBlockerSpy-65.55.44.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6ED4A583-6D10-4D90-82B9-52CAC2E726A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.44.54|Name=windowsSpyBlockerSpy-65.55.44.54|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2A1CA9D0-5451-4147-B6C1-EB6BFC1796A5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.44.108|Name=windowsSpyBlockerSpy-65.55.44.108|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F6018BCC-9463-4CC8-A205-9CDD75CA7E98}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.44.109|Name=windowsSpyBlockerSpy-65.55.44.109|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{346405A3-A5DB-4F01-AD5C-AAA824512477}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.83.120|Name=windowsSpyBlockerSpy-65.55.83.120|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AC124B30-89F6-4E0E-BAE7-70053C69ED6E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.113.11|Name=windowsSpyBlockerSpy-65.55.113.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{865E52F3-D982-4032-9368-4C6CEA35EEAD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.113.12|Name=windowsSpyBlockerSpy-65.55.113.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E60BAF59-C193-4748-B471-74CD85C7AB1B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.113.13|Name=windowsSpyBlockerSpy-65.55.113.13|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{16B928BD-887C-47D8-907E-EEFDC38DA138}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.176.90|Name=windowsSpyBlockerSpy-65.55.176.90|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A46A8BE5-0E06-4401-9623-36AD6D410C40}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.43|Name=windowsSpyBlockerSpy-65.55.252.43|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C3D930F3-B570-464D-BEAC-E1D38EE41F8B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.63|Name=windowsSpyBlockerSpy-65.55.252.63|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8FE054AF-4FD7-45AB-9187-8FAACEEDC1F9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.70|Name=windowsSpyBlockerSpy-65.55.252.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{20E27BB7-3797-4F23-973C-189D12407AEC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.71|Name=windowsSpyBlockerSpy-65.55.252.71|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2A24C6EB-79F3-4C68-A8FD-5FBA864E775C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.72|Name=windowsSpyBlockerSpy-65.55.252.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BD843F65-26E6-4608-B1E0-81ACDF1AA452}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.93|Name=windowsSpyBlockerSpy-65.55.252.93|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{17312836-D2EE-4FF8-B099-F8425E5DBACB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.190|Name=windowsSpyBlockerSpy-65.55.252.190|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{37E0EE15-6766-42CB-941B-13008AF3D1F5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.252.202|Name=windowsSpyBlockerSpy-65.55.252.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EAD708B1-F4C4-407D-BE07-CA018AF8F72F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=66.119.147.131|Name=windowsSpyBlockerSpy-66.119.147.131|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{79342DDD-6467-4A20-ADF8-42ECED437D10}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.41.207.73|Name=windowsSpyBlockerSpy-104.41.207.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8B3BF339-5D6F-4D14-932F-37F974FD9803}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.137.66|Name=windowsSpyBlockerSpy-104.43.137.66|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{01E9832B-84E5-4FE6-973F-AB1D3564ADA0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.139.21|Name=windowsSpyBlockerSpy-104.43.139.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AF186E9-63D3-4E98-9923-39CF6207571A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.140.223|Name=windowsSpyBlockerSpy-104.43.140.223|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{69B19004-348E-44CF-ACFE-8987A0382CB2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.228.53|Name=windowsSpyBlockerSpy-104.43.228.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BF4D21DF-474A-4129-B54C-01DD7DA7023E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.228.202|Name=windowsSpyBlockerSpy-104.43.228.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F7F39C06-E0CC-4A3A-A388-026CD68771AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.43.237.169|Name=windowsSpyBlockerSpy-104.43.237.169|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4ECE5EA2-F9F6-4217-B0A1-5378F0F16882}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.45.11.195|Name=windowsSpyBlockerSpy-104.45.11.195|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2452391F-8138-4DAC-B038-2B47C15E1A16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.45.214.112|Name=windowsSpyBlockerSpy-104.45.214.112|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A29386D7-0405-42B7-8A37-F2A0021200E0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.46.1.211|Name=windowsSpyBlockerSpy-104.46.1.211|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{34B8FE3A-E033-453B-A3A5-976C65EE269B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.46.38.64|Name=windowsSpyBlockerSpy-104.46.38.64|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{174F0464-3238-4840-A6A9-8CA965D2C241}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.210.4.77|Name=windowsSpyBlockerSpy-104.210.4.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2D234AC9-9E4B-470D-B45B-A1F0F70D18BB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.210.40.87|Name=windowsSpyBlockerSpy-104.210.40.87|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B1BA63BB-AC5A-43E3-A9EE-5F14B62E4E58}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.210.212.243|Name=windowsSpyBlockerSpy-104.210.212.243|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F23379C7-73AF-4B92-817E-83EBF098A39E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.214.35.244|Name=windowsSpyBlockerSpy-104.214.35.244|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{05F93AF3-BA32-457D-B722-71BD31E18342}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.214.78.152|Name=windowsSpyBlockerSpy-104.214.78.152|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5D4ED39E-FF18-4552-AEB8-28817CE71044}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.6.87|Name=windowsSpyBlockerSpy-131.253.6.87|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DA632B4A-6792-498A-855C-439E0D94F815}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.6.103|Name=windowsSpyBlockerSpy-131.253.6.103|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{18D8A99A-AFD9-45B0-8098-3801065B1473}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.230|Name=windowsSpyBlockerSpy-131.253.34.230|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BEEF259C-DC8B-4100-8EBF-48F930708DF3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.234|Name=windowsSpyBlockerSpy-131.253.34.234|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1EB24DEE-A4F7-4B29-B34E-E5CEC3A0D4A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.237|Name=windowsSpyBlockerSpy-131.253.34.237|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{34352CA6-18C2-4A59-8C67-C0F965355FCA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.243|Name=windowsSpyBlockerSpy-131.253.34.243|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DB2702A7-69F3-4FC7-8987-5EA498C910F3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.246|Name=windowsSpyBlockerSpy-131.253.34.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{23C9C950-C3D3-4AC2-8EEB-2432AA1EDD7A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.247|Name=windowsSpyBlockerSpy-131.253.34.247|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F71FEA89-D3F2-4F32-ABC9-E6FF56812D01}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.249|Name=windowsSpyBlockerSpy-131.253.34.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9B1FF859-201A-4197-87AA-D962D5836B10}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.252|Name=windowsSpyBlockerSpy-131.253.34.252|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C2AC74E5-1502-4D7F-92FD-418285135356}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.34.255|Name=windowsSpyBlockerSpy-131.253.34.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{17A37120-834D-408E-9B68-83AB6F740B32}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=131.253.40.37|Name=windowsSpyBlockerSpy-131.253.40.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{76A9C308-01D4-4EA3-AE7C-E3A5019B9989}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.30.202|Name=windowsSpyBlockerSpy-134.170.30.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{06EA7510-96D4-44F9-96A2-C5E16F895BCA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.30.203|Name=windowsSpyBlockerSpy-134.170.30.203|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0BD01B82-604C-4F40-AEC8-A7E21DA9465D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.30.204|Name=windowsSpyBlockerSpy-134.170.30.204|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{384B9A75-6B01-4BA4-B51B-6D2A3A6324F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.30.221|Name=windowsSpyBlockerSpy-134.170.30.221|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{48EC9F5A-A6A5-483B-A808-7FBC7C0A9641}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.52.151|Name=windowsSpyBlockerSpy-134.170.52.151|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B32BAA85-6035-4F38-90CB-18780034E5F1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.235.16|Name=windowsSpyBlockerSpy-134.170.235.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ACF00317-F588-4AF5-AD64-71A0A27DB633}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.74.250|Name=windowsSpyBlockerSpy-157.56.74.250|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{87ADF935-D64C-4954-9A28-C8D65F7AE1DB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.91.77|Name=windowsSpyBlockerSpy-157.56.91.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8B6F1701-2B73-41CF-AE5F-4AF88FF67CE0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.106.184|Name=windowsSpyBlockerSpy-157.56.106.184|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A7DB1D54-64D1-4FB0-9546-3F68ED49B9DB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.106.185|Name=windowsSpyBlockerSpy-157.56.106.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{216BA88E-A8E5-48FE-AC7E-0797751E815A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.106.189|Name=windowsSpyBlockerSpy-157.56.106.189|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{571D8732-5FA9-44FA-B29A-9762A65F6E27}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.113.217|Name=windowsSpyBlockerSpy-157.56.113.217|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B9A398E8-6186-49E3-9A11-32969AC4BD46}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.121.89|Name=windowsSpyBlockerSpy-157.56.121.89|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3FCA2B71-0110-48B2-AA08-C050EF86D5E3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.124.87|Name=windowsSpyBlockerSpy-157.56.124.87|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3400D01E-8FF1-40E4-8FEF-93DE45E80D0F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.149.250|Name=windowsSpyBlockerSpy-157.56.149.250|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{49B6AC64-B927-4403-841A-4A1045F8BF61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.194.72|Name=windowsSpyBlockerSpy-157.56.194.72|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C4E438BE-36C6-4AC1-941C-CD5D83DD2FFA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.194.73|Name=windowsSpyBlockerSpy-157.56.194.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D53636BA-8AF7-47B0-A6D3-9822658C0301}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.194.74|Name=windowsSpyBlockerSpy-157.56.194.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D534047C-F878-4A89-8870-8804228D42E6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.61.24.141|Name=windowsSpyBlockerSpy-168.61.24.141|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{86E74D3F-F88E-4B4D-9346-95556352997E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.61.146.25|Name=windowsSpyBlockerSpy-168.61.146.25|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B0C09FC0-05FE-460F-8999-6F4CC6A5CBB3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.61.149.17|Name=windowsSpyBlockerSpy-168.61.149.17|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5E947C67-8BE8-47F1-BDD0-035BF23B976C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.61.172.71|Name=windowsSpyBlockerSpy-168.61.172.71|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B3EBDB1A-1CDD-41C7-9B53-F51795D6A38E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.62.187.13|Name=windowsSpyBlockerSpy-168.62.187.13|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3C3B253E-A70E-4D42-86C2-FED6190B6184}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.63.100.61|Name=windowsSpyBlockerSpy-168.63.100.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CDCDDB61-C593-4926-A27C-27D5D60B14DD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=168.63.108.233|Name=windowsSpyBlockerSpy-168.63.108.233|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{87346B23-1B3C-4A39-8795-5F762144B70E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.236.155.80|Name=windowsSpyBlockerSpy-191.236.155.80|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{34C7440A-DE61-4421-A907-09D560DFC228}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.237.218.239|Name=windowsSpyBlockerSpy-191.237.218.239|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6692CCD1-1815-4099-BFC0-1983ECC0300C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.239.50.18|Name=windowsSpyBlockerSpy-191.239.50.18|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F8C4C2EB-5AAD-42A0-A6D3-1B6A9EB7B216}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.239.50.77|Name=windowsSpyBlockerSpy-191.239.50.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AFA35F74-D6DD-4BBE-ACE9-76DB02D3BAAE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.239.52.100|Name=windowsSpyBlockerSpy-191.239.52.100|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{745CE2EB-0D62-45D4-AFA9-E26F26521D9D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.239.54.52|Name=windowsSpyBlockerSpy-191.239.54.52|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{697C077B-6F28-42F4-8D71-7E0C3712D9B9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.68.166.254|Name=windowsSpyBlockerSpy-207.68.166.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CA16CAF8-2987-4516-988C-0FC7FB6D2314}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.87.47|Name=windowsSpyBlockerUpdate-13.68.87.47|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A3CE7E28-26C7-4C1A-9DC7-7DC58085D85A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.87.175|Name=windowsSpyBlockerUpdate-13.68.87.175|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7DA74884-0AA8-4D14-909E-58CC3A8E2661}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.88.129|Name=windowsSpyBlockerUpdate-13.68.88.129|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62A9AC78-DCFD-41AF-828D-6D22F70FA516}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.68.93.109|Name=windowsSpyBlockerUpdate-13.68.93.109|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8686CE1D-84D8-46B4-96F2-870292D59484}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.74.179.117|Name=windowsSpyBlockerUpdate-13.74.179.117|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{72EFF206-7AF8-45FE-B270-D7AA1A21A12C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.168.230|Name=windowsSpyBlockerUpdate-13.78.168.230|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{20048AAA-4CE8-41C7-BD8A-180B6121CCF5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.177.144|Name=windowsSpyBlockerUpdate-13.78.177.144|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6779A2FD-D53C-4796-A77B-3B466ECFD15F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.179.199|Name=windowsSpyBlockerUpdate-13.78.179.199|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E1F62D22-8611-4274-97F3-45D46C77773E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.180.50|Name=windowsSpyBlockerUpdate-13.78.180.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FC0BB927-BEEE-405F-95BB-1FAC7D5BD1EB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.180.90|Name=windowsSpyBlockerUpdate-13.78.180.90|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E54FC916-D840-471D-A78A-D020F9AB0921}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.184.44|Name=windowsSpyBlockerUpdate-13.78.184.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C8A56862-A935-489A-9784-EE5DF70217D8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.184.186|Name=windowsSpyBlockerUpdate-13.78.184.186|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0FEC7034-DD12-4A85-9154-8F25673A6633}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.186.254|Name=windowsSpyBlockerUpdate-13.78.186.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62E6F639-9E47-4851-87F8-851EB945B226}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.187.58|Name=windowsSpyBlockerUpdate-13.78.187.58|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{40A86125-12E1-448D-9DAE-4B9F006AD5A3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.78.230.134|Name=windowsSpyBlockerUpdate-13.78.230.134|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{793ACC98-D033-4125-B301-1D813E12BE11}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.148.218|Name=windowsSpyBlockerUpdate-13.83.148.218|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4A3C20E1-CBE8-49B0-80F1-01B568BB08E5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.148.235|Name=windowsSpyBlockerUpdate-13.83.148.235|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7C419DED-7565-4627-94BA-03558DB6DB8A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.149.5|Name=windowsSpyBlockerUpdate-13.83.149.5|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E0B0D863-C325-4FD7-AFBA-82DD1118C36E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.149.67|Name=windowsSpyBlockerUpdate-13.83.149.67|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{649D0FBF-F684-4BA6-9F10-620DC706EF1B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.83.151.160|Name=windowsSpyBlockerUpdate-13.83.151.160|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B35E299B-3F36-4C83-B383-2B9C9125D32C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.85.88.16|Name=windowsSpyBlockerUpdate-13.85.88.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E60D4B99-6A0B-474F-BA12-50C2D2EFEB4D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.86.124.174|Name=windowsSpyBlockerUpdate-13.86.124.174|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{979344D8-725B-4DD7-9828-95051F4E355C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.86.124.184|Name=windowsSpyBlockerUpdate-13.86.124.184|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1B73A9A4-7E60-4322-AF91-307C181BAEAF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.86.124.191|Name=windowsSpyBlockerUpdate-13.86.124.191|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{950D9175-EA5E-4D9E-8338-CDA0270FC350}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.92.211.120|Name=windowsSpyBlockerUpdate-13.92.211.120|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2F9DD703-BAAD-454B-83DD-2397A27CFED9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.4.50|Name=windowsSpyBlockerUpdate-13.107.4.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EA66AF47-1D0B-4612-896E-550F7EDF037E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.4.52|Name=windowsSpyBlockerUpdate-13.107.4.52|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A24C5B35-A54A-4ED1-A87B-714FF264CC7E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=13.107.4.254|Name=windowsSpyBlockerUpdate-13.107.4.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AA5E3A8-A3BE-4E71-B74B-3217971FAD80}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.218.63|Name=windowsSpyBlockerUpdate-20.36.218.63|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0D8D503E-9276-445B-A710-3B7D5D75A422}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.218.70|Name=windowsSpyBlockerUpdate-20.36.218.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6F03352A-F39A-498C-9966-9F7775999DA1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.222.39|Name=windowsSpyBlockerUpdate-20.36.222.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9A3D90E9-4248-48A7-B654-30F0A4CBAB49}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.252.129|Name=windowsSpyBlockerUpdate-20.36.252.129|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D0744286-8F2B-4D10-9B38-4000CB9A8E33}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.36.252.130|Name=windowsSpyBlockerUpdate-20.36.252.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5531FB56-01FB-4630-8AE8-3DDCA472D5BA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.41.41.23|Name=windowsSpyBlockerUpdate-20.41.41.23|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D32A2EC2-DF46-4714-8358-8323B97BBD17}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.42.24.29|Name=windowsSpyBlockerUpdate-20.42.24.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E4EEE289-1D80-448A-8FBB-31588959A434}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.42.24.50|Name=windowsSpyBlockerUpdate-20.42.24.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0E22A672-9620-46AE-AF7A-A82927F880B1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.77.24|Name=windowsSpyBlockerUpdate-20.44.77.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{55401FBC-856F-41B5-83C4-45146E849532}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.77.45|Name=windowsSpyBlockerUpdate-20.44.77.45|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C09B4481-1037-47BA-BBED-37D87641FFEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.77.49|Name=windowsSpyBlockerUpdate-20.44.77.49|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0CDE389C-272A-4B83-9B57-E3F823627F8A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.44.77.219|Name=windowsSpyBlockerUpdate-20.44.77.219|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E788B1EE-8C5C-4F1A-8233-9F4952D0E6B2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.45.4.77|Name=windowsSpyBlockerUpdate-20.45.4.77|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1B020192-5DCF-4648-9CAC-7ED4E31505B6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.45.4.178|Name=windowsSpyBlockerUpdate-20.45.4.178|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{850E94CA-38BC-44D8-8166-EFA4D71D51A0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.69|Name=windowsSpyBlockerUpdate-20.54.24.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AE3F1C48-C1BB-4BF3-8220-508D01E329DF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.79|Name=windowsSpyBlockerUpdate-20.54.24.79|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7A548004-8BBE-43E4-BEDA-D9598050CB4B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.148|Name=windowsSpyBlockerUpdate-20.54.24.148|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0F15BCEA-91D1-4688-88CB-4EB0EBDE72CB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.169|Name=windowsSpyBlockerUpdate-20.54.24.169|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F26E7D5D-307F-4604-ABCC-F288BC64FE6F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.231|Name=windowsSpyBlockerUpdate-20.54.24.231|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C1B6261D-F4A4-4CDD-B14B-AB4C417A310F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.24.246|Name=windowsSpyBlockerUpdate-20.54.24.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{07FA7054-0700-46F5-8AD6-60D18F29C74F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.54.25.4|Name=windowsSpyBlockerUpdate-20.54.25.4|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C6892A6C-39A3-40B6-A7E3-967FD6B84DDB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.185.109.208|Name=windowsSpyBlockerUpdate-20.185.109.208|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C8DC4A1F-9E51-4FD2-B3CC-C70BCF331B1E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.186.48.46|Name=windowsSpyBlockerUpdate-20.186.48.46|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EB8D78EE-8755-48A6-85C7-95F4F9E60F60}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.188.74.161|Name=windowsSpyBlockerUpdate-20.188.74.161|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B7F8BF2D-33DE-4C8D-92D2-CA3FAE838117}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.188.78.184|Name=windowsSpyBlockerUpdate-20.188.78.184|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5C39783A-3B2C-4FBE-B6BD-460604A0C05B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.188.78.185|Name=windowsSpyBlockerUpdate-20.188.78.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62207DCD-D178-4065-82E9-620D175C73DD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=20.190.3.175|Name=windowsSpyBlockerUpdate-20.190.3.175|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ABB808CB-F834-4536-AE77-829E5942EF97}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.103.189.125|Name=windowsSpyBlockerUpdate-23.103.189.125|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CC90DF6C-CB14-418D-ADBE-9D17E0B803C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.103.189.126|Name=windowsSpyBlockerUpdate-23.103.189.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7200B420-420F-4CC1-A5B3-5F64553C8834}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.103.189.157|Name=windowsSpyBlockerUpdate-23.103.189.157|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{688A3398-82EB-4CD9-AE3D-CCA4AFA7AF22}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=23.103.189.158|Name=windowsSpyBlockerUpdate-23.103.189.158|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{326B8C56-35CD-495F-AA16-3019D86E938D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.248.104|Name=windowsSpyBlockerUpdate-40.67.248.104|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E41A3ED2-3766-4636-97BD-F203F8B61ED0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.251.132|Name=windowsSpyBlockerUpdate-40.67.251.132|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{871C3A0D-DB62-40F9-ABE0-10A48A95ED09}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.251.134|Name=windowsSpyBlockerUpdate-40.67.251.134|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DBC3BF37-6904-4BE7-B704-82669A4B75B1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.252.175|Name=windowsSpyBlockerUpdate-40.67.252.175|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C7A5D228-32FD-4DA0-8D6D-4E5CEE11C000}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.252.206|Name=windowsSpyBlockerUpdate-40.67.252.206|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D02D2F14-8782-48F3-B49F-FD593C7FE7A6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.253.249|Name=windowsSpyBlockerUpdate-40.67.253.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{087F248C-1177-4312-84A4-EB60D6398A08}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.254.36|Name=windowsSpyBlockerUpdate-40.67.254.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B862F2E2-2D77-41C6-B318-E3285D48E4AC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.254.97|Name=windowsSpyBlockerUpdate-40.67.254.97|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5D3C6905-C410-4E41-BE92-33AFE40D1A33}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.67.255.199|Name=windowsSpyBlockerUpdate-40.67.255.199|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{24D8838F-5061-4E91-B998-F166D882C3EC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.216.73|Name=windowsSpyBlockerUpdate-40.69.216.73|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BE68E83B-2B23-4BE8-A3E8-FB74FCF05782}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.216.129|Name=windowsSpyBlockerUpdate-40.69.216.129|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CEE8841A-D1B0-436E-920D-CD88F5B2B964}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.216.251|Name=windowsSpyBlockerUpdate-40.69.216.251|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0EDBAA9F-76B2-4702-9B05-8E79D38032D3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.218.62|Name=windowsSpyBlockerUpdate-40.69.218.62|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8FE645DE-6E32-475C-9D96-243FF7D02D95}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.219.197|Name=windowsSpyBlockerUpdate-40.69.219.197|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{391EBE24-F76B-44C9-A718-354816362BBC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.220.46|Name=windowsSpyBlockerUpdate-40.69.220.46|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{13A9457F-90B9-4B35-BD27-B8A522591534}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.221.239|Name=windowsSpyBlockerUpdate-40.69.221.239|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{69A9C4B4-4C98-4A09-8D35-6FA9B40F7DE6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.222.109|Name=windowsSpyBlockerUpdate-40.69.222.109|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{823AD3D1-C5E2-498E-A46C-04C84CE00681}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.223.39|Name=windowsSpyBlockerUpdate-40.69.223.39|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CA711EF7-49AD-4FE6-87BF-14DADE8BF06D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.69.223.198|Name=windowsSpyBlockerUpdate-40.69.223.198|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{76988083-2EF1-450C-AB44-BCB35661E34B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.224.144|Name=windowsSpyBlockerUpdate-40.70.224.144|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4DCD8CE0-B2FB-4F28-86D1-4B91E83D6095}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.224.145|Name=windowsSpyBlockerUpdate-40.70.224.145|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{55481040-25F7-4C66-9FE2-4C8E4CBDFDAE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.70.229.150|Name=windowsSpyBlockerUpdate-40.70.229.150|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{286455FD-3D98-44D9-BCCA-822BFC112127}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.18.167|Name=windowsSpyBlockerUpdate-40.77.18.167|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E739BDF2-55BC-4B67-B8AE-4F2074DB1258}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.224.8|Name=windowsSpyBlockerUpdate-40.77.224.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{42ACA560-C679-4662-B90F-3097D7AD6BCE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.224.11|Name=windowsSpyBlockerUpdate-40.77.224.11|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F6D93895-4E8A-469A-B0F6-F49654D01D76}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.224.145|Name=windowsSpyBlockerUpdate-40.77.224.145|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E18B8757-34B2-40D1-817B-2DA439C9171A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.224.254|Name=windowsSpyBlockerUpdate-40.77.224.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0A2A38E8-8EF1-4A7A-B6B9-CEFEAA045F35}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.13|Name=windowsSpyBlockerUpdate-40.77.226.13|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{309D3866-EB2F-4C67-8CF6-041C77AC77BE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.181|Name=windowsSpyBlockerUpdate-40.77.226.181|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7CC4969E-5957-4FBF-8512-BEA03D32A523}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.246|Name=windowsSpyBlockerUpdate-40.77.226.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{712B8489-EA85-4F85-81DD-EF3EC5066A73}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.247|Name=windowsSpyBlockerUpdate-40.77.226.247|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{92AD5D50-F1FD-408F-9AA0-2D17E1EC907F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.248|Name=windowsSpyBlockerUpdate-40.77.226.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E0BA6165-2B97-4699-8E98-F51649396730}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.249|Name=windowsSpyBlockerUpdate-40.77.226.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D16B21D1-7F70-4F0C-8243-E4B91F81E33C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.226.250|Name=windowsSpyBlockerUpdate-40.77.226.250|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{326C80D3-BA18-48BE-8A09-02961C7B2DCD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.8|Name=windowsSpyBlockerUpdate-40.77.229.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{365A1B4E-D067-482E-B024-0C1319983038}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.9|Name=windowsSpyBlockerUpdate-40.77.229.9|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AC6BA1E5-3D37-4BF2-95D7-3F8DB26E6694}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.12|Name=windowsSpyBlockerUpdate-40.77.229.12|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F8940A70-D25B-4A96-969E-D6A72AB3FD3D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.13|Name=windowsSpyBlockerUpdate-40.77.229.13|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CBEC42A-6668-43A3-9A71-D18999E0CDE5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.16|Name=windowsSpyBlockerUpdate-40.77.229.16|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2BEDBD40-005A-458F-A5E1-10D2E2CE9F18}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.21|Name=windowsSpyBlockerUpdate-40.77.229.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BCA509CE-B5B2-40B0-BC0E-948319082DC0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.22|Name=windowsSpyBlockerUpdate-40.77.229.22|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{02060A62-43D9-453E-9BFA-92E6FA4FE7AF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.24|Name=windowsSpyBlockerUpdate-40.77.229.24|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B43D67C3-2AE4-4226-B8E6-111F9008AF2B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.26|Name=windowsSpyBlockerUpdate-40.77.229.26|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2B832B25-8519-4BAA-A934-81758AD38B91}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.27|Name=windowsSpyBlockerUpdate-40.77.229.27|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A8DAF215-F0EB-4203-87DF-91DFB5EB1329}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.29|Name=windowsSpyBlockerUpdate-40.77.229.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{918FF77A-74BE-4E7F-B00F-24F00C6B3891}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.30|Name=windowsSpyBlockerUpdate-40.77.229.30|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{79256507-D118-4657-9188-978E2091C5E4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.32|Name=windowsSpyBlockerUpdate-40.77.229.32|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9A7F80A1-257B-4B71-B356-7FD0A8F75847}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.35|Name=windowsSpyBlockerUpdate-40.77.229.35|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2C3B2ABD-A028-4E46-AE9C-350A375EAA87}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.38|Name=windowsSpyBlockerUpdate-40.77.229.38|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{14110B6E-0BB2-4D29-910C-D220FE0EE82C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.44|Name=windowsSpyBlockerUpdate-40.77.229.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7A1DBA1D-F4D1-486B-B139-F6B0423E946D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.45|Name=windowsSpyBlockerUpdate-40.77.229.45|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E409C18C-F7F3-4AC2-9459-26239C6AAC07}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.50|Name=windowsSpyBlockerUpdate-40.77.229.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F1B3ECBB-667A-4707-AFE2-DED3F9546E75}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.53|Name=windowsSpyBlockerUpdate-40.77.229.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3261C356-7FBA-448C-AA6F-12AC4228BC95}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.62|Name=windowsSpyBlockerUpdate-40.77.229.62|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{546D75F4-AF63-4D1E-9DDA-52C1FC2EF939}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.65|Name=windowsSpyBlockerUpdate-40.77.229.65|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2A8DE67D-2975-4E3A-B0A9-B2C5C6303D78}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.67|Name=windowsSpyBlockerUpdate-40.77.229.67|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6820A328-583D-4AE5-A9D0-56EB1AF17BEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.69|Name=windowsSpyBlockerUpdate-40.77.229.69|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{62F4F4E5-5E09-4EBA-99AE-1C8C213EDC7E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.70|Name=windowsSpyBlockerUpdate-40.77.229.70|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CB663A53-A68B-4034-9A92-B8CE826A1FEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.71|Name=windowsSpyBlockerUpdate-40.77.229.71|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7374E4CE-20E7-4D40-B29A-A06021485A55}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.74|Name=windowsSpyBlockerUpdate-40.77.229.74|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{93B30279-1041-4C0A-B908-D779DBA2B234}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.76|Name=windowsSpyBlockerUpdate-40.77.229.76|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9C6C4445-31C8-4D48-A52E-EF5EF138225B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.80|Name=windowsSpyBlockerUpdate-40.77.229.80|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{29B254D2-299C-4007-B530-1B34638EA9A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.81|Name=windowsSpyBlockerUpdate-40.77.229.81|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D3802E8F-4134-4016-8E8A-6EE4C71FF313}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.82|Name=windowsSpyBlockerUpdate-40.77.229.82|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{673C229D-E619-4F66-99AF-07C733EB0B42}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.88|Name=windowsSpyBlockerUpdate-40.77.229.88|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{16E8207A-4EB8-491E-BA98-9D94E7D29024}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.118|Name=windowsSpyBlockerUpdate-40.77.229.118|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5B9BBC5D-24D9-4C42-8402-D8C9BCECFAAF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.123|Name=windowsSpyBlockerUpdate-40.77.229.123|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F6B4D38F-B24E-4800-B915-BCB2A12A4CF2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.128|Name=windowsSpyBlockerUpdate-40.77.229.128|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2F98CF7D-C7F1-4B07-92AB-FD9134EFA96C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.133|Name=windowsSpyBlockerUpdate-40.77.229.133|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D22F25DE-3C6D-48E8-AD52-37AFDF761C58}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.141|Name=windowsSpyBlockerUpdate-40.77.229.141|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B5559417-DCEA-45E7-A9DA-4B18AC55DA34}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.77.229.199|Name=windowsSpyBlockerUpdate-40.77.229.199|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A9FCBED9-FDD4-4CAA-909F-3ED45C0A82A6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.65.78|Name=windowsSpyBlockerUpdate-40.79.65.78|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9E374AC1-7AB6-492D-B867-EB2E45BCFF19}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.65.123|Name=windowsSpyBlockerUpdate-40.79.65.123|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9F33DDF0-9618-4626-91FB-DB91AE58072D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.65.235|Name=windowsSpyBlockerUpdate-40.79.65.235|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{538D2A53-220D-47E0-9B69-81164D81A2C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.65.237|Name=windowsSpyBlockerUpdate-40.79.65.237|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2E32A1B1-5CFD-4CD5-8ECC-C7D712766B59}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.66.194|Name=windowsSpyBlockerUpdate-40.79.66.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0220ED87-D290-45C7-8215-05E3E40518C3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.66.209|Name=windowsSpyBlockerUpdate-40.79.66.209|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D919083B-B2FE-42ED-95D2-257688CAFA67}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.67.176|Name=windowsSpyBlockerUpdate-40.79.67.176|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{201262DA-4E1A-4FBE-9938-76C5AE24B925}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.79.70.158|Name=windowsSpyBlockerUpdate-40.79.70.158|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{25EE3921-FCCD-42CA-A62B-16DCA33B0A60}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.73.169|Name=windowsSpyBlockerUpdate-40.91.73.169|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7AA6D62E-277C-4D9B-B25C-4F5271ACBA8B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.73.219|Name=windowsSpyBlockerUpdate-40.91.73.219|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{30D67A27-E02D-47AF-BCE6-5A9415D7F81C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.75.5|Name=windowsSpyBlockerUpdate-40.91.75.5|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{49455622-DB34-4349-B967-BF423B75AB55}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.80.89|Name=windowsSpyBlockerUpdate-40.91.80.89|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{29CC6FFE-112F-4722-8B99-5E2460947275}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.91.94|Name=windowsSpyBlockerUpdate-40.91.91.94|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{54ABAF24-6F6D-418C-9F4A-4B7DD3CE1A48}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.120.196|Name=windowsSpyBlockerUpdate-40.91.120.196|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{386EA22B-89AF-40A7-87A0-98515634A322}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.91.122.44|Name=windowsSpyBlockerUpdate-40.91.122.44|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2DD873DC-5FAE-461A-8846-549A00D183C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.125.122.151|Name=windowsSpyBlockerUpdate-40.125.122.151|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9B5B9F75-2086-42D6-AB24-120BF3ABA628}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=40.125.122.176|Name=windowsSpyBlockerUpdate-40.125.122.176|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{698443CC-2C46-4813-A262-52679154E820}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.162.50|Name=windowsSpyBlockerUpdate-51.104.162.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EB3E2811-6248-4815-AB76-A74F7B1EE68A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.162.168|Name=windowsSpyBlockerUpdate-51.104.162.168|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0D6506ED-3829-40FA-81AB-230B1D7E92A1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.164.114|Name=windowsSpyBlockerUpdate-51.104.164.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{018EBB92-7E4A-4FAF-A15E-698A6B1C508A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.167.48|Name=windowsSpyBlockerUpdate-51.104.167.48|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{19778B34-E730-4BB7-BBA9-CFFADFFAFBC9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.167.186|Name=windowsSpyBlockerUpdate-51.104.167.186|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{027B6243-D32A-44CC-8832-63C4DD97AD00}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.167.245|Name=windowsSpyBlockerUpdate-51.104.167.245|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6694FDDB-AD74-467A-9857-45980F7D5D45}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.104.167.255|Name=windowsSpyBlockerUpdate-51.104.167.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ED6B4D6F-A661-4B82-A6E5-9FE8DDF35CC2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.105.249.223|Name=windowsSpyBlockerUpdate-51.105.249.223|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{63242445-53CC-459F-82D9-5C57AB2AD879}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.105.249.228|Name=windowsSpyBlockerUpdate-51.105.249.228|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EC6A7D15-0576-4E5A-BCCD-282EAFCDF438}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=51.105.249.239|Name=windowsSpyBlockerUpdate-51.105.249.239|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0A368FD2-D242-45A6-B106-62068C2DD034}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.137.102.105|Name=windowsSpyBlockerUpdate-52.137.102.105|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{37B4B812-A07D-4356-8878-4AE4A5B7E766}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.137.103.96|Name=windowsSpyBlockerUpdate-52.137.103.96|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{10C6367D-C24C-479F-8070-7F89B313FF6C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.137.103.130|Name=windowsSpyBlockerUpdate-52.137.103.130|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{53D57CCD-1742-4852-8F2D-B62399741E76}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.21.136|Name=windowsSpyBlockerUpdate-52.142.21.136|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0FB7476D-31CA-4C87-BFE3-259A447D7C85}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.142.21.137|Name=windowsSpyBlockerUpdate-52.142.21.137|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{644121D4-3025-46D8-BC25-59A704B01F47}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.143.80.209|Name=windowsSpyBlockerUpdate-52.143.80.209|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AB7762EA-FD87-42DA-BABE-5FD91C54379F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.143.81.222|Name=windowsSpyBlockerUpdate-52.143.81.222|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8FF0563D-1D43-4958-82A1-2826F2B63574}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.143.84.45|Name=windowsSpyBlockerUpdate-52.143.84.45|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7DB9FF57-C950-40A2-BC57-01EE7BC10D2F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.143.86.214|Name=windowsSpyBlockerUpdate-52.143.86.214|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4A0D372D-D723-4293-9245-473556A2268B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.143.87.28|Name=windowsSpyBlockerUpdate-52.143.87.28|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{90D4AF8D-9ED6-4888-A30C-63B35557B076}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.147.176.8|Name=windowsSpyBlockerUpdate-52.147.176.8|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{603D456B-9539-4BE4-B0CF-2BC942B701EE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.148.148.114|Name=windowsSpyBlockerUpdate-52.148.148.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B41B0F9E-CA94-434C-B882-5814CFD58774}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.95.90|Name=windowsSpyBlockerUpdate-52.155.95.90|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A3D67F4A-7613-4550-891A-0EFE9438BA8B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.115.56|Name=windowsSpyBlockerUpdate-52.155.115.56|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2FEEDDEC-3E0E-452C-9B1F-682AEF1692A5}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.169.137|Name=windowsSpyBlockerUpdate-52.155.169.137|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F6FD7DF3-1922-45A9-BF2C-AD0E653C914A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.183.99|Name=windowsSpyBlockerUpdate-52.155.183.99|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ABB78AA6-F08F-4CF0-8DBC-4C9D875938DD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.217.156|Name=windowsSpyBlockerUpdate-52.155.217.156|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{417CC734-F1BA-4628-9125-E27242686C5C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.155.223.194|Name=windowsSpyBlockerUpdate-52.155.223.194|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4532E009-4BA1-47CF-9381-A1F4F25665F0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.156.144.83|Name=windowsSpyBlockerUpdate-52.156.144.83|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{74222522-1207-4FA7-9EB5-365E6919AD13}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.114.119|Name=windowsSpyBlockerUpdate-52.158.114.119|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EB1440A9-972C-4ED0-B092-741660DBEBCB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.158.122.14|Name=windowsSpyBlockerUpdate-52.158.122.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5A8D770E-5E13-49E4-9846-A1C154502920}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.161.15.246|Name=windowsSpyBlockerUpdate-52.161.15.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{99E86AC8-3180-4FBF-BFA9-04254D23C140}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.164.221.179|Name=windowsSpyBlockerUpdate-52.164.221.179|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8FDE981E-6771-4E73-9AE7-8B05335D5E58}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.222.82|Name=windowsSpyBlockerUpdate-52.167.222.82|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9875CD70-DF6D-4DF0-ACDC-052E6DF2CF3D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.222.147|Name=windowsSpyBlockerUpdate-52.167.222.147|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AC367C20-EC64-421C-BDF2-E2AC966FB9EB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.167.223.135|Name=windowsSpyBlockerUpdate-52.167.223.135|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8C5790EB-725C-4ADA-B52D-9D4B7D86ACF6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.82.131|Name=windowsSpyBlockerUpdate-52.169.82.131|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1CA72655-D076-4729-955A-55A77E4FD99E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.83.3|Name=windowsSpyBlockerUpdate-52.169.83.3|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C6515192-243D-4291-99F5-7039C466BE22}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.87.42|Name=windowsSpyBlockerUpdate-52.169.87.42|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5127BD57-0C37-44EE-8B0B-C912FEE75613}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.169.123.48|Name=windowsSpyBlockerUpdate-52.169.123.48|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32F7DE78-5ECB-458C-9E36-3BB42F7BB89C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.175.23.79|Name=windowsSpyBlockerUpdate-52.175.23.79|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{697613E3-BA7E-40CA-88F7-DC0E7F681B6E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.177.164.251|Name=windowsSpyBlockerUpdate-52.177.164.251|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DBD44449-027C-4A45-A84F-A9C9C083213C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.177.247.15|Name=windowsSpyBlockerUpdate-52.177.247.15|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3BBB2EC6-97CE-487B-B871-AF3E595B5C58}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.178.192.146|Name=windowsSpyBlockerUpdate-52.178.192.146|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0686386F-E57B-47B6-8CED-FEE061FB108C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.179.216.235|Name=windowsSpyBlockerUpdate-52.179.216.235|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{40AF7BA3-7B98-493F-8923-9F54660E5182}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.179.219.14|Name=windowsSpyBlockerUpdate-52.179.219.14|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3D57C0AA-679E-497A-97B2-4E5BD969D01E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.183.47.176|Name=windowsSpyBlockerUpdate-52.183.47.176|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{71EBBED3-7024-4803-9E61-A9C4E979E78F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.183.118.171|Name=windowsSpyBlockerUpdate-52.183.118.171|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5C27E018-9E94-45F8-9D9D-C17442CE9F6C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.152.136|Name=windowsSpyBlockerUpdate-52.184.152.136|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9E92BC74-792F-43CC-8AF7-F980320B7913}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.155.206|Name=windowsSpyBlockerUpdate-52.184.155.206|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C2DC1C09-2282-438E-A9EA-55220CC2FC8F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.212.181|Name=windowsSpyBlockerUpdate-52.184.212.181|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{49694B27-2C6C-44D1-80BA-E0FD2863E6CE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.213.21|Name=windowsSpyBlockerUpdate-52.184.213.21|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A5215310-81B3-4876-9DB2-5FBA1F0D96E9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.213.187|Name=windowsSpyBlockerUpdate-52.184.213.187|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6598647F-36EF-4CB8-ADE8-36F4F270AF65}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.214.53|Name=windowsSpyBlockerUpdate-52.184.214.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5C61614B-A3C4-4E13-9533-41A159645D6B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.214.123|Name=windowsSpyBlockerUpdate-52.184.214.123|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7CCB521B-5F83-4C78-9D1D-C67F766E869F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.214.139|Name=windowsSpyBlockerUpdate-52.184.214.139|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A69C4314-CB96-4B9E-BC17-FB557D004FAC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.216.174|Name=windowsSpyBlockerUpdate-52.184.216.174|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{996618FB-4D4E-47E1-9D19-E953EE088C41}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.216.226|Name=windowsSpyBlockerUpdate-52.184.216.226|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FED1D373-F7AD-469E-B459-5700685EA2FD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.216.246|Name=windowsSpyBlockerUpdate-52.184.216.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0F54F2C9-7D63-45E3-A9D7-3D8EEAE0E343}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.217.20|Name=windowsSpyBlockerUpdate-52.184.217.20|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{77B2B530-E81C-4C82-91CF-BF3CE87FEB3C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.217.37|Name=windowsSpyBlockerUpdate-52.184.217.37|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{78F6386D-5130-414F-86F1-207117028095}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.184.217.56|Name=windowsSpyBlockerUpdate-52.184.217.56|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CB14F6D4-37BE-4EF4-AEB8-6D2808EE25E9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.187.60.107|Name=windowsSpyBlockerUpdate-52.187.60.107|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1D6C4EE8-A711-4B73-8698-657F9105A4F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.188.72.233|Name=windowsSpyBlockerUpdate-52.188.72.233|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F396CB78-9BAA-494E-B00E-606FBB56241D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.226.130.114|Name=windowsSpyBlockerUpdate-52.226.130.114|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9E11138E-6FCF-4DAE-BE3D-1F14E72D6E8C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.170.171|Name=windowsSpyBlockerUpdate-52.229.170.171|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EDD14087-8CC3-439D-A5B4-AF400AED39C3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.170.224|Name=windowsSpyBlockerUpdate-52.229.170.224|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{37939CE2-0D5A-425B-90E1-1379EE9C557E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.171.86|Name=windowsSpyBlockerUpdate-52.229.171.86|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C5CFD584-9756-4BBE-9CFD-060E4B6A9E1A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.171.202|Name=windowsSpyBlockerUpdate-52.229.171.202|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{14003187-BBD1-4DF5-8348-128B6B2EFDAD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.172.155|Name=windowsSpyBlockerUpdate-52.229.172.155|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CFDAFBD-4BEF-4FD5-A416-4C68E0062953}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.174.29|Name=windowsSpyBlockerUpdate-52.229.174.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{55B18E79-8345-4F6F-B1AF-A82192DD50AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.174.172|Name=windowsSpyBlockerUpdate-52.229.174.172|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4FF29CAD-9D34-4D46-9B1D-58B3ED2539DC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.174.233|Name=windowsSpyBlockerUpdate-52.229.174.233|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{935A0D17-ADB7-44AD-9D10-44C790968D29}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.229.175.79|Name=windowsSpyBlockerUpdate-52.229.175.79|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{26E0F5D7-AB78-459C-AF64-1FCE7899044E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.216.17|Name=windowsSpyBlockerUpdate-52.230.216.17|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{82EAD1E4-8215-4055-BC37-A9E3B1EA1546}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.216.157|Name=windowsSpyBlockerUpdate-52.230.216.157|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BFBC3A33-5632-466C-A781-EBF1BBF32B69}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.220.159|Name=windowsSpyBlockerUpdate-52.230.220.159|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0AE04681-DA81-494F-93DC-9A98665437FA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.223.92|Name=windowsSpyBlockerUpdate-52.230.223.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D4E011E9-CF88-477B-B82C-F555BDCD55E8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.230.223.167|Name=windowsSpyBlockerUpdate-52.230.223.167|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C35A2708-7C63-46AC-A187-9CB13A0C6079}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.232.225.93|Name=windowsSpyBlockerUpdate-52.232.225.93|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{92D5209F-8600-4144-B464-92B106E7DE17}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.242.231.32|Name=windowsSpyBlockerUpdate-52.242.231.32|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{461ADB31-72DC-4C51-B6D9-F5D8A7F17FC6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.242.231.33|Name=windowsSpyBlockerUpdate-52.242.231.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BF78961-43B8-4D35-9536-0C633E9A86B6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.248.96.36|Name=windowsSpyBlockerUpdate-52.248.96.36|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EE7686C8-D37E-4E21-AE6D-FAC6262F7582}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.249.24.101|Name=windowsSpyBlockerUpdate-52.249.24.101|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AFE11D85-E544-455A-8BE4-60EB8C829910}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.249.58.51|Name=windowsSpyBlockerUpdate-52.249.58.51|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C0E63207-C1F4-479A-850F-F19CD2EB0925}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.250.46.232|Name=windowsSpyBlockerUpdate-52.250.46.232|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{069D2549-01D8-4C06-9C4E-0AD9FB493C44}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.253.130.84|Name=windowsSpyBlockerUpdate-52.253.130.84|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D027A1C6-6052-4B1B-8747-F366A2C9096C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=52.254.106.61|Name=windowsSpyBlockerUpdate-52.254.106.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3A6A05FE-B9AF-4227-8825-2DC6E882D960}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=64.4.27.50|Name=windowsSpyBlockerUpdate-64.4.27.50|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6A4A0BA9-6B55-42D9-A86F-24BD8C19DA7C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.29|Name=windowsSpyBlockerUpdate-65.52.108.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{28155C1D-4E50-4668-AD3B-FB6F981653AA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.33|Name=windowsSpyBlockerUpdate-65.52.108.33|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{428EB17C-EE93-4536-97E9-237F6E9597EA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.59|Name=windowsSpyBlockerUpdate-65.52.108.59|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5EB8A947-2785-4390-AA1B-10CE1DE8FF56}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.90|Name=windowsSpyBlockerUpdate-65.52.108.90|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6E5C17F2-5D23-4D07-B15D-60AF102D54A8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.92|Name=windowsSpyBlockerUpdate-65.52.108.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8AC716AF-D798-4795-9A01-717C8A9A8FB2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.153|Name=windowsSpyBlockerUpdate-65.52.108.153|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BCC3A4EE-D986-4609-8044-1E14BC3FBD58}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.154|Name=windowsSpyBlockerUpdate-65.52.108.154|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2DB4E734-3CED-4656-82CB-B4D9F6819220}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.52.108.185|Name=windowsSpyBlockerUpdate-65.52.108.185|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{07EC5501-9C5F-4E02-8DF0-FB50EB09A966}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.138.0-65.55.138.255|Name=windowsSpyBlockerUpdate-65.55.138.0-65.55.138.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9F565D46-1B97-4C60-91F7-995217D7AB67}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=65.55.242.254|Name=windowsSpyBlockerUpdate-65.55.242.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{656C5011-3E4B-423A-B96B-9B5DE080C4B9}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=66.119.144.157|Name=windowsSpyBlockerUpdate-66.119.144.157|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9FC5243C-0D48-447A-AA49-573249625E67}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=66.119.144.158|Name=windowsSpyBlockerUpdate-66.119.144.158|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{BF6B6755-3557-4A68-90B5-B0FFA9D404AE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=66.119.144.189|Name=windowsSpyBlockerUpdate-66.119.144.189|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F39EF994-9DE7-4E0F-A3BE-5A9632001EA3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=66.119.144.190|Name=windowsSpyBlockerUpdate-66.119.144.190|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{97B0A64E-6286-4C15-8139-6B945EBFC36F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=67.26.27.254|Name=windowsSpyBlockerUpdate-67.26.27.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0EC732F5-CCD0-4A31-87F8-26C9A46FA9D0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=104.45.177.233|Name=windowsSpyBlockerUpdate-104.45.177.233|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{946A8EB1-580F-4295-A2E5-693A1C15EBF2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=111.221.29.40|Name=windowsSpyBlockerUpdate-111.221.29.40|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D81CB318-8629-4E59-B4FE-009CEB289A4B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.187|Name=windowsSpyBlockerUpdate-134.170.51.187|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4E3A4A1F-B94B-4285-B3A6-72F3D56D18BF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.188|Name=windowsSpyBlockerUpdate-134.170.51.188|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7C856B2C-2C14-4E76-995D-0CB73BAB6139}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.190|Name=windowsSpyBlockerUpdate-134.170.51.190|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2F19BFC6-0637-4550-B398-413B8FFA8BA1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.246|Name=windowsSpyBlockerUpdate-134.170.51.246|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2A2B25E5-E0CB-4137-9CCB-E146C4F5F9CD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.247|Name=windowsSpyBlockerUpdate-134.170.51.247|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{06515222-BCE5-4EC8-AFAF-2A2B43B31968}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.51.248|Name=windowsSpyBlockerUpdate-134.170.51.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6E4C0B1C-969D-417E-A361-B8A60B7C0841}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.53.29|Name=windowsSpyBlockerUpdate-134.170.53.29|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{33E76721-3EB9-4FA6-AEEF-BE9C34C62C61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.53.30|Name=windowsSpyBlockerUpdate-134.170.53.30|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D184AA80-4155-47B1-B367-79AC03449604}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.58.0-134.170.58.255|Name=windowsSpyBlockerUpdate-134.170.58.0-134.170.58.255|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{217C172C-1D54-48E9-97A2-A6203424E47B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.115.55|Name=windowsSpyBlockerUpdate-134.170.115.55|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7CB7BFCE-4E0A-45DF-B3E0-3EBABE5762F4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.115.56|Name=windowsSpyBlockerUpdate-134.170.115.56|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6EF1CDFD-B03B-4594-906F-9DCCB066031A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.115.60|Name=windowsSpyBlockerUpdate-134.170.115.60|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{879DB229-2794-4D8E-8CCE-C479A241CBB2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.115.62|Name=windowsSpyBlockerUpdate-134.170.115.62|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{12ED53C8-D29E-4141-BBDC-41CEA5A70E26}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.165.248|Name=windowsSpyBlockerUpdate-134.170.165.248|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{57DE5125-CCF6-4BD6-A570-17FE8A2F30F7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.165.249|Name=windowsSpyBlockerUpdate-134.170.165.249|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C90890A1-EFAF-4B76-99F4-CBA09B37BCC7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.165.251|Name=windowsSpyBlockerUpdate-134.170.165.251|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8EF0DEA0-5D9F-4B31-8A8A-6233283D8F61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=134.170.165.253|Name=windowsSpyBlockerUpdate-134.170.165.253|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5E5A479E-3841-4EC7-AC63-F5E71ADEFE79}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=137.135.62.92|Name=windowsSpyBlockerUpdate-137.135.62.92|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{94113F4F-158E-4B04-8AFD-4DB53DDC2EB2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.133.204|Name=windowsSpyBlockerUpdate-157.55.133.204|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{52ED7002-8D01-4CB7-980C-975F4956E482}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.240.89|Name=windowsSpyBlockerUpdate-157.55.240.89|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{86CDD5A8-423E-43AE-A861-61EB7B5339A6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.240.126|Name=windowsSpyBlockerUpdate-157.55.240.126|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{93C93463-E0B8-401C-BBA0-214FD63392C4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.55.240.220|Name=windowsSpyBlockerUpdate-157.55.240.220|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6FFBA427-87B5-463D-9779-0C0F304BE3AF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.138|Name=windowsSpyBlockerUpdate-157.56.77.138|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{AE282FC9-232C-4498-9849-5D4031A0EA85}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.139|Name=windowsSpyBlockerUpdate-157.56.77.139|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{90BC6640-FFCB-401B-9C59-497D6D7F1EBC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.140|Name=windowsSpyBlockerUpdate-157.56.77.140|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E7562073-2730-4058-8EB2-67785C4FD537}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.141|Name=windowsSpyBlockerUpdate-157.56.77.141|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1FD8C36F-CCE0-437D-82DF-AF66FD369CCF}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.148|Name=windowsSpyBlockerUpdate-157.56.77.148|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{295332B9-C016-4D10-80EC-301FD1B936A1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.77.149|Name=windowsSpyBlockerUpdate-157.56.77.149|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{85EBFE93-4CCC-4C81-91F0-22580A5B45C7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.96.54|Name=windowsSpyBlockerUpdate-157.56.96.54|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E8461440-3873-4088-B6F2-9EF453F4BEB6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.96.58|Name=windowsSpyBlockerUpdate-157.56.96.58|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{374B1053-70AF-4AA5-BF5E-9045BCF4C90A}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.96.123|Name=windowsSpyBlockerUpdate-157.56.96.123|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{52852C53-3366-4D31-91CA-7960A7EA2255}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=157.56.96.157|Name=windowsSpyBlockerUpdate-157.56.96.157|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7750D0B2-9CBE-47B1-ACE1-C7A0DC617F33}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.80.53|Name=windowsSpyBlockerUpdate-191.232.80.53|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7A38A44E-6947-41B6-B97C-B2CD66500AD1}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.80.58|Name=windowsSpyBlockerUpdate-191.232.80.58|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{328C5BF4-B5BB-46D7-8699-56D91AFA513C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.80.60|Name=windowsSpyBlockerUpdate-191.232.80.60|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FFFD26D3-E0C3-4D9D-AAE8-FE447C74B4D3}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.80.62|Name=windowsSpyBlockerUpdate-191.232.80.62|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5B2DAE53-B8D3-4408-ABD1-534408B928F0}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.139.2|Name=windowsSpyBlockerUpdate-191.232.139.2|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D69BE373-4452-456B-9BDC-B027B74E9604}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.139.182|Name=windowsSpyBlockerUpdate-191.232.139.182|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F2529FF8-C5B0-4BBC-85D2-D1157893FC84}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.139.253|Name=windowsSpyBlockerUpdate-191.232.139.253|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F57CB90D-2034-423A-B0A5-AB47912B9065}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.232.139.254|Name=windowsSpyBlockerUpdate-191.232.139.254|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C9EED98E-48BB-4DA7-A610-DE52C129B341}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.234.72.183|Name=windowsSpyBlockerUpdate-191.234.72.183|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D8A5E260-BAE0-4E84-9867-98D40E4DAC24}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.234.72.186|Name=windowsSpyBlockerUpdate-191.234.72.186|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1B6BDAB4-FE2B-43B9-973E-C7BA0A2C64DE}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.234.72.188|Name=windowsSpyBlockerUpdate-191.234.72.188|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FC3ECDED-B834-4664-B36C-5A0140E3D16F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=191.234.72.190|Name=windowsSpyBlockerUpdate-191.234.72.190|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{5FC85AE2-A82F-4384-89D8-3C2DE08AD627}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.114.58|Name=windowsSpyBlockerUpdate-207.46.114.58|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EF7744CF-0607-4206-9037-EA62A9080757}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|RA4=207.46.114.61|Name=windowsSpyBlockerUpdate-207.46.114.61|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3100}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Program Files (x86)\windows nt\accessories\wordpad.exe|Name=H_C rule for: wordpad.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3101}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Program Files\windows nt\accessories\wordpad.exe|Name=H_C rule for: wordpad.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3102}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\explorer.exe|Name=H_C rule for: explorer.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3103}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\hh.exe|Name=H_C rule for: hh.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3104}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v2.0.50727\Dfsvc.exe|Name=H_C rule for: Dfsvc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3105}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v2.0.50727\InstallUtil.exe|Name=H_C rule for: InstallUtil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3106}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v2.0.50727\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3107}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v2.0.50727\regasm.exe|Name=H_C rule for: regasm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3108}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v2.0.50727\regsvcs.exe|Name=H_C rule for: regsvcs.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3109}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v3.5\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3110}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v4.0.30319\Dfsvc.exe|Name=H_C rule for: Dfsvc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3111}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe|Name=H_C rule for: InstallUtil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3112}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v4.0.30319\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3113}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm.exe|Name=H_C rule for: regasm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3114}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework\v4.0.30319\regsvcs.exe|Name=H_C rule for: regsvcs.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3115}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v2.0.50727\Dfsvc.exe|Name=H_C rule for: Dfsvc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3116}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v2.0.50727\InstallUtil.exe|Name=H_C rule for: InstallUtil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3117}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v2.0.50727\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3118}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v2.0.50727\regasm.exe|Name=H_C rule for: regasm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3119}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v2.0.50727\regsvcs.exe|Name=H_C rule for: regsvcs.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3120}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v3.5\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3121}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Dfsvc.exe|Name=H_C rule for: Dfsvc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3122}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe|Name=H_C rule for: InstallUtil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3123}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Msbuild.exe|Name=H_C rule for: Msbuild.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3124}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm.exe|Name=H_C rule for: regasm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3125}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regsvcs.exe|Name=H_C rule for: regsvcs.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3126}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Atbroker.exe|Name=H_C rule for: Atbroker.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3127}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Attrib.exe|Name=H_C rule for: Attrib.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3128}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\bash.exe|Name=H_C rule for: bash.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3129}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Certutil.exe|Name=H_C rule for: Certutil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3130}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Cmstp.exe|Name=H_C rule for: Cmstp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3131}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\CompatTelRunner.exe|Name=H_C rule for: CompatTelRunner.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3132}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\control.exe|Name=H_C rule for: control.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3133}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\cscript.exe|Name=H_C rule for: cscript.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3134}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\ctfmon.exe|Name=H_C rule for: ctfmon.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3135}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\curl.exe|Name=H_C rule for: curl.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3136}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\DeviceDisplayObjectProvider.exe|Name=H_C rule for: DeviceDisplayObjectProvider.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3137}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Dnscmd.exe|Name=H_C rule for: Dnscmd.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3138}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\dwm.exe|Name=H_C rule for: dwm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3139}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\esentutl.exe|Name=H_C rule for: esentutl.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3140}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\eventvwr.exe|Name=H_C rule for: eventvwr.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3141}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\expand.exe|Name=H_C rule for: expand.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3142}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\explorer.exe|Name=H_C rule for: explorer.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3143}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\extrac32.exe|Name=H_C rule for: extrac32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3144}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\ftp.exe|Name=H_C rule for: ftp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3145}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\hh.exe|Name=H_C rule for: hh.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3146}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Ie4uinit.exe|Name=H_C rule for: Ie4uinit.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3147}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Ieexec.exe|Name=H_C rule for: Ieexec.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3148}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\Infdefaultinstall.exe|Name=H_C rule for: Infdefaultinstall.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3149}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\lsass.exe|Name=H_C rule for: lsass.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3150}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\makecab.exe|Name=H_C rule for: makecab.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3151}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\mmc.exe|Name=H_C rule for: mmc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3152}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\mshta.exe|Name=H_C rule for: mshta.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3153}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\msiexec.exe|Name=H_C rule for: msiexec.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3154}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\odbcconf.exe|Name=H_C rule for: odbcconf.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3155}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\pcalua.exe|Name=H_C rule for: pcalua.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3156}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\PresentationHost.exe|Name=H_C rule for: PresentationHost.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3157}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\print.exe|Name=H_C rule for: print.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3158}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\regsvr32.exe|Name=H_C rule for: regsvr32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3159}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\replace.exe|Name=H_C rule for: replace.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3160}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\rundll32.exe|Name=H_C rule for: rundll32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3161}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\ScriptRunner.exe|Name=H_C rule for: ScriptRunner.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3162}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\services.exe|Name=H_C rule for: services.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3163}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\SyncAppvPublishingServer.exe|Name=H_C rule for: SyncAppvPublishingServer.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3164}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\telnet.exe|Name=H_C rule for: telnet.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3165}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\tftp.exe|Name=H_C rule for: tftp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3166}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\wbem\scrcons.exe|Name=H_C rule for: scrcons.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3167}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\wbem\wmic.exe|Name=H_C rule for: wmic.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3168}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe|Name=H_C rule for: powershell.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3169}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\WindowsPowerShell\v1.0\powershell_ise.exe|Name=H_C rule for: powershell_ise.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3170}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\wininit.exe|Name=H_C rule for: wininit.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3171}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\winlogon.exe|Name=H_C rule for: winlogon.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3172}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\wscript.exe|Name=H_C rule for: wscript.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3173}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\system32\wsmprovhost.exe|Name=H_C rule for: wsmprovhost.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3174}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Atbroker.exe|Name=H_C rule for: Atbroker.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3175}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Attrib.exe|Name=H_C rule for: Attrib.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3176}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Certutil.exe|Name=H_C rule for: Certutil.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3177}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Cmstp.exe|Name=H_C rule for: Cmstp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3178}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\control.exe|Name=H_C rule for: control.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3179}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\cscript.exe|Name=H_C rule for: cscript.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3180}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\ctfmon.exe|Name=H_C rule for: ctfmon.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3181}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\curl.exe|Name=H_C rule for: curl.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3182}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Dnscmd.exe|Name=H_C rule for: Dnscmd.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3183}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\dwm.exe|Name=H_C rule for: dwm.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3184}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\esentutl.exe|Name=H_C rule for: esentutl.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3185}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\eventvwr.exe|Name=H_C rule for: eventvwr.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3186}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\expand.exe|Name=H_C rule for: expand.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3187}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\explorer.exe|Name=H_C rule for: explorer.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3188}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\extrac32.exe|Name=H_C rule for: extrac32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3189}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\ftp.exe|Name=H_C rule for: ftp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3190}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\hh.exe|Name=H_C rule for: hh.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3191}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Ie4uinit.exe|Name=H_C rule for: Ie4uinit.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3192}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Ieexec.exe|Name=H_C rule for: Ieexec.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3193}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\Infdefaultinstall.exe|Name=H_C rule for: Infdefaultinstall.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3194}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\makecab.exe|Name=H_C rule for: makecab.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3195}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\mmc.exe|Name=H_C rule for: mmc.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3196}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\mshta.exe|Name=H_C rule for: mshta.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3197}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\msiexec.exe|Name=H_C rule for: msiexec.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3198}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\odbcconf.exe|Name=H_C rule for: odbcconf.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3199}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\PresentationHost.exe|Name=H_C rule for: PresentationHost.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3200}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\print.exe|Name=H_C rule for: print.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3201}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\regsvr32.exe|Name=H_C rule for: regsvr32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3202}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\replace.exe|Name=H_C rule for: replace.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3203}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\rundll32.exe|Name=H_C rule for: rundll32.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3204}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\ScriptRunner.exe|Name=H_C rule for: ScriptRunner.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3205}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\SyncAppvPublishingServer.exe|Name=H_C rule for: SyncAppvPublishingServer.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3206}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\telnet.exe|Name=H_C rule for: telnet.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3207}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\tftp.exe|Name=H_C rule for: tftp.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3208}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\wbem\wmic.exe|Name=H_C rule for: wmic.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3209}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe|Name=H_C rule for: powershell.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3210}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell_ise.exe|Name=H_C rule for: powershell_ise.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3211}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\wscript.exe|Name=H_C rule for: wscript.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{f016bbe0-a716-428b-822e-5E544B6A3212}" /t REG_SZ /d "v2.29|Action=Block|Active=TRUE|Dir=Out|App=C:\Windows\SysWOW64\wsmprovhost.exe|Name=H_C rule for: wsmprovhost.exe|EmbedCtxt=H_C Firewall Rules|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalIPsecPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFilePath" /t REG_SZ /d "%%systemroot%%\system32\LogFiles\Firewall\pfirewall.log" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0BC6A788-6049-404C-8620-9CA84A90F9B6}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=112|Name=VRRP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{0F63FC11-772D-4598-AB3A-3F9D739A7A61}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=2|Name=IGMP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{17116813-ABCE-4858-B7A9-E89149F88B6C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort2_10=1-67|LPort2_10=69-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost tcp|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{1AB67954-115D-4DFD-84D8-49E004B70A56}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|App=%%SystemRoot%%\explorer.exe|Name=explorer|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{2544C3F8-BA9E-4614-AC6B-A4358E25173B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort2_10=0-66|LPort2_10=69-1687|LPort2_10=1689-55554|LPort2_10=55556-65535|Name=4Torrents55555|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{32BEF19F-0DB3-4BEA-B185-B7C669DEDB5C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort2_10=0-66|LPort2_10=69-1687|LPort2_10=1689-55554|LPort2_10=55556-65535|Name=4Torrents55555|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{3FB5D65C-BB7B-42BD-BD7D-1735BFCE144B}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=0-52|RPort2_10=54-66|RPort2_10=69-79|RPort2_10=82-442|RPort2_10=444-1000|Name=TCP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CCAC58A-3834-4DB0-AFDD-E8CC4D206B72}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=17|RPort2_10=1-52|RPort2_10=54-66|RPort2_10=68-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost udp|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4CE8D585-B3FD-45D6-A549-50641B7AA09E}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=60|Name=IPv6-Opts|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{4FA87E52-9D33-46B4-9B1E-F43DF96E676F}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=43|Name=IPv6-Route|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6BF200DF-6F9D-483F-A1B5-C0A479FD1C16}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=1|Name=ICMPv4|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{6C0065E8-6B53-4880-B115-6D2109BE121D}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=59|Name=IPv6-NoNxt|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7242246C-02FC-4FE0-8C87-23A869806620}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=60|Name=IPv6-Opts|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{7E711471-0197-4CDF-8A8F-285D204E8913}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=2|Name=IGMP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{8B541AB8-A1FB-4AB4-978F-903483AB0603}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=58|Name=ICMPv6|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{9347CAC4-6908-4E8B-9D45-4954CD686CEA}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=59|Name=IPv6-NoNxt|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{A4C2280E-D96D-474C-B7F8-5E551B50D803}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=47|Name=GRE|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{ACEB7955-9176-45E9-9BCE-3890B231D802}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=41|Name=IPv6|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{B4B43298-454A-4775-B7F9-D149EE70AC22}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=43|Name=IPv6-Route|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{C0504930-7FC9-45D0-A4C0-0183C69168E8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=113|Name=PGM|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CAC95F10-BE12-4508-8F75-4450051399D8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|App=%%SystemRoot%%\explorer.exe|Name=explorer|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{CD2E1B81-F907-434F-9855-A0D6ADC47EA2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=115|Name=L2TP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D3507B32-E394-4E1C-BA60-375DC173A87C}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=44|Name=IPv6-Frag|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D554D4E5-28A3-4785-808B-7CCCB3732B40}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=47|Name=GRE|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D69FCB0D-6042-4155-A0D8-71167AC1FF00}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=1|Name=ICMPv4|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D6DBF400-55D5-46F2-9360-961063CA41F8}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=112|Name=VRRP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{D956505D-BC90-412D-81C5-195D127761D7}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=113|Name=PGM|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{DFEBB9A0-90D2-42E9-A551-D3D3BCE876DB}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=58|Name=ICMPv6|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E61EC587-47AB-4195-856D-A11A843A0EF2}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=115|Name=L2TP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E75B5D96-DA86-40F7-AEB3-F5B69409CB07}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=0|Name=HOPOPT|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{E7EDF93C-E442-4E1F-94E2-79A1B371D763}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=41|Name=IPv6|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{EDA4A164-6B30-4C99-841D-1536CA429AFC}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort2_10=1-67|LPort2_10=69-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost udp|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F2A0DA0C-2ACD-434F-B64F-9E224920DCAD}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=17|RPort2_10=0-52|RPort2_10=54-66|RPort2_10=69-79|RPort2_10=82-442|RPort2_10=444-1000|Name=UDP|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{F585C2D8-420B-466C-B1DF-7D3B8DCDAE04}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=44|Name=IPv6-Frag|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FDAE6651-26AC-47C4-83D2-B02F68966FB4}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=Out|Protocol=6|RPort2_10=1-52|RPort2_10=54-66|RPort2_10=68-65535|App=%%SystemRoot%%\System32\svchost.exe|Name=svchost tcp|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "{FF684A18-2CBA-4CBB-A614-542BC1331834}" /t REG_SZ /d "v2.30|Action=Block|Active=TRUE|Dir=In|Protocol=0|Name=HOPOPT|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-Shadow-In-TCP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=6|App=%%SystemRoot%%\system32\RdpSa.exe|Name=@FirewallAPI.dll,-28778|Desc=@FirewallAPI.dll,-28779|EmbedCtxt=@FirewallAPI.dll,-28752|Edge=TRUE|Defer=App|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-TCP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=6|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28775|Desc=@FirewallAPI.dll,-28756|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-UDP" /t REG_SZ /d "v2.28|Action=Block|Active=TRUE|Dir=In|Protocol=17|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28776|Desc=@FirewallAPI.dll,-28777|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalIPsecPolicyMerge" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalPolicyMerge" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFilePath" /t REG_SZ /d "%%systemroot%%\system32\LogFiles\Firewall\pfirewall.log" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "4096" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "0" /f
 REM ; Hid
-Reg.exe add "HKCU\Control Panel\Keyboard" /v "InitialKeyboardIndicators" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\Control Panel\Keyboard" /v "KeyboardDelay" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Keyboard" /v "KeyboardSpeed" /t REG_SZ /d "28" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "ActiveWindowTracking" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickHeight" /t REG_SZ /d "30" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickSpeed" /t REG_SZ /d "500" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickWidth" /t REG_SZ /d "30" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "ExtendedSounds" /t REG_SZ /d "No" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverHeight" /t REG_SZ /d "4" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverTime" /t REG_SZ /d "8" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverWidth" /t REG_SZ /d "4" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseSensitivity" /t REG_SZ /d "10" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseSpeed" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseThreshold1" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseThreshold2" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseTrails" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Keyboard" /v "InitialKeyboardIndicators" /t REG_SZ /d "2" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Keyboard" /v "KeyboardDelay" /t REG_SZ /d "1" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Keyboard" /v "KeyboardSpeed" /t REG_SZ /d "28" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "ActiveWindowTracking" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickHeight" /t REG_SZ /d "30" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickSpeed" /t REG_SZ /d "500" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickWidth" /t REG_SZ /d "30" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "ExtendedSounds" /t REG_SZ /d "No" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverHeight" /t REG_SZ /d "4" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverTime" /t REG_SZ /d "8" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverWidth" /t REG_SZ /d "4" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseSensitivity" /t REG_SZ /d "10" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseSpeed" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseThreshold1" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseThreshold2" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseTrails" /t REG_SZ /d "0" /f
 Reg.exe delete "HKCU\Control Panel\Mouse" /v "SmoothMouseXCurve" /f
 Reg.exe delete "HKCU\Control Panel\Mouse" /v "SmoothMouseYCurve" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "SnapToDefaultButton" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "SwapMouseButtons" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "Beep" /t REG_SZ /d "No" /f
-REM ; Ifeo
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\compact.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dllhost.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dropbox.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\filesyncconfig.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ftp.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\hh.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\livecomm.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ngen.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\rasphone.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\setup32.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\tagman.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskhostw.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wbemtest.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wmiadap.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wmiprvse.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wuauclt.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wudfhost.exe" /v "Debugger" /t REG_SZ /d "svchost.exe" /f
-REM ; Machine Policy
-Reg.exe add "HKLM\SOFTWARE\Adobe\Adobe Acrobat\2015\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Adobe\Adobe Acrobat\DC\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\batfile\shell\runasuser" /v "SuppressionPolicy" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\cmdfile\shell\runasuser" /v "SuppressionPolicy" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\exefile\shell\runasuser" /v "SuppressionPolicy" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\mscfile\shell\runasuser" /v "SuppressionPolicy" /t REG_DWORD /d "4096" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_addon_management" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_http_username_password_disable" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "exprwd.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "mse7.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_localmachine_lockdown" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "exprwd.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "mse7.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_handling" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "exprwd.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "mse7.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_mime_sniffing" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "exprwd.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "mse7.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_object_caching" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_activexinstall" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_restrict_filedownload" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "exprwd.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "mse7.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_securityband" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_unc_savedfilecheck" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_validate_navigate_url" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_weboc_popupmanagement" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_window_restrictions" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\Feature_zone_elevation" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\Common\COM Compatibility" /v "Comment" /t REG_SZ /d "Block all Flash activation" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Office\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\wcmsvc\wifinetworkmanager\config" /v "AutoConnectAllowedOEM" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoAdminLogon" /t REG_SZ /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "ScreenSaverGracePeriod" /t REG_SZ /d "5" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI" /v "EnumerateAdministrators" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d "255" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoStartBanner" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "PreXPSP2ShellProtocolBehavior" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Ext" /v "RunThisTimeEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Ext" /v "VersionCheckEnabled" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\servicing" /v "repaircontentserversource" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\servicing" /v "LocalSourcePath" /t REG_EXPAND_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\servicing" /v "UseWindowsUpdate" /t REG_DWORD /d "2" /f
-Reg.exe delete "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\system" /v "disablebkgndgroupPolicy" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\system" /v "DisableAutomaticRestartSignOn" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\system" /v "LocalAccountTokenFilterPolicy" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\system" /v "LogonType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\currentversion\Policies\system" /v "MSAOptional" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" /v "ProcessCreationIncludeCmdLine_Enabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\CredSSP\Parameters" /v "AllowEncryptionOracle" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "DisablePDFHandlerSwitching" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "DisableTrustedFolders" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "DisableTrustedSites" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "EnableFlash" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "EnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "EnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "ProtectedMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "FileAttachmentPerms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown" /v "ProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cCloud" /v "AdobeSendPluginToggle" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cCloud" /v "DisableADCFileStore" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cDefaultLaunchURLPerms" /v "UnknownURLPerms" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cDefaultLaunchURLPerms" /v "URLPerms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cServices" /v "TogglePrefsSync" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cServices" /v "ToggleWebConnectors" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cSharePoint" /v "DisableSharePointFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cWebmailProfiles" /v "DisableWebmail" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\2015\FeatureLockdown\cWelcomeScreen" /v "ShowWelcomeScreen" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "DisablePDFHandlerSwitching" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "DisableTrustedFolders" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "DisableTrustedSites" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "EnableFlash" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "EnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "EnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "ProtectedMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "FileAttachmentPerms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown" /v "ProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cCloud" /v "AdobeSendPluginToggle" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cCloud" /v "DisableADCFileStore" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cDefaultLaunchURLPerms" /v "UnknownURLPerms" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cDefaultLaunchURLPerms" /v "URLPerms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cServices" /v "TogglePrefsSync" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cServices" /v "ToggleWebConnectors" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cSharePoint" /v "DisableSharePointFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cWebmailProfiles" /v "DisableWebmail" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Adobe\Adobe Acrobat\DC\FeatureLockdown\cWelcomeScreen" /v "ShowWelcomeScreen" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft Services\AdmPwd" /v "AdmPwdEnabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\FacialFeatures" /v "EnhancedAntiSpoofing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Control Panel\International" /v "BlockUserInputMethodsForSignIn" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" /v "EccCurves" /t REG_MULTI_SZ /d "NistP384\0NistP256" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7z.exe" /t REG_SZ /d "-EAF" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7zFM.exe" /t REG_SZ /d "-EAF" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\7-Zip\7zG.exe" /t REG_SZ /d "-EAF" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Adobe\*\Reader\AcroRd32.exe" /t REG_SZ /d "+EAF+ eaf_modules:AcroRd32.dll;Acrofx32.dll;AcroForm.api" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Adobe\Acrobat*\Acrobat\Acrobat.exe" /t REG_SZ /d "+EAF+ eaf_modules:AcroRd32.dll;Acrofx32.dll;AcroForm.api" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Adobe\Adobe Photoshop CS*\Photoshop.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Foxit Reader\Foxit Reader.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Google\Chrome\Application\chrome.exe" /t REG_SZ /d "+EAF+ eaf_modules:chrome_child.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Google\Google Talk\googletalk.exe" /t REG_SZ /d "-DEP" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Internet Explorer\iexplore.exe" /t REG_SZ /d "+EAF+ eaf_modules:mshtml.dll;flash*.ocx;jscript*.dll;vbscript.dll;vgx.dll +ASR asr_modules:npjpi*.dll;jp2iexp.dll;vgx.dll;msxml4*.dll;wshom.ocx;scrrun.dll;vbscript.dll asr_zones:1;2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\iTunes\iTunes.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Java\jre*\bin\java.exe" /t REG_SZ /d "-HeapSpray" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Java\jre*\bin\javaw.exe" /t REG_SZ /d "-HeapSpray" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Java\jre*\bin\javaws.exe" /t REG_SZ /d "-HeapSpray" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Microsoft Lync\communicator.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\mIRC\mirc.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Mozilla Firefox\firefox.exe" /t REG_SZ /d "+EAF+ eaf_modules:mozjs.dll;xul.dll" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Mozilla Firefox\plugin-container.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Mozilla Thunderbird\plugin-container.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Mozilla Thunderbird\thunderbird.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\EXCEL.EXE" /t REG_SZ /d "+ASR asr_modules:flash*.ocx" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\INFOPATH.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\LYNC.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\MSACCESS.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\MSPUB.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\OIS.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\OUTLOOK.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\POWERPNT.EXE" /t REG_SZ /d "+ASR asr_modules:flash*.ocx" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\PPTVIEW.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\VISIO.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\VPREVIEW.EXE" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\OFFICE1*\WINWORD.EXE" /t REG_SZ /d "+ASR asr_modules:flash*.ocx" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Opera\*\opera.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Opera\opera.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Pidgin\pidgin.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\QuickTime\QuickTimePlayer.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Real\RealPlayer\realconverter.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Real\RealPlayer\realplay.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Safari\Safari.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\SkyDrive\SkyDrive.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Skype\Phone\Skype.exe" /t REG_SZ /d "-EAF" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\VideoLAN\VLC\vlc.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Winamp\winamp.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Windows Live\Mail\wlmail.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Windows Live\Photo Gallery\WLXPhotoGallery.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Windows Live\Writer\WindowsLiveWriter.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Windows Media Player\wmplayer.exe" /t REG_SZ /d "-EAF -MandatoryASLR" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\Windows NT\Accessories\wordpad.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\WinRAR\rar.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\WinRAR\unrar.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\WinRAR\winrar.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\WinZip\winzip32.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\Defaults" /v "*\WinZip\winzip64.exe" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\SysSettings" /v "ASLR" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\SysSettings" /v "DEP" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EMET\SysSettings" /v "SEHOP" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\EventViewer" /v "MicrosoftEventVwrDisableLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "DisableExternalDMAUnderLock" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "EnableBDEWithNoTPM" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "MinimumPIN" /t REG_DWORD /d "6" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseAdvancedStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseEnhancedPin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPM" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMKey" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMKeyPIN" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "UseTPMPIN" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Control Panel" /v "History" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Download" /v "CheckExeSignatures" /t REG_SZ /d "yes" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Download" /v "RunInvalidSignatures" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds" /v "AllowBasicAuthInClear" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Feeds" /v "DisableEnclosureDownload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\IEDevTools" /v "Disabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "DisableEPMCompat" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "Isolation" /t REG_SZ /d "PMEM" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "Isolation64Bit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_DISABLE_MK_PROTOCOL" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_HANDLING" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MIME_SNIFFING" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_ACTIVEXINSTALL" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_FILEDOWNLOAD" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "excel.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "msaccess.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "mspub.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "onenote.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "outlook.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "powerpnt.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "visio.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "winproj.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_RESTRICT_LEGACY_JSCRIPT_PER_SECURITY_ZONE" /v "winword.exe" /t REG_DWORD /d "69632" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_SECURITYBAND" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_WINDOW_RESTRICTIONS" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "(Reserved)" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "Explorer.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ZONE_ELEVATION" /v "iexplore.exe" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\PhishingFilter" /v "PreventOverrideAppRepUnknown" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Privacy" /v "CleanHistory" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Privacy" /v "ClearBrowsingHistoryOnExit" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Privacy" /v "EnableInPrivateBrowsing" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Restrictions" /v "NoCrashDetection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Security" /v "DisableSecuritySettingsCheck" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Security\ActiveX" /v "BlockNonAdminActiveXInstall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Internet Settings" /v "PreventCertErrorOverrides" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" /v "FormSuggest Passwords" /t REG_SZ /d "no" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverride" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" /v "PreventOverrideAppRepUnknown" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Officeupdate" /v "enableautomaticupdates" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Officeupdate" /v "hideenabledisableupdates" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\infopath\security" /v "aptca_allowlist" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\lync" /v "disablehttpconnect" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\lync" /v "enablesiphighsecuritymode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\15.0\lync" /v "savepassword" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\16.0\lync" /v "disablehttpconnect" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\16.0\lync" /v "enablesiphighsecuritymode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Office\16.0\lync" /v "savepassword" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\OneDrive\AllowTenantList" /v "1111-2222-3333-4444" /t REG_SZ /d "1111-2222-3333-4444" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\PassportForWork" /v "RequireSecurityDevice" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\PassportForWork\ExcludeSecurityDevices" /v "TPM12" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\PassportForWork\PINComplexity" /v "MinimumPINLength" /t REG_DWORD /d "6" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Peernet" /v "Disabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" /v "ACSettingIndex" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\0e796bdb-100d-47d6-a2d5-f7d2daa51f51" /v "DCSettingIndex" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\abfc2519-3608-4c2a-94ea-171b0ed546ab" /v "ACSettingIndex" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Power\PowerSettings\abfc2519-3608-4c2a-94ea-171b0ed546ab" /v "DCSettingIndex" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\TabletTip\1.7" /v "PasswordSecurity" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\TabletTip\1.7" /v "PasswordSecurityState" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender ExploitGuard\Exploit Protection" /v "ExploitProtectionSettings" /t REG_SZ /d "\\YOURSHAREHERE\EP.XML" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "PUAProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Exclusions" /v "DisableAutoExclusions" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" /v "DisableEmailScanning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan" /v "ScheduleDay" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Signature Updates" /v "ASSignatureDue" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Signature Updates" /v "AVSignatureDue" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Signature Updates" /v "ScheduleDay" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Threats" /v "Threats_ThreatSeverityDefaultAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "1" /t REG_SZ /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "2" /t REG_SZ /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "4" /t REG_SZ /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "5" /t REG_SZ /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR" /v "ExploitGuard_ASR_Rules" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "26190899-1602-49e8-8b27-eb1d0a1ce869" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "3B576869-A4EC-4529-8536-B80A7769E899" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "5BEB7EFE-FD9A-4556-801D-275E5FFC04CC" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "75668C1F-73B5-4CF0-BB93-3ECF5CB7CC84" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "92E97FA1-2EDF-4476-BDD6-9DD0B4DDDC7B" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "BE9BA2D9-53EA-4CDC-84E5-9B1EEEE46550" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "c1db55ab-c21a-4637-bb3f-a12568109d35" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "D3E037E1-3EB8-44C8-A917-57927947596D" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "D4F940AB-401B-4EFC-AADC-AD5F3C50688A" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules" /v "e6db77e5-3df2-4cf1-b95a-636979351e5b" /t REG_SZ /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v "EnableMulticast" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "DisableHTTPPrinting" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "DisableWebPnPDownload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "DoNotInstallCompatibleDriverFromWindowsUpdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers" /v "RegisterSpoolerRemoteRpcEndPoint" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "InForest" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "NoWarningNoElevationOnInstall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "Restricted" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "ServerList" /t REG_SZ /d "" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "TrustedServers" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v "UpdatePromptSettings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Rpc" /v "RestrictRemoteClients" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "allowfullControl" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "allowunsolicitedfullControl" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "usemailto" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "maxticketexpiry" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "maxticketexpiryunits" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DeleteTempDirsOnExit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DisablePasswordSaving" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "AllowToGetHelp" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "AllowUnsolicited" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DenyTSConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DisableCcm" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DisableCdm" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DisableLPT" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "DisablePNPRedir" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "EnableSmartCard" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "EncryptRPCTraffic" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "PromptForPassword" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "LoggingEnabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "MinEncryptionLevel" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "PerSessionTempDir" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "RedirectOnlyDefaultClientPrinter" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "ShareControlMessage" /t REG_SZ /d "You are about to allow other personnel to remotely Control your system. You must monitor the activity until the session is closed." /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "UseCustomMessages" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services" /v "ViewMessage" /t REG_SZ /d "You are about to allow other personnel to remotely connect to your system. Sensitive data should not be displayed during this session." /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows nt\terminal services\raunsolicit" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisablePcaUI" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoiceAboveLock" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Appx" /v "AllowAllTrustedApps" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AxInstaller" /v "OnlyUseAXISForActiveXInstall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation" /v "AllowProtectedCreds" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CredUI" /v "DisablePasswordReveal" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CertificateRevocation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableSSL3Fallback" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "SecureProtocols" /t REG_DWORD /d "2560" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_HKLM_only" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_options_edit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "Security_zones_map_edit" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "WarnOnBadCertRecving" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\0" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\1" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\2" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\3" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\4" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Lockdown_Zones\4" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Url History" /v "DaysToKeep" /t REG_DWORD /d "40" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap" /v "UNCAsIntranet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "1C00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "1C00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1206" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1209" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "120b" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "120c" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1406" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1407" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1409" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "140C" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1606" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1607" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "160A" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1802" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1804" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1806" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1809" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1A00" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2101" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2102" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2103" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2500" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2708" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "2709" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1201" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1206" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1209" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "120b" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "120c" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1400" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1405" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1406" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1407" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1409" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "140C" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1606" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1607" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1608" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "160A" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1802" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1803" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1804" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1806" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1809" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1A00" /t REG_DWORD /d "196608" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "1C00" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2000" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2001" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2004" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2101" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2102" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2103" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2200" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2301" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2402" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2500" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2708" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "2709" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4" /v "270C" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "LimitEnhancedDiagnosticDataWindowsAnalytics" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v "DODownloadMode" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "ConfigureSystemGuardLaunch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "HVCIMATRequired" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "LsaCfgFlags" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "RequirePlatformSecurityFeatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceClasses" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions" /v "DenyDeviceClassesRetroactive" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\deviceinstall\restrictions\denydeviceclasses" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceClasses" /v "1" /t REG_SZ /d "{d48179be-ec20-11d1-b6b8-00c04fa372a7}" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "AllowRemoteRPC" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSendGenericDriverNotFoundToWER" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSendRequestAdditionalSoftwareToWER" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings" /v "DisableSystemRestore" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /v "DontPromptForWindowsUpdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /v "DontSearchWindowsUpdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /v "DriverServerSelection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application" /v "MaxSize" /t REG_DWORD /d "32768" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\Security" /v "MaxSize" /t REG_DWORD /d "196608" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\Setup" /v "MaxSize" /t REG_DWORD /d "32768" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\EventLog\System" /v "MaxSize" /t REG_DWORD /d "32768" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoHeapTerminationOnCorruption" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameUX" /v "DownloadGameInfo" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameUX" /v "GameUpdateOptions" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Group Policy\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}" /v "NoBackgroundPolicy" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Group Policy\{35378EAC-683F-11D2-A89A-00C04FBBCFA2}" /v "NoGPOListChanges" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\HomeGroup" /v "DisableHomeGroup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "DisableLUAPatching" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "EnableUserControl" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "SafeForScripting" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Kernel DMA Protection" /v "DeviceEnumerationPolicy" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation" /v "AllowInsecureGuestAuth" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "AllowLLTDIOOnDoMain" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "AllowLLTDIOOnPublicNet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "AllowRspndrOnDoMain" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "AllowRspndrOnPublicNet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "EnableLLTDIO" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "EnableRspndr" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "ProhibitLLTDIOOnPrivateNet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LLTD" /v "ProhibitRspndrOnPrivateNet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Network Connections" /v "NC_AllowNetBridge_NLA" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Network Connections" /v "NC_ShowSharedAccessUI" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Network Connections" /v "NC_StdDoMainUserSetLocation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" /v "\\*\NETLOGON" /t REG_SZ /d "RequireMutualAuthentication=1,RequireIntegrity=1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkProvider\HardenedPaths" /v "\\*\SYSVOL" /t REG_SZ /d "RequireMutualAuthentication=1,RequireIntegrity=1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenSlideshow" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\powershell\scriptblocklogging" /v "enablescriptblockinvocationlogging" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\powershell\scriptblocklogging" /v "EnableScriptBlockLogging" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\powershell\transcription" /v "enableinvocationheader" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\powershell\transcription" /v "EnableTranscripting" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\powershell\transcription" /v "OutputDirectory" /t REG_SZ /d "C:\ProgramData\PS_Transcript" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" /v "DisableQueryRemoteServer" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\ScriptedDiagnosticsProvider\Policy" /v "EnableQueryRemoteServer" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Skydrive" /v "DisableFileSync" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowDoMainPINLogon" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DontDisplayNetworkSelectionUI" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DontEnumerateConnectedUsers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnumerateLocalUsers" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /t REG_SZ /d "Block" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "6to4_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "Force_Tunneling" /t REG_SZ /d "Enabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "ISATAP_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition" /v "Teredo_State" /t REG_SZ /d "Disabled" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition\IPHTTPS\IPHTTPSInterface" /v "IPHTTPS_ClientState" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TCPIP\v6Transition\IPHTTPS\IPHTTPSInterface" /v "IPHTTPS_ClientUrl" /t REG_SZ /d "about:blank" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" /v "fBlockNonDoMain" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" /v "fMinimizeConnections" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "higherprecedenceregistrar" /f
-Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "maxWCNdevicenumber" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\registrars" /v "EnableRegistrars" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WDI\{9c5a40da-b965-4fc3-8781-88dd50a6299d}" /v "ScenarioExecutionEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchPrivacy" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "PreventIndexingUncachedExchangeFolders" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowDigest" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowUnencryptedTraffic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "AllowBasic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "AllowUnencryptedTraffic" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service" /v "DisableRunAs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service\WinRS" /v "AllowRemoteShellAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall" /v "PolicyVersion" /t REG_DWORD /d "538" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DoMainProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-Shadow-In-TCP" /t REG_SZ /d "v2.28|Action=Allow|Active=TRUE|Dir=In|Protocol=6|App=%%SystemRoot%%\system32\RdpSa.exe|Name=@FirewallAPI.dll,-28778|Desc=@FirewallAPI.dll,-28779|EmbedCtxt=@FirewallAPI.dll,-28752|Edge=TRUE|Defer=App|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-TCP" /t REG_SZ /d "v2.28|Action=Allow|Active=TRUE|Dir=In|Protocol=6|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28775|Desc=@FirewallAPI.dll,-28756|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules" /v "RemoteDesktop-UserMode-In-UDP" /t REG_SZ /d "v2.28|Action=Allow|Active=TRUE|Dir=In|Protocol=17|LPort=3389|App=%%SystemRoot%%\system32\svchost.exe|Svc=termservice|Name=@FirewallAPI.dll,-28776|Desc=@FirewallAPI.dll,-28777|EmbedCtxt=@FirewallAPI.dll,-28752|" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalIPsecPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "AllowLocalPolicyMerge" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultInboundAction" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DefaultOutboundAction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "DisableNotifications" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogDroppedPackets" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogFileSize" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile\Logging" /v "LogSuccessfulConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace" /v "AllowWindowsInkWorkspace" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsMediaPlayer" /v "DisableAutoUpdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsMediaPlayer" /v "GroupPrivacyAcceptance" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /v "AutoDownload" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /v "DisableOSUpgrade" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /v "RemoveWindowsStore" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Adobe\Adobe Acrobat\2015\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Adobe\Adobe Acrobat\DC\Installer" /v "DisableMaintenance" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "spdesign.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\16.0\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\Common\COM Compatibility\{D27CDB6E-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "ActivationFilterOverride" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Office\Common\COM Compatibility\{D27CDB70-AE6D-11CF-96B8-444553540000}" /v "Compatibility Flags" /t REG_DWORD /d "1024" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "excel.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "exprwd.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "groove.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "msaccess.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mse7.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "mspub.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "onenote.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "outlook.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "powerpnt.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "pptview.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "spdesign.exe" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "visio.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winproj.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\WOW6432Node\Policies\Microsoft\Internet Explorer\Main\FeatureControl\Feature_safe_bindtoobject" /v "winword.exe" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Control\SecurityProviders\WDigest" /v "UseLogonCredential" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Control\Session Manager" /v "SafeDllSearchMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Policies\EarlyLaunch" /v "DriverLoadPolicy" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Eventlog\Security" /v "WarningLevel" /t REG_DWORD /d "90" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\IPSEC" /v "NoDefaultExempt" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\LanmanServer\Parameters" /v "Hidden" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMB1" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\MrxSmb10" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Netbt\Parameters" /v "NodeType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Netbt\Parameters" /v "NoNameReleaseOnDemand" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "DisableIPSourceRouting" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "EnableICMPRedirect" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "EnableIPAutoConfigurationLimits" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "KeepAliveTime" /t REG_DWORD /d "300000" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "PerformRouterDiscovery" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "TcpMaxDataRetransmissions" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "DisableIPSourceRouting" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\System\CurrentControlSet\Services\Tcpip6\Parameters" /v "TcpMaxDataRetransmissions" /t REG_DWORD /d "3" /f
-REM ; Pac file
-Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://www.proxynova.com/proxy.pac" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://www.proxynova.com/proxy.pac" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableLegacyAutoProxyFeature" /t REG_DWORD /d "0" /f
-REM ; Performance Tweaks
-REM ;Add Extra Hidden Settings in Power Options
-REM ;1=off 0/2=on
-REM ;Power Plan
-REM ;1.
-REM ;Require Password when System Wakes
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0E796BDB-100D-47D6-A2D5-F7D2DAA51F51" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;2.
-REM ;Device Idle Policy. Specify the Policy for Devices Powering Down while the System is still Running
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4faab71a-92e5-4726-b531-224559672d19" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;3.
-REM ;Disconnected Standby Mode
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\68AFB2D9-EE95-47A8-8F50-4115088073B1" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;4.
-REM ;Enable/Disable Network Connectivity in Standby
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\F15576E8-98B7-4186-B944-EAFA664402D9" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Hard Disk
-REM ;5
-REM ;Add AHCI Link Power Management
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\0b2d69d7-a2a1-449c-9680-f91c70521c60" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;6
-REM ;HDD Max Power Level
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\51dea550-bb38-4bc4-991b-eacf37be5ec8" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;HDD Burst Ignore Time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\80e3c60e-bb94-4ad8-bbe0-0d3195efc663" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;7.
-REM ;NVMe Idle Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\d639518a-e56d-4345-8af2-b9f32fb26109" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;NVMe SEC Idle Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\d639518a-e56d-4345-8af2-b9f32fb26109" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;8.
-REM ;AHCI Link Power Management
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\dab60367-53fe-4fbc-825e-521d069d2456" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;NVMe Power State Transition Latency Tolerance
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\fc95af4d-40e7-4b6d-835a-56d131dbc80e" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Sleep
-REM ;10.
-REM ;Avoid waking from hiberate via the legacy RTC wake alarm
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\1A34BDC3-7E6B-442E-A9D0-64B6EF378E84" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;11.
-REM ;Allow Away Mode Policy
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\25DFA149-5DD1-4736-B5AB-E8A37B5B8187" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;12.
-REM ;System Unattended Sleep Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\7bc4a2f9-d8fc-4469-b07b-33eb785aaca0" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;13.
-REM ;Allow Programs to Prevent Machine to Sleep Automatically
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\A4B195F5-8225-47D8-8012-9D41369786E2" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;14.
-REM ;Allow Sleep with Remote Open Sessions
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\d4c1d4c8-d5cc-43d3-b83e-fc51215cb04d" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;USB Settings
-REM ;15.
-REM ;USB Suspend Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\0853a681-27c8-4100-a2fd-82013e970683" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;16.
-REM ;Should IOC be set for all TDs
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\498c044a-201b-4631-a522-5c744ed4e678" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;17.
-REM ;USB3 Link Power Management
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\d4e98f31-5ffe-4ce1-be31-1b38b384c009" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Idle Resiliency
-REM ;18.
-REM ;Execution Required power request timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\3166BC41-7E98-4e03-B34E-EC0F5F2B218E" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;19.
-REM ;IO coalescing timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\C36F0EB4-2988-4a70-8EEE-0884FC2C2433" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;20.
-REM ;Processor Idle Resiliency Timer Resolution
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\C42B79AA-AA3A-484b-A98F-2CF32AA90A28" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;21.
-REM ;Deep Sleep Enabled/Disabled
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\D502F7EE-1DC7-4EFD-A55D-F04B6F5C0545" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Interupt Steering Settings
-REM ;22.
-REM ;Interrupt Steering Mode
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\2BFC24F9-5EA2-4801-8213-3DBAE01AA39D" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;23.
-REM ;Target Load
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\73CDE64D-D720-4bb2-A860-C755AFE77EF2" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;24.
-REM ;Unparked Time Trigger
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\D6BA4903-386F-4c2c-8ADB-5C21B3328D25" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Power Buttons and Lid.
-REM ;25.
-REM ;Enable Forced Button/Lid Shutdown
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\833a6b62-dfa4-46d1-82f8-e09e34d029d6" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;26.
-REM ;Specify Action to Take when Lid is Opened
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\99ff10e7-23b1-4c07-a9d1-5c3206d741b4" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Processor Power Management
-REM ;27.
-REM ;Processor performance increase threshold, 10%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\06cadf0e-64ed-448a-8927-ce7bf90eb35d" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;28.*
-REM ;Processor performance level increase threshold for processor efficency class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\06cadf0e-64ed-448a-8927-ce7bf90eb35e" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;29.*
-REM ;Processor Performance Core Parking Parked Performance State for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\447235c7-6a8d-4cc0-8e24-9eaf70b96e2c" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;30.*
-REM ;Processor performance core parking min cores, 100%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318583" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;31.*
-REM ;Processor performance core parking min cores for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318584" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;32.
-REM ;Processor performance decrease threshold, 3%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\12a0ab44-fe28-4fa9-b3bd-4b64f44960a6" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;33.*
-REM ;Processor performance decrease Decrease threshold for processor power efficiency class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\12a0ab44-fe28-4fa9-b3bd-4b64f44960a7" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;34.*
-REM ;Initial performance for processor power efficency class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\1facfc65-a930-4bc5-9f38-504ec097bbc0" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;35.
-REM ;Processor performance core parking concurrency threshold
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\2430ab6f-a520-44a2-9601-f7f23b5134b1" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;36.
-REM ;Processor performance core parking increase time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\2ddd5a84-5a71-437e-912a-db0b8c788732" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;37.
-REM ;Processor Energy Performance Preference Policy 50%(Power Saver)
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\36687f9e-e3a5-4dbf-b1dc-15eb381c6863" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;38.
-REM ; Allow Throttle States, Off
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\3b04d4fd-1cc7-4f23-ab1c-d1337819c4bb" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;39.*
-REM ;Processor performance increase time for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4009efa7-e72d-4cba-9edf-91084ea8cbc3" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;40.
-REM ; Processor performance decrease policy, Ideal
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\40fbefc7-2e9d-4d25-a185-0cfd8574bac6" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;41.
-REM ;Processor performamce decrease policy for processor power efficiency class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\40fbefc7-2e9d-4d25-a185-0cfd8574bac7" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;42.
-REM ; Processor performance core parking parked performance state, Lightest Performance State
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\447235c7-6a8d-4cc0-8e24-9eaf70b96e2b" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;43.*
-REM ;Processor performance core parking parked performance state for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\447235c7-6a8d-4cc0-8e24-9eaf70b96e2c" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;44.
-REM ; Processor performance boost policy, 100%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\45bcc044-d885-43e2-8605-ee0ec6e96b59" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;45.
-REM ; Processor performance increase policy, Rocket
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\465e1f50-b610-473a-ab58-00d1077dc418" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;46.*
-REM ;Processor performance increase policy for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\465e1f50-b610-473a-ab58-00d1077dc419" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;47.
-REM ; Processor idle demote threshold, 40%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4b92d758-5a24-4851-a470-815d78aee119" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;48.
-REM ;Processor performance core parking distribution threshold
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4bdaf4e9-d103-46d7-a5f0-6280121616ef" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;49.
-REM ;Processor performance time check interval
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4d2b0152-7d5c-498b-88e2-34345392a2c5" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;50.
-REM ;Processor duty cycling
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4e4450b3-6179-4e91-b8f1-5bb9938f81a1" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;51.
-REM ;Latency sensitivity hint min unparked cores packages
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\616cdaa5-695e-4545-97ad-97dc2d1bdd88" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;52.*
-REM ;Latency sensitivity hint min unparked cores packages for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\616cdaa5-695e-4545-97ad-97dc2d1bdd89" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;53.
-REM ; Latency sensitivity hint processor performance, 99%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\619b7505-003b-4e82-b7a6-4dd29c300971" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;54.*
-REM ;Latency sensitivity hint processor performance for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\619b7505-003b-4e82-b7a6-4dd29c300972" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;55.
-REM ;Processor idle threshold scaling
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\6c2993b0-8f48-481f-bcc6-00dd2742aa06" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;56.
-REM ;Processor Performance Core Parking Decrease Policy, All Possible Cores
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\71021b41-c749-4d21-be74-a00f335d582b" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;57.
-REM ;Maximum processor frequency for Processor Power
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\75b0ae3f-bce0-45a7-8c89-c9611c25e100" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;58.*
-REM ;Maximum processor frequency for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\75b0ae3f-bce0-45a7-8c89-c9611c25e101" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;59.
-REM ; Processor idle promote threshold, 60%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7b224883-b3cc-4d79-819f-8374152cbe7c" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;60.
-REM ;Processor performance history count
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7d24baa7-0b84-480f-840c-1b0743c00f5f" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;61.*
-REM ;Processor performance history count for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7d24baa7-0b84-480f-840c-1b0743c00f60" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;62.*
-REM ;Processor performance decrease time for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7f2492b6-60b1-45e5-ae55-773f8cd5caec" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;63.
-REM ;Heterogeneous policy in effect
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7f2f5cfa-f10c-4823-b5e1-e93ae85f46b5" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;64.
-REM ;Minimum Processor State, 25%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\893dee8e-2bef-41e0-89c6-b55d0929964c" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;65.*
-REM ;Minimum Processor State for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\893dee8e-2bef-41e0-89c6-b55d0929964d" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;66.
-REM ;Processor performance autonomous mode
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\8baa4a8a-14c6-4451-8e8b-14bdbd197537" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;67.
-REM ;Processor performance core parking over utilization threshold
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\943c8cb6-6f93-4227-ad87-e9a3feec08d1" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;68.
-REM ;Processor performance increase time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\984cf492-3bed-4488-a8f9-4286c97bf5aa" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;69.*
-REM ;Processor performance increase time for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\984cf492-3bed-4488-a8f9-4286c97bf5ab" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;70.
-REM ;Processor idle state that should be used by Hyper-V
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\9943e905-9a30-4ec1-9b99-44dd3b76f7a2" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;71.*
-REM ;Specifies the performance level increase threshold at which the Processor Power Efficiency Class 1 processor count is increased (in units of Processor Power Efficiency Class 0 processor performance
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\b000397d-9b0b-483d-98c9-692a6060cfbf" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;72.
-REM ;Maximum Processor State, Set to 100%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\bc5038f7-23e0-4960-96da-33abaf5935ec" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;73.*
-REM ;Maximum Processor State for Processor Power Efficiency Class 1.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\bc5038f7-23e0-4960-96da-33abaf5935ed" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;74.
-REM ;Processor performance boost mode, Agressive
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;75.
-REM ;Processor idle time check
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\c4581c31-89ab-4597-8e2b-9c9cab440e6b" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;76.
-REM ; Processor performance core parking increase policy, All Possible Cores
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\c7be0679-2817-4d69-9d02-519a537ed0c6" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;77.
-REM ;Processor autonomous activity window
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\cfeda3d0-7697-4566-a922-a9086cd49dfa" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;78.
-REM ;Processor performance decrease time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\d8edeb9b-95cf-4f95-a73c-b061973693c8" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;79.*
-REM ;Processor performance decrease time for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\d8edeb9b-95cf-4f95-a73c-b061973693c9" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;80.
-REM ;Processor performance core parking decrease time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\dfd10d17-d5eb-45dd-877a-9a34ddd15c82" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;81.
-REM ; Processor performance core parking utility distribution
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\e0007330-f589-42ed-a401-5ddb10e785d3" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;82.
-REM ;Processor performance core parking max cores, 100%
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\ea062031-0e34-4ff1-9b6d-eb1059334028" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;83.*
-REM ;Processor performance core parking max cores for Processor Power Efficiency Class 1
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\ea062031-0e34-4ff1-9b6d-eb1059334029" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;84.
-REM ;Processor performance core parking concurrency headroom threshold
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\f735a673-2066-4f80-a0c5-ddee0cf1bf5d" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;85.*
-REM ;Specifies the performance level decrease threshold at which the Processor Power Efficiency Class 1 processor count is decreased (in units of Processor Power Efficiency Class 0 processor performance
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\f8861c27-95e7-475c-865b-13c0cb3f9d6b" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;86.*
-REM ;Performance state floor for Processor Power Efficiency Class 0 when Processor Power Efficiency Class 1 is woken from a parked state
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\fddc842b-8364-4edc-94cf-c17f60de1c80" /v "Attributes" /t REG_DWORD /d "1" /f
-REM ;Display
-REM ;87.
-REM ;NVIDIA Display Power Saving technology
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\89cc76a4-f226-4d4b-a040-6e9a1da9b882" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;88.
-REM ;Console lock display off timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\8EC4B3A5-6868-48c2-BE75-4F3044BE88A7" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;89.
-REM ;Dim Display after
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\17aaa29b-8b43-4b94-aafe-35f64daaf1ee" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;90.
-REM ;Adaptive Display Powerdown Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\90959d22-d6a1-49b9-af93-bce885ad335b" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;91.
-REM ;Allow programs to prevent display from turning off automatically
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\A9CEB8DA-CD46-44FB-A98B-02AF69DE4623" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;92
-REM ;Adaptive Backlight
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\aded5e82-b909-4619-9949-f5d71dac0bcc" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;Presence Aware Power Behaviour
-REM ;93.
-REM ;Battery Standby Reserve Time
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\468FE7E5-1158-46EC-88BC-5B96C9E44FD0" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;94.
-REM ;Stanby Reset Per Centage
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\49CB11A5-56E2-4AFB-9D38-3DF47872E21B" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;95.
-REM ;Non Sensor Input Timeout
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\5ADBBFBC-074E-4da1-BA38-DB8B36B2C8F3" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;96.
-REM ;Standby Budget Grace Period
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\60C07FE1-0556-45CF-9903-D56E32210242" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;97.
-REM ;User Precense Prediction Mode
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\82011705-FB95-4D46-8D35-4042B1D20DEF" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;98.
-REM ;Standby Budget Per Cent
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\9FE527BE-1B70-48DA-930D-7BCF17B44990" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;99.
-REM ;Standby Reserve Grace Period
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\C763EE92-71E8-4127-84EB-F6ED043A3E3D" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;100.
-REM ;Energy Saver Settings
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;101.
-REM ;Display Brightness Weight
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\13D09884-F74E-474A-A852-B6BDE8AD03A8" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;102.
-REM ;Energy Saver Policy
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\5C5BB349-AD29-4ee2-9D0B-2B25270F7A81" /v "Attributes" /t REG_DWORD /d "2" /f
-REM ;103.
-REM ;Battery Charge Level when Energy Saver is Turned on
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\E69653CA-CF7F-4F05-AA73-CB833FA90AD4" /v "Attributes" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "1000" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\CrashControl\StorageTelemetry" /v "DeviceDumpEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v "fDenyTSConnections" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EntAppSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\icssvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SstpSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TapiSrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "DisableReverseAddressRegistrations" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "EnableICMPRedirect" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "IGMPLevel" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VaultSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WwanSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "autodisconnect" /t REG_DWORD /d "4294967295" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "Size" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "EnableOplocks" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "IRPStackSize" /t REG_DWORD /d "32" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "SharingViolationDelay" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters" /v "SharingViolationRetries" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsAllowExtendedCharacter8dot3Rename" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisable8dot3NameCreation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "8" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "2000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "LowLevelHooksTimeout" /t REG_SZ /d "1000" /f
-Reg.exe add "HKCU\Control Panel\Desktop" /v "ForegroundLockTimeout" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "MouseHoverTime" /t REG_SZ /d "8" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoLowDiskSpaceChecks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "LinkResolveIgnoreLinkInfo" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveSearch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "2000" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "PagingFiles" /t REG_MULTI_SZ /d "" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "ExistingPageFiles" /t REG_MULTI_SZ /d "" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnablePrefetcher" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v "EnableSuperfetch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction" /v "Enable" /t REG_SZ /d "y" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "NtfsDisableLastAccessUpdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoRebootWithLoggedOnUsers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPer1_0Server" /t REG_DWORD /d "10" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /v "MaxConnectionsPerServer" /t REG_DWORD /d "10" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MAXCONNECTIONSPER1_0SERVER" /v "iexplore.exe" /t REG_DWORD /d "10" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_MAXCONNECTIONSPERSERVER" /v "iexplore.exe" /t REG_DWORD /d "10" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v "NonBestEffortLimit" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "EnableBalloonTips" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "StartButtonBalloonTip" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "DesktopLivePreviewHoverTime" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\MSMQ\Parameters" /v "TCPNoDelay" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TCPNoDelay" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TcpAckFrequency" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "DefaultTTL" /t REG_DWORD /d "64" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "EnableTCPA" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TcpTimedWaitDelay" /t REG_DWORD /d "30" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "Tcp1323Opts" /t REG_DWORD /d "30" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "SynAttackProtect" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "EnableDca" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TCPMaxDataRetransmissions" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "EnablePMTUDiscovery" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "EnablePMTUBHDetect" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickHeight" /t REG_SZ /d "30" /f
-Reg.exe add "HKCU\Control Panel\Mouse" /v "DoubleClickWidth" /t REG_SZ /d "30" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318583" /v "ValueMax" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "Scheduling Category" /t REG_SZ /d "High" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "SFIO Priority" /t REG_SZ /d "High" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "Background Only" /t REG_SZ /d "False" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "Priority" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "Clock Rate" /t REG_DWORD /d "2710" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "GPU Priority" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Low Latency" /v "Latency Sensitive" /t REG_SZ /d "True" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\GameBar" /v "AllowAutoGameMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager\Quota System\S-1-2-0" /v "CpuRateLimit" /t REG_DWORD /d "256" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "SnapToDefaultButton" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "SwapMouseButtons" /t REG_SZ /d "0" /f
+Echo Y | Reg.exe add "HKCU\Control Panel\Mouse" /v "Beep" /t REG_SZ /d "No" /f
 REM ; Privacy
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\System" /v "AllowExperimentation" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Bluetooth" /v "AllowAdvertising" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Messaging" /v "AllowMessageSync" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353698Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338389Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353696Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SystemPaneSuggestionsEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenOverlayEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "PublishUserActivities" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "UploadUserActivities" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Clipboard" /v "EnableClipboardHistory" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /t REG_SZ /d "Deny" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /t REG_SZ /d "Deny" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CredUI" /v "DisablePasswordReveal" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\WMI\Autologger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "ConfigureDoNotTrack" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PaymentMethodQueryEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PersonalizationReportingEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AddressBarMicrosoftSearchInBingProviderEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "UserFeedbackAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillCreditCardEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillAddressEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "LocalProvidersEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SearchSuggestEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main" /v "DoNotTrack" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\FlipAhead" /v "FPEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\ServiceUI" /v "EnableCortana" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Browser" /v "AllowAddressBarDropdown" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\ServiceUI\ShowSearchHistory" /ve /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "UserFeedbackAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillCreditCardEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync" /v "SyncPolicy" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\BrowserSettings" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" /v "Enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Windows Search" /v "CortanaConsent" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "AllowInputPersonalization" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DODownloadMode" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v "DODownloadMode" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Speech" /v "AllowSpeechModelUpdate" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings" /v "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /t REG_DWORD /d "0" /f
-REM ; Resources
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "PagedPoolSize" /t REG_DWORD /d "4294967295" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "PoolUsageMaximum" /t REG_DWORD /d "96" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "authenticodeenabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "DefaultLevel" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "ExecutableTypes" /t REG_MULTI_SZ /d "ZOO\0ZLO\0ZFSENDTOTARGET\0Z\0XPS\0XPI\0XNK\0XML\0XLW\0XLTX\0XLTM\0XLT\0XLSM\0XLSB\0XLM\0XLL\0XLD\0XLC\0XLB\0XLAM\0XLA\0XBAP\0WSC\0WS\0WIZ\0WEBSITE\0WEBPNP\0WEBLOC\0WBK\0WAS\0VXD\0VSW\0VST\0VSS\0VSMACROS\0VBP\0VB\0TSP\0TOOL\0TMP\0TLB\0THEME\0TGZ\0TERMINAL\0TERM\0TAZ\0TAR\0SYS\0SWF\0STM\0SPL\0SLK\0SLDX\0SLDM\0SIT\0SHS\0SHB\0SETTINGCONTENT-MS\0SEARCH-MS\0SEARCHCONNECTOR-MS\0SEA\0SCT\0RTF\0RQY\0RPY\0REG\0RB\0PYZW\0PYZ\0PYX\0PYWZ\0PYW\0PYT\0PYP\0PYO\0PYI\0PYDE\0PYD\0PYC\0PY3\0PY\0PXD\0PSTREG\0PST\0PSDM1\0PSD1\0PRN\0PRINTEREXPORT\0PRG\0PRF\0PPTM\0PPSX\0PPSM\0PPS\0PPAM\0POTX\0POTM\0POT\0PLG\0PL\0PKG\0PIF\0PI\0PERL\0PCD\0OSD\0OQY\0OPS\0ODS\0NSH\0NLS\0MYDOCS\0MUI\0MSU\0MST\0MSP\0MSHXML\0MSH2XML\0MSH2\0MSH1XML\0MSH1\0MSH\0MSC\0MOF\0MMC\0MHTML\0MHT\0MDZ\0MDW\0MDT\0MDN\0MDF\0MDE\0MDB\0MDA\0MCF\0MAY\0MAW\0MAV\0MAU\0MAT\0MAS\0MAR\0MAQ\0MAPIMAIL\0MANIFEST\0MAM\0MAG\0MAF\0MAD\0LZH\0LOCAL\0LIBRARY-MS\0LDB\0LACCDB\0KSH\0JOB\0JNLP\0JAR\0ITS\0ISP\0IQY\0INS\0INI\0IME\0IE\0HTT\0HTM\0HTC\0HTA\0HQX\0HPJ\0HLP\0HEX\0H\0GZ\0GRP\0GLK\0GADGET\0FXP\0FON\0DRV\0DQY\0DOTX\0DOTM\0DOT\0DOCM\0DOCB\0DMG\0DLL\0DIR\0DIF\0DIAGCAB\0DESKTOP\0DESKLINK\0DER\0DCR\0DB\0CSV\0CSH\0CRX\0CRT\0CRAZY\0CPX\0COMMAND\0CNV\0CNT\0CLB\0CLASS\0CLA\0CHM\0CHI\0CFG\0CER\0CDB\0CAB\0BZ2\0BZ\0BAS\0AX\0ASX\0ASPX\0ASP\0ASA\0ARC\0APPREF-MS\0APPLICATION\0APP\0AIR\0ADP\0ADN\0ADE\0AD\0ACM\0ACCDT\0ACCDR\0ACCDE\0ACCDA\0INF\0MSI\0PS1\0WPC" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "Levels" /t REG_DWORD /d "462848" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "LogFileName" /t REG_SZ /d "C:\Windows\system32\LogFiles\SAFER.LOG" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "PolicyScope" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "TransparentEnabled" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "Description" /t REG_SZ /d "Python" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "ItemData" /t REG_SZ /d "Python*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "Description" /t REG_SZ /d "Network js" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "ItemData" /t REG_SZ /d "*/*.js" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "Description" /t REG_SZ /d "Network exe" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "ItemData" /t REG_SZ /d "*/*.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "Description" /t REG_SZ /d "Network tmp" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "ItemData" /t REG_SZ /d "*/*.tmp" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "Description" /t REG_SZ /d "Network msi" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "ItemData" /t REG_SZ /d "*/*.msi" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "Description" /t REG_SZ /d "Network vbs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "ItemData" /t REG_SZ /d "*/*.vbs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE30-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE30-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE31-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE31-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE32-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE32-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE33-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE33-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE34-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE34-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "Description" /t REG_SZ /d "*Allow EXE files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "ItemData" /t REG_SZ /d "*.exe" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "Description" /t REG_SZ /d "*Allow TMP files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "ItemData" /t REG_SZ /d "*.tmp" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "Description" /t REG_SZ /d "*Allow MSI files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "ItemData" /t REG_SZ /d "*.msi" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "Description" /t REG_SZ /d "%%SystemRoot%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "ItemData" /t REG_SZ /d "C:\Windows" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "Description" /t REG_SZ /d "*LNK : Start menu (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs subfolders (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "Description" /t REG_SZ /d "*LNK : Start menu" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs subfolders" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs sub-subfolders" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs sub-subfolders (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "Description" /t REG_SZ /d "*Default : Program Files on 64 bits" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramW6432Dir%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "Description" /t REG_SZ /d "*Default : Program Files (x86) on 64 bits" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramFilesDir (x86)%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "Description" /t REG_SZ /d "*Default : Program Files (default)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramFilesDir%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group1\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group2\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 3" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group3\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "Description" /t REG_SZ /d "*LNK : ### Desktop" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\Desktop%%*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "Description" /t REG_SZ /d "*LNK : OneDriveDesktop subfolders" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\OneDrive\Desktop\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "Description" /t REG_SZ /d "*LNK : Desktop" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\Desktop\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "Description" /t REG_SZ /d "*LNK : Desktop subfolders" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\Desktop\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "Description" /t REG_SZ /d "*LNK : Public Desktop" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Users\Public\Desktop\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "Description" /t REG_SZ /d "*LNK : TaskBar (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "Description" /t REG_SZ /d "*LNK : Quick Launch (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "Description" /t REG_SZ /d "*LNK : ImplicitAppShortcuts (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "Description" /t REG_SZ /d "*LNK : ImplicitAppShortcuts subfolder (AppData\Roaming)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\*\*.lnk" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "Description" /t REG_SZ /d "%%ProgramFiles(x86)%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "ItemData" /t REG_SZ /d "C:\Program Files (x86)" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "Description" /t REG_SZ /d "%%CommonProgramFiles(x86)%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "ItemData" /t REG_SZ /d "C:\Program Files (x86)\Common Files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "Description" /t REG_SZ /d "%%ProgramFiles(x86)%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "ItemData" /t REG_SZ /d "C:\Program Files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "Description" /t REG_SZ /d "%%CommonProgramFiles%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "ItemData" /t REG_SZ /d "C:\Program Files\Common Files" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "Description" /t REG_SZ /d "*Default : ProgramData\Microsoft\Windows Defender" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\ProductAppDataPath%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "Description" /t REG_SZ /d "*Default : Windows" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\SystemRoot%%" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "Description" /t REG_SZ /d "NVIDIA" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\nv*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "Description" /t REG_SZ /d "INTEL" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\iighd*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "Description" /t REG_SZ /d "AMD1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\u0366969*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "Description" /t REG_SZ /d "AMD2" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\u0367126*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "Description" /t REG_SZ /d "USB" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\wpd*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "Description" /t REG_SZ /d "OEM" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\oem*" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "SaferFlags" /t REG_DWORD /d "0" /f
-REM ; Security policy
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "DefaultTemplate" /t REG_SZ /d "C:\Windows\Inf\secrecs.inf" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "EnvironmentVariables" /t REG_MULTI_SZ /d "%%AppData%%\0%%UserProfile%%\0%%AllUsersProfile%%\0%%ProgramFiles%%\0%%SystemRoot%%\0%%SystemDrive%%\0%%Temp%%\0%%Tmp%%" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "SetupCompDebugLevel" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "LastUsedDatabase" /t REG_SZ /d "C:\WINDOWS\Security\Database\secedit.sdb" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "TemplateUsed" /t REG_SZ /d "E:\Policies\Windows-10-v21H1-Security-Baseline-FINAL\GPOs\{F46647C2-3CBF-46C0-A185-0FFAE4BAF081}\DomainSysvol\GPO\Machine\microsoft\windows nt\SecEdit\GptTmpl.inf" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit" /v "LastWinLogonConfig" /t REG_DWORD /d "1309545573" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SecurityLevel" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59076" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SecurityLevel" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SecurityLevel" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SetCommand" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59077" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SetCommand" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Setup/RecoveryConsole/SetCommand" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateCDRoms" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59098" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateCDRoms" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateCDRoms" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateDASD" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59100\01|@wsecedit.dll,-59101\02|@wsecedit.dll,-59102" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateDASD" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59099" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateDASD" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateDASD" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateFloppies" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59103" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateFloppies" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/AllocateFloppies" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/CachedLogonsCount" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59030" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/CachedLogonsCount" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/CachedLogonsCount" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59092" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/CachedLogonsCount" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ForceUnlockLogon" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59032" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ForceUnlockLogon" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ForceUnlockLogon" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/PasswordExpiryWarning" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59031" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/PasswordExpiryWarning" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/PasswordExpiryWarning" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59093" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/PasswordExpiryWarning" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ScRemoveOption" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59035\01|@wsecedit.dll,-59036\02|@wsecedit.dll,-59037\03|@wsecedit.dll,-59038" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ScRemoveOption" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59034" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ScRemoveOption" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows NT/CurrentVersion/Winlogon/ScRemoveOption" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorAdmin" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@scecli.dll,-8253\01|@scecli.dll,-8251\02|@scecli.dll,-8252\03|@scecli.dll,-8255\04|@scecli.dll,-8256\05|@scecli.dll,-8257" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorAdmin" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8200" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorAdmin" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorAdmin" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorUser" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@scecli.dll,-8254\01|@scecli.dll,-8251\03|@scecli.dll,-8255" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorUser" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8201" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorUser" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ConsentPromptBehaviorUser" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DisableCAD" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59022" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DisableCAD" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DisableCAD" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLastUserName" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59023" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLastUserName" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLastUserName" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLockedUserId" /v "DisplayChoices" /t REG_MULTI_SZ /d "1|@wsecedit.dll,-59025\02|@wsecedit.dll,-59026\03|@wsecedit.dll,-59027\04|@wsecedit.dll,-59159" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLockedUserId" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59024" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLockedUserId" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayLockedUserId" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayUserName" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59158" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayUserName" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/DontDisplayUserName" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableInstallerDetection" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8202" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableInstallerDetection" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableInstallerDetection" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableLUA" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8203" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableLUA" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableLUA" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableSecureUIAPaths" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8208" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableSecureUIAPaths" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableSecureUIAPaths" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableUIADesktopToggle" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8225" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableUIADesktopToggle" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableUIADesktopToggle" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableVirtualization" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8204" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableVirtualization" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/EnableVirtualization" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/FilterAdministratorToken" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8207" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/FilterAdministratorToken" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/FilterAdministratorToken" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/InactivityTimeoutSecs" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59155" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/InactivityTimeoutSecs" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/InactivityTimeoutSecs" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59095" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/InactivityTimeoutSecs" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/Kerberos/Parameters/SupportedEncryptionTypes" /v "DisplayFlags" /t REG_MULTI_SZ /d "1|@wsecedit.dll,-59122\02|@wsecedit.dll,-59123\04|@wsecedit.dll,-59124\08|@wsecedit.dll,-59125\016|@wsecedit.dll,-59126\02147483616|@wsecedit.dll,-59127" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/Kerberos/Parameters/SupportedEncryptionTypes" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59121" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/Kerberos/Parameters/SupportedEncryptionTypes" /v "DisplayType" /t REG_DWORD /d "5" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/Kerberos/Parameters/SupportedEncryptionTypes" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeCaption" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59029" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeCaption" /v "DisplayType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeCaption" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeText" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59028" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeText" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/LegalNoticeText" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/MaxDevicePasswordFailedAttempts" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59154" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/MaxDevicePasswordFailedAttempts" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/MaxDevicePasswordFailedAttempts" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59156" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/MaxDevicePasswordFailedAttempts" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/NoConnectedUser" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59151\01|@wsecedit.dll,-59152\03|@wsecedit.dll,-59153" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/NoConnectedUser" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59150" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/NoConnectedUser" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/NoConnectedUser" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/PromptOnSecureDesktop" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8206" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/PromptOnSecureDesktop" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/PromptOnSecureDesktop" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ScForceOption" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59033" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ScForceOption" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ScForceOption" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ShutdownWithoutLogon" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59078" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ShutdownWithoutLogon" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ShutdownWithoutLogon" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/UndockWithoutLogon" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59010" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/UndockWithoutLogon" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/UndockWithoutLogon" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ValidateAdminCodeSignatures" /v "DisplayName" /t REG_SZ /d "@scecli.dll,-8205" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ValidateAdminCodeSignatures" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Microsoft/Windows/CurrentVersion/Policies/System/ValidateAdminCodeSignatures" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Cryptography/ForceKeyProtection" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59087\01|@wsecedit.dll,-59088\02|@wsecedit.dll,-59089" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Cryptography/ForceKeyProtection" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59086" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Cryptography/ForceKeyProtection" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Cryptography/ForceKeyProtection" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineAccessRestriction" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59097" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineAccessRestriction" /v "DisplayType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineAccessRestriction" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineLaunchRestriction" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59096" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineLaunchRestriction" /v "DisplayType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows NT/DCOM/MachineLaunchRestriction" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows/Safer/CodeIdentifiers/AuthenticodeEnabled" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59090" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows/Safer/CodeIdentifiers/AuthenticodeEnabled" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/Software/Policies/Microsoft/Windows/Safer/CodeIdentifiers/AuthenticodeEnabled" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/AuditBaseObjects" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59002" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/AuditBaseObjects" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/AuditBaseObjects" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/CrashOnAuditFail" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59004" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/CrashOnAuditFail" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/CrashOnAuditFail" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/DisableDomainCreds" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59046" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/DisableDomainCreds" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/DisableDomainCreds" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/EveryoneIncludesAnonymous" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59049" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/EveryoneIncludesAnonymous" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/EveryoneIncludesAnonymous" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FIPSAlgorithmPolicy/Enabled" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59085" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FIPSAlgorithmPolicy/Enabled" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FIPSAlgorithmPolicy/Enabled" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/ForceGuest" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59056\01|@wsecedit.dll,-59057" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/ForceGuest" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59055" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/ForceGuest" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/ForceGuest" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FullPrivilegeAuditing" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59003" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FullPrivilegeAuditing" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/FullPrivilegeAuditing" /v "ValueType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LimitBlankPasswordUse" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59001" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LimitBlankPasswordUse" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LimitBlankPasswordUse" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LmCompatibilityLevel" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59060\01|@wsecedit.dll,-59061\02|@wsecedit.dll,-59062\03|@wsecedit.dll,-59063\04|@wsecedit.dll,-59064\05|@wsecedit.dll,-59065" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LmCompatibilityLevel" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59059" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LmCompatibilityLevel" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/LmCompatibilityLevel" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/allownullsessionfallback" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59120" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/allownullsessionfallback" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/allownullsessionfallback" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/AuditReceivingNTLMTraffic" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59134\01|@wsecedit.dll,-59135\02|@wsecedit.dll,-59136" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/AuditReceivingNTLMTraffic" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59131" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/AuditReceivingNTLMTraffic" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/AuditReceivingNTLMTraffic" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/ClientAllowedNTLMServers" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59118" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/ClientAllowedNTLMServers" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/ClientAllowedNTLMServers" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinClientSec" /v "DisplayFlags" /t REG_MULTI_SZ /d "524288|@wsecedit.dll,-59070\0536870912|@wsecedit.dll,-59071" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinClientSec" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59066" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinClientSec" /v "DisplayType" /t REG_DWORD /d "5" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinClientSec" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinServerSec" /v "DisplayFlags" /t REG_MULTI_SZ /d "524288|@wsecedit.dll,-59070\0536870912|@wsecedit.dll,-59071" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinServerSec" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59067" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinServerSec" /v "DisplayType" /t REG_DWORD /d "5" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/NTLMMinServerSec" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictReceivingNTLMTraffic" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59109\01|@wsecedit.dll,-59110\02|@wsecedit.dll,-59111" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictReceivingNTLMTraffic" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59108" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictReceivingNTLMTraffic" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictReceivingNTLMTraffic" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictSendingNTLMTraffic" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59106\01|@wsecedit.dll,-59130\02|@wsecedit.dll,-59107" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictSendingNTLMTraffic" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59105" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictSendingNTLMTraffic" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/MSV1_0/RestrictSendingNTLMTraffic" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/NoLMHash" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59058" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/NoLMHash" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/NoLMHash" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/pku2u/AllowOnlineID" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59129" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/pku2u/AllowOnlineID" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/pku2u/AllowOnlineID" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymous" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59048" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymous" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymous" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymousSAM" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59047" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymousSAM" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictAnonymousSAM" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictRemoteSAM" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59157" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictRemoteSAM" /v "DisplayType" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/RestrictRemoteSAM" /v "ValueType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SCENoApplyLegacyAuditPolicy" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59104" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SCENoApplyLegacyAuditPolicy" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SCENoApplyLegacyAuditPolicy" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SubmitControl" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59011" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SubmitControl" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/SubmitControl" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/UseMachineId" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59133" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/UseMachineId" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Lsa/UseMachineId" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Print/Providers/LanMan Print Services/Servers/AddPrinterDrivers" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59005" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Print/Providers/LanMan Print Services/Servers/AddPrinterDrivers" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Print/Providers/LanMan Print Services/Servers/AddPrinterDrivers" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/MinimumPasswordLengthAudit" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-756" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/MinimumPasswordLengthAudit" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/MinimumPasswordLengthAudit" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59160" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/MinimumPasswordLengthAudit" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/RelaxMinimumPasswordLengthLimits" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-755" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/RelaxMinimumPasswordLengthLimits" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SAM/RelaxMinimumPasswordLengthLimits" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedExactPaths/Machine" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59054" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedExactPaths/Machine" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedExactPaths/Machine" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedPaths/Machine" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59053" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedPaths/Machine" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/SecurePipeServers/Winreg/AllowedPaths/Machine" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Kernel/ObCaseInsensitive" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59084" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Kernel/ObCaseInsensitive" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Kernel/ObCaseInsensitive" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Memory Management/ClearPageFileAtShutdown" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59079" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Memory Management/ClearPageFileAtShutdown" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/Memory Management/ClearPageFileAtShutdown" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/ProtectionMode" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59080" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/ProtectionMode" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/ProtectionMode" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/SubSystems/optional" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59091" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/SubSystems/optional" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Control/Session Manager/SubSystems/optional" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/AutoDisconnect" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59042" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/AutoDisconnect" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/AutoDisconnect" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59094" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/AutoDisconnect" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableForcedLogOff" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59045" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableForcedLogOff" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableForcedLogOff" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableS4U2SelfForClaims" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59147\01|@wsecedit.dll,-59148\02|@wsecedit.dll,-59149" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableS4U2SelfForClaims" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59146" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableS4U2SelfForClaims" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableS4U2SelfForClaims" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableSecuritySignature" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59044" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableSecuritySignature" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/EnableSecuritySignature" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionPipes" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59051" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionPipes" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionPipes" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionShares" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59052" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionShares" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/NullSessionShares" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RequireSecuritySignature" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59043" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RequireSecuritySignature" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RequireSecuritySignature" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RestrictNullSessAccess" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59050" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RestrictNullSessAccess" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/RestrictNullSessAccess" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/SmbServerNameHardeningLevel" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59143\01|@wsecedit.dll,-59144\02|@wsecedit.dll,-59145" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/SmbServerNameHardeningLevel" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59142" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/SmbServerNameHardeningLevel" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanManServer/Parameters/SmbServerNameHardeningLevel" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnablePlainTextPassword" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59041" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnablePlainTextPassword" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnablePlainTextPassword" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnableSecuritySignature" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59040" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnableSecuritySignature" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/EnableSecuritySignature" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/RequireSecuritySignature" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59039" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/RequireSecuritySignature" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LanmanWorkstation/Parameters/RequireSecuritySignature" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LDAP/LDAPClientIntegrity" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59073\01|@wsecedit.dll,-59074\02|@wsecedit.dll,-59075" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LDAP/LDAPClientIntegrity" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59072" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LDAP/LDAPClientIntegrity" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/LDAP/LDAPClientIntegrity" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/AuditNTLMInDomain" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59137\01|@wsecedit.dll,-59138\03|@wsecedit.dll,-59139\05|@wsecedit.dll,-59140\07|@wsecedit.dll,-59141" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/AuditNTLMInDomain" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59132" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/AuditNTLMInDomain" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/AuditNTLMInDomain" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DCAllowedNTLMServers" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59119" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DCAllowedNTLMServers" /v "DisplayType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DCAllowedNTLMServers" /v "ValueType" /t REG_DWORD /d "7" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DisablePasswordChange" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59016" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DisablePasswordChange" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/DisablePasswordChange" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/MaximumPasswordAge" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59017" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/MaximumPasswordAge" /v "DisplayType" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/MaximumPasswordAge" /v "DisplayUnit" /t REG_SZ /d "@wsecedit.dll,-59093" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/MaximumPasswordAge" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RefusePasswordChange" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59012" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RefusePasswordChange" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RefusePasswordChange" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireSignOrSeal" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59018" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireSignOrSeal" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireSignOrSeal" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireStrongKey" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59021" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireStrongKey" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RequireStrongKey" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RestrictNTLMInDomain" /v "DisplayChoices" /t REG_MULTI_SZ /d "0|@wsecedit.dll,-59113\01|@wsecedit.dll,-59114\03|@wsecedit.dll,-59115\05|@wsecedit.dll,-59116\07|@wsecedit.dll,-59117" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RestrictNTLMInDomain" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59112" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RestrictNTLMInDomain" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/RestrictNTLMInDomain" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SealSecureChannel" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59019" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SealSecureChannel" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SealSecureChannel" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SignSecureChannel" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59020" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SignSecureChannel" /v "DisplayType" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/Netlogon/Parameters/SignSecureChannel" /v "ValueType" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/NTDS/Parameters/LDAPServerIntegrity" /v "DisplayChoices" /t REG_MULTI_SZ /d "1|@wsecedit.dll,-59014\02|@wsecedit.dll,-59015" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/NTDS/Parameters/LDAPServerIntegrity" /v "DisplayName" /t REG_SZ /d "@wsecedit.dll,-59013" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/NTDS/Parameters/LDAPServerIntegrity" /v "DisplayType" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Reg Values\MACHINE/System/CurrentControlSet/Services/NTDS/Parameters/LDAPServerIntegrity" /v "ValueType" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\System" /v "AllowExperimentation" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Bluetooth" /v "AllowAdvertising" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Messaging" /v "AllowMessageSync" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353698Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338388Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338389Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353696Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SystemPaneSuggestionsEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "RotatingLockScreenOverlayEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SilentInstalledAppsEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SoftLandingEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "PublishUserActivities" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "UploadUserActivities" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Clipboard" /v "EnableClipboardHistory" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /t REG_SZ /d "Deny" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /t REG_SZ /d "Deny" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /t REG_SZ /d "Deny" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CredUI" /v "DisablePasswordReveal" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\dmwappushservice" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\WMI\Autologger\AutoLogger-Diagtrack-Listener" /v "Start" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "ConfigureDoNotTrack" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PaymentMethodQueryEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "PersonalizationReportingEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AddressBarMicrosoftSearchInBingProviderEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "UserFeedbackAllowed" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillCreditCardEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillAddressEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "LocalProvidersEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Edge" /v "SearchSuggestEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main" /v "DoNotTrack" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\Main" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\FlipAhead" /v "FPEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\ServiceUI" /v "EnableCortana" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Browser" /v "AllowAddressBarDropdown" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\ServiceUI\ShowSearchHistory" /ve /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "UserFeedbackAllowed" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "AutofillCreditCardEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync" /v "SyncPolicy" /t REG_DWORD /d "5" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Personalization" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\BrowserSettings" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Accessibility" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Windows" /v "Enabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Windows Search" /v "CortanaConsent" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "AllowInputPersonalization" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Privacy" /v "TailoredExperiencesWithDiagnosticDataEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v "DODownloadMode" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v "DODownloadMode" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization" /v "SystemSettingsDownloadMode" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Speech" /v "AllowSpeechModelUpdate" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings" /v "NOC_GLOBAL_SETTING_ALLOW_TOASTS_ABOVE_LOCK" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /t REG_DWORD /d "0" /f
+REM ; Safer Lite
+Reg.exe delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\SRPV2" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "authenticodeenabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "DefaultLevel" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "ExecutableTypes" /t REG_MULTI_SZ /d "ZOO\0ZLO\0ZFSENDTOTARGET\0Z\0XPS\0XPI\0XNK\0XML\0XLW\0XLTX\0XLTM\0XLT\0XLSM\0XLSB\0XLM\0XLL\0XLD\0XLC\0XLB\0XLAM\0XLA\0XBAP\0WSC\0WS\0WIZ\0WEBSITE\0WEBPNP\0WEBLOC\0WBK\0WAS\0VXD\0VSW\0VST\0VSS\0VSMACROS\0VBP\0VB\0TSP\0TOOL\0TMP\0TLB\0THEME\0TGZ\0TERMINAL\0TERM\0TAZ\0TAR\0SYS\0SWF\0STM\0SPL\0SLK\0SLDX\0SLDM\0SIT\0SHS\0SHB\0SETTINGCONTENT-MS\0SEARCH-MS\0SEARCHCONNECTOR-MS\0SEA\0SCT\0RTF\0RQY\0RPY\0REG\0RB\0PYZW\0PYZ\0PYX\0PYWZ\0PYW\0PYT\0PYP\0PYO\0PYI\0PYDE\0PYD\0PYC\0PY3\0PY\0PXD\0PSTREG\0PST\0PSDM1\0PSD1\0PRN\0PRINTEREXPORT\0PRG\0PRF\0PPTM\0PPSX\0PPSM\0PPS\0PPAM\0POTX\0POTM\0POT\0PLG\0PL\0PKG\0PIF\0PI\0PERL\0PCD\0OSD\0OQY\0OPS\0ODS\0NSH\0NLS\0MYDOCS\0MUI\0MSU\0MST\0MSP\0MSHXML\0MSH2XML\0MSH2\0MSH1XML\0MSH1\0MSH\0MSC\0MOF\0MMC\0MHTML\0MHT\0MDZ\0MDW\0MDT\0MDN\0MDF\0MDE\0MDB\0MDA\0MCF\0MAY\0MAW\0MAV\0MAU\0MAT\0MAS\0MAR\0MAQ\0MAPIMAIL\0MANIFEST\0MAM\0MAG\0MAF\0MAD\0LZH\0LOCAL\0LIBRARY-MS\0LDB\0LACCDB\0KSH\0JOB\0JNLP\0JAR\0ITS\0ISP\0IQY\0INS\0INF\0INI\0IME\0IE\0HTT\0HTM\0HTC\0HTA\0HQX\0HPJ\0HLP\0HEX\0H\0GZ\0GRP\0GLK\0GADGET\0FXP\0FON\0DRV\0DQY\0DOTX\0DOTM\0DOT\0DOCM\0DOCB\0DMG\0DLL\0DIR\0DIF\0DIAGCAB\0DESKTOP\0DESKLINK\0DER\0DCR\0DB\0CSV\0CSH\0CRX\0CRT\0CRAZY\0CPX\0COMMAND\0CNV\0CNT\0CLB\0CLASS\0CLA\0CHM\0CHI\0CFG\0CER\0CDB\0CAB\0BZ2\0BZ\0BAS\0AX\0ASX\0ASPX\0ASP\0ASA\0ARC\0APPREF-MS\0APPLICATION\0APP\0AIR\0ADP\0ADN\0ADE\0AD\0ACM\0ACCDT\0ACCDR\0ACCDE\0ACCDA\0INF\0MSI\0PS1\0WPC" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "Levels" /t REG_DWORD /d "462848" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "LogFileName" /t REG_SZ /d "C:\Windows\system32\LogFiles\SAFER.LOG" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "PolicyScope" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers" /v "TransparentEnabled" /t REG_DWORD /d "2" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "Description" /t REG_SZ /d "Python" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "ItemData" /t REG_SZ /d "Python*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F4}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "Description" /t REG_SZ /d "Network js" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "ItemData" /t REG_SZ /d "*/*.js" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F5}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "Description" /t REG_SZ /d "Network exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "ItemData" /t REG_SZ /d "*/*.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F6}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "Description" /t REG_SZ /d "Network tmp" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "ItemData" /t REG_SZ /d "*/*.tmp" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F7}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "Description" /t REG_SZ /d "Network msi" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "ItemData" /t REG_SZ /d "*/*.msi" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F8}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "Description" /t REG_SZ /d "Network vbs" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "ItemData" /t REG_SZ /d "*/*.vbs" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\Paths\{C7AF2ED3-7F52-49AA-9970-712A1D8FB8F9}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE30-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE30-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE31-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE31-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE32-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "2" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE32-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE33-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "3" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE33-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE34-2030-45AA-B54D-6C407941D825}" /v "ItemData" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\0\URLZones\{643ADE34-2030-45AA-B54D-6C407941D825}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "Description" /t REG_SZ /d "*Allow EXE files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "ItemData" /t REG_SZ /d "*.exe" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3520}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "Description" /t REG_SZ /d "*Allow TMP files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "ItemData" /t REG_SZ /d "*.tmp" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3521}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "Description" /t REG_SZ /d "*Allow MSI files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "ItemData" /t REG_SZ /d "*.msi" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{1016bbe0-a716-428b-822e-DE544B6A3522}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "Description" /t REG_SZ /d "%%SystemRoot%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "ItemData" /t REG_SZ /d "C:\Windows" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{191CD7FA-F240-4A17-8986-94D480A6C8CA}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "Description" /t REG_SZ /d "*LNK : Start menu (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC19}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC20}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs subfolders (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC21}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "Description" /t REG_SZ /d "*LNK : Start menu" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC22}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs subfolders" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC24}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs sub-subfolders" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "ItemData" /t REG_SZ /d "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\*\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC25}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "Description" /t REG_SZ /d "*LNK : Start menu programs sub-subfolders (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\*\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{625B53C3-AB48-4EC1-BA1F-A1EF4146FC26}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "Description" /t REG_SZ /d "*Default : Program Files on 64 bits" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramW6432Dir%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{6D809377-6AF0-444B-8957-A3773F02200E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "Description" /t REG_SZ /d "*Default : Program Files (x86) on 64 bits" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramFilesDir (x86)%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "Description" /t REG_SZ /d "*Default : Program Files (default)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\ProgramFilesDir%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{905E63B6-C1BF-494E-B29C-65B732D3D21A}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group1\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f21}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 2" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group2\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f22}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "Description" /t REG_SZ /d "*LNK : Power menu group 3" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Local\Microsoft\Windows\WinX\Group3\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{99a0fd77-ed0c-4e30-91ff-9d51428d2f23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "Description" /t REG_SZ /d "*LNK : ### Desktop" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\Desktop%%*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C639}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "Description" /t REG_SZ /d "*LNK : OneDriveDesktop subfolders" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\OneDrive\Desktop\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C640}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "Description" /t REG_SZ /d "*LNK : Desktop" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\Desktop\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "Description" /t REG_SZ /d "*LNK : Desktop subfolders" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\Desktop\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C642}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "Description" /t REG_SZ /d "*LNK : Public Desktop" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Users\Public\Desktop\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C643}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "Description" /t REG_SZ /d "*LNK : TaskBar (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C644}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "Description" /t REG_SZ /d "*LNK : Quick Launch (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C645}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "Description" /t REG_SZ /d "*LNK : ImplicitAppShortcuts (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C646}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "Description" /t REG_SZ /d "*LNK : ImplicitAppShortcuts subfolder (AppData\Roaming)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "ItemData" /t REG_EXPAND_SZ /d "%%USERPROFILE%%\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\*\*.lnk" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{B4BFCC3A-DB2C-424C-B029-7FE99A87C647}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "Description" /t REG_SZ /d "%%ProgramFiles(x86)%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "ItemData" /t REG_SZ /d "C:\Program Files (x86)" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77CC673-3BA3-427D-C9DE-76D54F6DC97E}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "Description" /t REG_SZ /d "%%CommonProgramFiles(x86)%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "ItemData" /t REG_SZ /d "C:\Program Files (x86)\Common Files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{C77F1D47-1FE1-4E7A-869C-57659099E912}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "Description" /t REG_SZ /d "%%ProgramFiles(x86)%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "ItemData" /t REG_SZ /d "C:\Program Files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C34AB2-529A-46B2-B293-FC853FCE72EA}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "Description" /t REG_SZ /d "%%CommonProgramFiles%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "ItemData" /t REG_SZ /d "C:\Program Files\Common Files" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{D2C37D40-EA2D-11DC-8F61-0004760DFF53}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "Description" /t REG_SZ /d "*Default : ProgramData\Microsoft\Windows Defender" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\ProductAppDataPath%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{f073d7e6-ec43-4bf6-a2a8-536eb63b03c8}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "Description" /t REG_SZ /d "*Default : Windows" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "ItemData" /t REG_EXPAND_SZ /d "%%HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\SystemRoot%%" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC23}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "Description" /t REG_SZ /d "NVIDIA" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\nv*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC24}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "Description" /t REG_SZ /d "INTEL" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\iighd*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC25}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "Description" /t REG_SZ /d "AMD1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\u0366969*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC26}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "Description" /t REG_SZ /d "AMD2" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\u0367126*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC27}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "Description" /t REG_SZ /d "USB" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\wpd*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC28}" /v "SaferFlags" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "Description" /t REG_SZ /d "OEM" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "ItemData" /t REG_EXPAND_SZ /d "C:\Windows\System32\DriverStore\FileRepository\oem*" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\safer\codeidentifiers\262144\Paths\{F38BF404-1D43-42F2-9305-67DE0B28FC29}" /v "SaferFlags" /t REG_DWORD /d "0" /f
 REM ; Services
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Template Locations" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Alerter" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ALG" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppMgmt" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BITS" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Browser" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\cisvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ClipSrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\COMSysApp" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\cscsvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmadmin" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmserver" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "EnableAutoDoh" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "MaxCacheTtl" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "MaxNegativeCacheTtl" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EntAppSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ERSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EventSystem" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\FastUserSwitchingCompatibility" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\icssvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\helpsvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\HidServ" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\HbHost" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LmHosts" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MapsBroker" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Messenger" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\mnmsrvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MSDTC" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetDDE" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetDDEdsdm" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Netlogon" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Netman" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Nla" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NtLmSsp" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NtmsSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PeerDistSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PlugPlay" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RasAuto" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RasMan" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RDSessMgr" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Retaildemo" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RpcLocator" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RSVP" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCardDrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCardSvr" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\seclogon" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrsvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SENS" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Smsrouter" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Snmptrap" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SstpSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\stisvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SwPrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SysmonLog" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TapiSrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "DisableReverseAddressRegistrations" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "EnableICMPRedirect" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "IGMPLevel" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TermService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TlntSvr" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TrkWks" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\uploadmgr" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\UPS" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VaultSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmickvpexchange" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicguestinterface" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicheartbeat" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicrdv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicshutdown" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmictimesync" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvmsession" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvss" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VSS" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\W32Time" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WebClient" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\winrm" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WmdmPmSp" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Wmi" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WmiApSrv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Wmpnetworksvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WwanSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WZCSVC" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AJRouter" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ App Readiness
-REM #~ Gets apps ready for use the first time a user signs in to this PC and when adding new apps.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppReadiness" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Application Identity
-REM #~ Determines and verifies the identity of an application. Disabling this service will prevent AppLocker from being enforced.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppIDSvc" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ALG" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Upravljanje aplikacijama
-REM #~ Zahtjevi za procesima instalacije, uklanjanja i identifikacije softvera implementirani su prema pravilniku grupe. Ako je servis onemogućen, korisnici neće moći instalirati, uklanjati ili identificirati softver uveden na temelju pravilnika grupe. Ako je servis onemogućen, nijedan servis koji eksplicitno ovisi o njemu neće se pokrenuti.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppMgmt" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ AVCTP service
-REM #~ This is Audio Video Control Transport Protocol service
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ BitLocker Drive Encryption Service
-REM #~ BDESVC hosts the BitLocker Drive Encryption service. BitLocker Drive Encryption provides secure startup for the operating system, as well as full volume encryption for OS, fixed or removable volumes. This service allows BitLocker to prompt users for various actions related to their volumes when mounted, and unlocks volumes automatically without user interaction. Additionally, it stores recovery information to Active Directory, if available, and, if necessary, ensures the most recent recovery certificates are used.  Stopping or disabling the service would prevent users from leveraging this functionality.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BDESVC" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wbengine" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Bluetooth Audio Gateway Service
-REM #~ Service supporting the audio gateway role of the Bluetooth Handsfree Profile.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Bluetooth Support Service
-REM #~ The Bluetooth service supports discovery and association of remote Bluetooth devices.  Stopping or disabling this service may cause already installed Bluetooth devices to fail to operate properly and prevent new devices from being discovered or associated.
-REM #~ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\bthserv]
-REM #~ "Start"=dword:00000004
-REM #~ Usluga podrške za korisnike Bluetootha
-REM #~ Usluga za korisnike Bluetootha podržava odgovarajuće funkcije značajki Bluetootha koje su važne za pojedinačne korisničke sesije.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PeerDistSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Capability Access Manager Service
-REM #~ Provides facilities for managing UWP apps access to app capabilities as well as checking an app's access to specific app capabilities
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\camsvc" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\CertPropSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Client License Service (ClipSVC)
-REM #~ Provides infrastructure support for the Microsoft Store. This service is started on demand and if disabled applications bought using Windows Store will not behave correctly.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ClipSVC" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ CNG Key Isolation
-REM #~ The CNG key isolation service is hosted in the LSA process. The service provides key process isolation to private keys and associated cryptographic operations as required by the Common Criteria. The service stores and uses long-lived keys in a secure process complying with Common Criteria requirements.
-REM #~ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\KeyIso]
-REM #~ "Start"=dword:00000003
-REM #~ COM+ System Application
-REM #~ Manages the configuration and tracking of Component Object Model (COM)+-based components. If the service is stopped, most COM+-based components will not function properly. If this service is disabled, any services that explicitly depend on it will fail to start.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\COMSysApp" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Upravitelj vjerodajnica
-REM #~ Pruža sigurnu pohranu i dohvaćanje vjerodajnica za korisnike, aplikacije i pakete sigurnosnih servisa.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VaultSvc" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DsSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Device Association Service
-REM #~ Enables pairing between the system and wired or wireless devices.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DeviceAssociationService" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Device Install Service
-REM #~ Enables a computer to recognize and adapt to hardware changes with little or no user input. Stopping or disabling this service will result in system instability.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DeviceInstall" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Device Management Enrollment Service
-REM #~ Performs Device Enrollment Activities for Device Management
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DmEnrollmentSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Device Setup Manager
-REM #~ Enables the detection, download and installation of device-related software. If this service is disabled, devices may be configured with outdated software, and may not work correctly.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DsmSVC" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ DevicePicker
-REM #~ Ova se korisnička usluga upotrebljava za upravljanje korisničkim sučeljem Miracast, DLNA i DIAL
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DevicePickerUserSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ DevicesFlow
-REM #~ Omogućuje značajci ConnectUX i postavkama PC-ja povezivanje i uparivanje sa zaslonima WiFi-ja i Bluetooth uređajima.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DevicesFlowUserSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ DevQuery Background Discovery Broker
-REM #~ Enables apps to discover devices with a backgroud task
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DevQueryBroker" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\diagsvc" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdiServiceHost" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WdiSystemHost" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Distributed Transaction Coordinator
-REM #~ Coordinates transactions that span multiple resource managers, such as databases, message queues, and file systems. If this service is stopped, these transactions will fail. If this service is disabled, any services that explicitly depend on it will fail to start.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MSDTC" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MapsBroker" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Embedded Mode
-REM #~ The Embedded Mode service enables scenarios related to Background Applications.  Disabling this service will prevent Background Applications from being activated.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\embeddedmode" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ EFS
-REM #~
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EFS" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Enterprise App Management Service
-REM #~ Enables enterprise application management.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EntAppSvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Extensible Authentication Protocol
-REM #~ The Extensible Authentication Protocol (EAP) service provides network authentication in such scenarios as 802.1x wired and wireless, VPN, and Network Access Protection (NAP).  EAP also provides application programming interfaces (APIs) that are used by network access clients, including wireless and VPN clients, during the authentication process.  If you disable this service, this computer is prevented from accessing networks that require EAP authentication.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EapHost" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Faks
-REM #~ Omogućuje slanje i primanje faksova pomoću resursa faksa dostupnih na ovom računalu ili mreži.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ File History Service
-REM #~ Protects user files from accidental loss by copying them to a backup location
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\fhsvc" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Function Discovery Provider Host
-REM #~ The FDPHOST service hosts the Function Discovery (FD) network discovery providers. These FD providers supply network discovery services for the Simple Services Discovery Protocol (SSDP) and Web Services – Discovery (WS-D) protocol. Stopping or disabling the FDPHOST service will disable network discovery for these protocols when using FD. When this service is unavailable, network services using FD and relying on these discovery protocols will be unable to find network devices or resources.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Function Discovery Resource Publication
-REM #~ Publishes this computer and resources attached to this computer so they can be discovered over the network.  If this service is stopped, network resources will no longer be published and they will not be discovered by other computers on the network.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BcastDVRUserService" /v "Start" /t REG_DWORD /d "3" /f
-REM #~ Geolocation Service
-REM #~ This service monitors the current location of the system and manages geofences (a geographical location with associated events).  If you turn off this service, applications will be unable to use or receive notifications for geolocation or geofences.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ GraphicsPerfSvc
-REM #~ Graphics performance monitor service
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\GraphicsPerfSvc" /v "Start" /t REG_DWORD /d "3" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\HvHost" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmickvpexchange" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicguestinterface" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicshutdown" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicheartbeat" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvmsession" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicrdv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmictimesync" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvss" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\irmon" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ SharedAccess
-REM #~
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ IP Helper
-REM #~ Provides tunnel connectivity using IPv6 transition technologies (6to4, ISATAP, Port Proxy, and Teredo), and IP-HTTPS. If this service is stopped, the computer will not have the enhanced connectivity benefits that these technologies offer.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\iphlpsvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ IP Translation Configuration Service
-REM #~ Configures and enables translation from v4 to v6 and vice versa
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\IpxlatCfgSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppVClient" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MSiSCSI" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SmsRouter" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NaturalAuthentication" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Net.Tcp Port Sharing Service
-REM #~ Provides ability to share TCP ports over the net.tcp protocol.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetTcpPortSharing" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Netlogon" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Network Connected Devices Auto-Setup
-REM #~ Network Connected Devices Auto-Setup service monitors and installs qualified devices that connect to a qualified network. Stopping or disabling this service will prevent Windows from discovering and installing qualified network connected devices automatically. Users can still manually add network connected devices to a PC through the user interface.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NcdAutoSetup" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WpcMonSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Telefonska usluga
-REM #~ Upravlja stanjem telefonije na uređaju
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SessionEnv" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TermService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\UmRdpService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RpcLocator" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RetailDemo" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SensorDataService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SensrSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SensorService" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCardSvr" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ScDeviceEnum" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCPolicySvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SNMPTRAP" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ WebClient
-REM #~ Enables Windows-based programs to create, access, and modify Internet-based files. If this service is stopped, these functions will not be available. If this service is disabled, any services that explicitly depend on it will fail to start.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WebClient" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Windows Camera Frame Server
-REM #~ Enables multiple clients to access video frames from camera devices.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\FrameServer" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Windows Connect Now – registrator Config
-REM #~ WCNCSVC udomljuje Windows Connect Now Configuration, Microsoftovu implementaciju protokola Wireless Protected Setup (WPS). Windows Connect Now Configuration koristi se za konfiguriranje postavki bežičnog LAN-a za pristupnu točku (AP) ili bežični uređaj. Servis se po potrebi programski pokreće.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wcncsvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Usluga Windows Insider
-REM #~ Pruža infrastrukturnu podršku za program Windows Insider. Ova usluga mora ostati omogućena da bi program Windows Insider ispravno funkcionirao.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WMPNetworkSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ Servis mobilne pristupne točke u sustavu Windows
-REM #~ Pruža mogućnost dijeljenja mobilne podatkovne veze s nekim drugim uređajem.
-REM #~ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\icssvc]
-REM #~ "Start"=dword:00000004
-REM #~ Samokonfiguriranje WLAN-a
-REM #~ Servis WLANSVC osigurava logiku potrebnu za konfiguriranje bežične lokalne mreže (WLAN-a), njezino otkrivanje, povezivanje s njom i prekidanje veze s njom na način definiran IEEE 802.11 standardima. Taj servis sadrži i logiku za pretvorbu vašeg računala u softversku pristupnu točku da bi se drugi uređaji ili računala mogli bežično povezivati s njim pomožu WLAN kartice koja to podržava. Prekidanje ili onemogućavanje servisa WLANSVC učinit će sve WLAN kartice u računalu nedostupnima iz korisničkog sučelja za umrežavanje sustava Windows. Preporučljivo je pokrenuti servis WLANSVC ako računalo koristi WLAN karticu.
-REM #~ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WlanSvc]
-REM #~ "Start"=dword:00000003
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinRM" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\workfolderssvc" /v "Start" /t REG_DWORD /d "4" /f
-REM #~ WWAN AutoConfig
-REM #~ This service manages mobile broadband (GSM & CDMA) data card/embedded module adapters and connections by auto-configuring the networks. It is strongly recommended that this service be kept running for best user experience of mobile broadband devices.
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WwanSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\XblAuthManager" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\XblGameSave" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\XboxNetApiSvc" /v "Start" /t REG_DWORD /d "4" /f
-REM ; SysHardener
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "ValidateAdminCodeSignatures" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "SFCDisable" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\NoExecuteState" /v "LastNoExecuteRadioButtonState" /t REG_DWORD /d "14013" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "VDMDisallowed" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Hidden" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSuperHidden" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\IniFileMapping\Autorun.inf" /ve /t REG_SZ /d "@SYS:DoesNotExist" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" /v "DisableAutoplay" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows Script Host\Settings" /v "Enabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "RequireAdmin" /f
-Reg.exe add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter" /v "EnabledV9" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Internet Explorer\PhishingFilter" /v "EnabledV8" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Terminal Server" /v "AllowTSConnections" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager" /v "SafeDllSearchMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager" /v "SafeProcessSearchMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager" /v "StartRunNoHOMEPATH" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\LanmanServer\Parameters" /v "SMB2" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\LanmanServer\Parameters" /v "SMB1" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT\Parameters\Interfaces\Tcpip_{3245bf92-747e-45ff-87ae-afa7cbf2869a}" /v "NetbiosOptions" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT\Parameters\Interfaces\Tcpip_{924745e8-e26a-42b7-bdc1-b4604c1fcb32}" /v "NetbiosOptions" /t REG_DWORD /d "2" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT\Parameters\Interfaces\Tcpip_{ee1346b1-f081-4306-81b4-83991af38a4b}" /v "NetbiosOptions" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Windows\Sidebar" /v "TurnOffSidebar" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Sidebar\Settings" /v "AllowElevatedProcess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows" /v "RequireSignedAppInit_DLLs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PowerShell" /v "EnableScripts" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Control\Session Manager\Environment" /v "__PSLockDownPolicy" /t REG_SZ /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\WinHttpAutoProxySvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\DusmSvc" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Dnscache" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\LanmanServer" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\JSPrefs" /v "bEnableJS" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\TrustManager" /v "iProtectedView" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\TrustManager" /v "bEnhancedSecurityInBrowser" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\TrustManager" /v "bEnhancedSecurityStandalone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\Originals" /v "bAllowOpenFile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\7.0\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\8.0\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\9.0\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\10.0\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\11.0\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\DC\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Acrobat Reader\XI\AVGeneral" /v "bCheckForUpdatesAtStartup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Security" /v "WorkbookLinkWarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\PowerPoint\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\PowerPoint\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Word\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Word\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Security" /v "WorkbookLinkWarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\PowerPoint\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\PowerPoint\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Word\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Word\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Security" /v "WorkbookLinkWarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\PowerPoint\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\PowerPoint\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Word\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Word\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Security" /v "WorkbookLinkWarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\PowerPoint\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\PowerPoint\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Word\Security" /v "VBAWarnings" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Word\Security" /v "PackagerPrompt" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Options" /v "DDEAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Excel\Options" /v "DDECleaned" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\PowerPoint\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Word\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Options" /v "DDEAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Excel\Options" /v "DDECleaned" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\PowerPoint\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Word\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Options" /v "DDEAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Excel\Options" /v "DDECleaned" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\PowerPoint\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Word\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Options" /v "DDEAllowed" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Excel\Options" /v "DDECleaned" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\PowerPoint\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Word\Options" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\12.0\Word\Options\WordMail" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\14.0\Word\Options\WordMail" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\15.0\Word\Options\WordMail" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\16.0\Word\Options\WordMail" /v "DontUpdateLinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Office\Common\Security" /v "DisableAllActiveX" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Kingsoft\Office\6.0\wpp\Application Settings" /v "VbaSecurityLevel" /t REG_DWORD /d "4" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 6.0\Preferences\Others" /v "bEnableJS" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 7.0\Preferences\Others" /v "bEnableJS" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 8.0\Preferences\Others" /v "bEnableJS" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 9.0\Preferences\Others" /v "bEnableJS" /t REG_SZ /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 6.0\Preferences\Trust Manager" /v "iProtectedView" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 6.0\Preferences\Trust Manager" /v "bSafeMode" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 7.0\Preferences\Trust Manager" /v "iProtectedView" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 7.0\Preferences\Trust Manager" /v "bSafeMode" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 8.0\Preferences\Trust Manager" /v "iProtectedView" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 8.0\Preferences\Trust Manager" /v "bSafeMode" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 9.0\Preferences\Trust Manager" /v "iProtectedView" /t REG_SZ /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Foxit Software\Foxit Reader 9.0\Preferences\Trust Manager" /v "bSafeMode" /t REG_SZ /d "1" /f
-REM ; User policy
-Reg.exe delete "HKCU\keycuPoliciesmsvbaSecurity" /v "loadcontrolsinforms" /f
-Reg.exe add "HKCU\keycuPoliciesmsvbaSecurity" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\2015\AVGeneral" /v "FIPSMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\2015\Security\cDigSig\cAdobeDownload" /v "LoadSettingsFromURL" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\2015\Security\cDigSig\cEUTLDownload" /v "bLoadSettingsFromURL" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\DC\AVGeneral" /v "FIPSMode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\DC\Security\cDigSig\cAdobeDownload" /v "LoadSettingsFromURL" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Adobe\Adobe Acrobat\DC\Security\cDigSig\cEUTLDownload" /v "LoadSettingsFromURL" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "HideZoneInfoOnProperties" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "SaveZoneInformation" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInplaceSharing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPreviewPane" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoReadingPane" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "NoDispScrSavPage" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Assistance\Client\1.0" /v "NoExplicitFeedback" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Assistance\Client\1.0" /v "NoImplicitFeedback" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Control Panel" /v "FormSuggest" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Control Panel" /v "FormSuggest PassWords" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "FormSuggest PassWords" /t REG_SZ /d "no" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "FormSuggest PW Ask" /t REG_SZ /d "no" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Internet Explorer\Main" /v "Use FormSuggest" /t REG_SZ /d "no" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Internet" /v "donotunderlinehyperlinks" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Security" /v "modalTrustdecisiononly" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Settings" /v "default File format" /t REG_DWORD /d "12" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Access\Settings" /v "noconvertdialog" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common" /v "qmenable" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common" /v "updatereliabilitydata" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Broadcast" /v "disabledefaultservice" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Broadcast" /v "disableprogrammaticAccess" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\DocumentInformationPanel" /v "beaconing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Drm" /v "disablecreation" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Drm" /v "includehtml" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Drm" /v "requireconnection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Feedback" /v "enabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Feedback" /v "includescreenshot" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\FixedFormat" /v "disablefixedformatdocproperties" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\General" /v "shownFirstRunoptin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\General" /v "skydriveSigninOption" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Internet" /v "opendocumentsreadwritewhilebrowsing" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Internet" /v "relyonvml" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Internet" /v "useonlineContent" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\MailSettings" /v "disableSignatures" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\MailSettings" /v "plainwraplen" /t REG_DWORD /d "132" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Portal" /v "linkpublishingdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\PtWatson" /v "ptwoptin" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Research\Translation" /v "useonline" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Roaming" /v "RoamingSettingsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "defaultencryption12" /t REG_SZ /d "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "disablehyperlinkwarning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "disablepassWordui" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "Drmencryptproperty" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "encryptdocprops" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "openxmlencryption" /t REG_SZ /d "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security" /v "openxmlencryptproperty" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Security\Trusted Locations" /v "allow user Locations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Services\Fax" /v "noFax" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Signatures" /v "enablecreationofweakxpSignatures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Signatures" /v "suppressextSigningsvcs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\Signin" /v "SigninOptions" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Common\TrustCenter" /v "Trustbar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Internet" /v "donotloadpictures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options" /v "autohyperlink" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options" /v "defaultformat" /t REG_DWORD /d "51" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options" /v "disableautorepublish" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options" /v "disableautorepublishwarning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options" /v "extractdatadisableui" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options\BinaryOptions" /v "fglobalsheet_37_1" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Options\BinaryOptions" /v "fupdateext_78_1" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "Excelbypassencryptedmacroscan" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "extensionhardening" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security" /v "webservicefunctionwarnings" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "dbaseFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "difandsylkFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "Excel12betaFilesfromconverters" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "htmlandxmlssFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl2macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl2worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl3macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl3worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl4macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl4workbooks" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl4worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl9597workbooksandtemplates" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileBlock" /v "xl95workbooks" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\FileValidation" /v "openinProtectedview" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Excel\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\FirstRun" /v "bootedrtm" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\FirstRun" /v "disablemovie" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Gfx" /v "disablescreenshotautohyperlink" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath" /v "disableInfoPath2003eMailforms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Deployment" /v "cacheMailxsn" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Deployment" /v "Mailxsnwithxml" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Editor\Pffline" /v "cachedmodestatus" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "allowInternetsolutions" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "disallowattachmentcustomization" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "Editoractivexbeaconingui" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "eMailformsbeaconingui" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "eMailformsruncodeandscript" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "enablefullTrusteMailforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "enableInterneteMailforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "enableintraneteMailforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "enablerestrictedeMailforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "gradualupgraderedirection" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "InfoPathbeaconingui" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "runfullTrustsolutions" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "runmanagedcodefromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security" /v "Signaturewarning" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\InfoPath\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Meetings\Profile" /v "serverui" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\MS Project\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\MS Project\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\MS Project\Security" /v "Trustwss" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\MS Project\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "enableFileobfuscation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "enablelogging" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "enableupload" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook" /v "disableantispam" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook" /v "disallowattachmentcustomization" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\AutoFormat" /v "pgrfafo_25_1" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Calendar" /v "disableweather" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\General" /v "check default client" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\General" /v "msgformat" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "blockextContent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "disableInfoPathforms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "Editorpreference" /t REG_DWORD /d "65536" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "Internet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "intranet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "junkMailenablelinks" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "junkMailTrustcontacts" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "junkMailTrustoutgoingrecipients" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "message plain format mime" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "message rtf format" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "readasplain" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "readSignedasplain" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "Trustedzone" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "unblocksafezone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Mail" /v "unblockspecificsenders" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Pubcal" /v "disabledav" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Pubcal" /v "disableOfficeonline" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Pubcal" /v "publishCalendardetailspolicy" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Pubcal" /v "restrictedAccessonly" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Pubcal" /v "singleuploadonly" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Rss" /v "disable" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Rss" /v "enableattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Rss" /v "enablefulltexthtml" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Rss" /v "synctosyscfl" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Webcal" /v "disable" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Options\Webcal" /v "enableattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Rpc" /v "enableRpcencryption" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "Fileextensionsremovelevel1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "Fileextensionsremovelevel2" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "Outlooksecuretempfolder" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "addinTrust" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "adminSecuritymode" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "allowactivexoneoffforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "allowuserstolowerattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "authenticationservice" /t REG_DWORD /d "9" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "clearSign" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "dontpromptlevel1attachclose" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "dontpromptlevel1attachsend" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "enableoneoffformscripts" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "enablerememberpwd" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "Externalsmime" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "fipsmode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "forcedefaultProfile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "level" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "minenckey" /t REG_DWORD /d "168" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "msgformats" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "nocheckonsessionSecurity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "nondefaultstorescript" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomaddressbookAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomaddressinformationAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomcustomaction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomformulaAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoommeetingtaskrequestresponse" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomsaveas" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "promptoomsend" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "publicfolderscript" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "respondtoreceiptrequests" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "sharedfolderscript" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "showlevel1attach" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "sigstatusnoTrustdecision" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "supressnamechecks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "usecrlchasing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security" /v "warnaboutinValid" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Outlook\Security\TrustedAddins" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Options" /v "defaultformat" /t REG_DWORD /d "27" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Options" /v "markupopensave" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "downloadimages" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "Powerpointbypassencryptedmacroscan" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "runprograms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\FileBlock" /v "Powerpoint12betaFilesfromconverters" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\FileValidation" /v "openinProtectedview" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Powerpoint\Slide Libraries" /v "disableslideupdate" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Publisher" /v "promptforbadFiles" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Publisher\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Publisher\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Publisher\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Visio\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Visio\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Visio\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\wef\TrustedCatalogs" /v "disableomexCatalogs" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\wef\TrustedCatalogs" /v "requireserververification" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Options" /v "custommarkupwarning" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Options" /v "defaultformat" /t REG_SZ /d "" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Options" /v "dontupdatelinks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Options" /v "warnreVisions" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security" /v "Wordbypassencryptedmacroscan" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "Word2000Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "Word2Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "Word60Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "Word95Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "Word97Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileBlock" /v "WordxpFiles" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\FileValidation" /v "openinProtectedview" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\Word\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Internet" /v "donotunderlinehyperlinks" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "modalTrustdecisiononly" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Access\Settings" /v "default File format" /t REG_DWORD /d "12" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common" /v "fbabehavior" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common" /v "fbaenabledhosts" /t REG_EXPAND_SZ /d "" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common" /v "sendcustomerdata" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Broadcast" /v "disabledefaultservice" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Broadcast" /v "disableprogrammaticAccess" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Drm" /v "requireconnection" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Feedback" /v "includescreenshot" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\fixedformat" /v "disablefixedformatdocproperties" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Portal" /v "linkpublishingdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\PtWatson" /v "ptwoptin" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Research\Translation" /v "useonline" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "defaultencryption12" /t REG_SZ /d "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "Drmencryptproperty" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "encryptdocprops" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "macroruntimescanscope" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "openxmlencryption" /t REG_SZ /d "Microsoft Enhanced RSA and AES Cryptographic Provider,AES 256,256" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security" /v "openxmlencryptproperty" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\Security\Trusted Locations" /v "allow user Locations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Access" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Excel" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\InfoPath" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Outlook" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Powerpoint" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Project" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Publisher" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Visio" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\toolbars\Word" /v "noextensibilitycustomizationfromdocument" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Common\TrustCenter" /v "Trustbar" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Internet" /v "donotloadpictures" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options" /v "defaultformat" /t REG_DWORD /d "51" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options" /v "disableautorepublish" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options" /v "disableautorepublishwarning" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options" /v "extractdatadisableui" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options\BinaryOptions" /v "fglobalsheet_37_1" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Options\BinaryOptions" /v "fupdateext_78_1" /t REG_DWORD /d "0" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "Excelbypassencryptedmacroscan" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "webservicefunctionwarnings" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "extensionhardening" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\External Content" /v "disableddeserverlaunch" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\External Content" /v "disableddeserverlookup" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\External Content" /v "enableblockunsecurequeryFiles" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "dbaseFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "difandsylkFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "htmlandxmlssFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl2macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl2worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl3macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl3worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl4macros" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl4workbooks" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl4worksheets" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl9597workbooksandtemplates" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl95workbooks" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileBlock" /v "xl97workbooksandtemplates" /t REG_DWORD /d "2" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileValidation" /v "openinProtectedview" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Protectedview" /v "disableintranetcheck" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Protectedview" /v "enabledatabaseFileProtectedview" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Excel\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Meetings\Profile" /v "serverui" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\MS Project\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\MS Project\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\MS Project\Security" /v "Trustwss" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\MS Project\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\MS Project\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "enableFileobfuscation" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook" /v "disallowattachmentcustomization" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\General" /v "msgformat" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "blockextContent" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "Internet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "intranet" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "junkMailenablelinks" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "junkMailprotection" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "Trustedzone" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "unblocksafezone" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Mail" /v "unblockspecificsenders" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Pubcal" /v "disabledav" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Pubcal" /v "disableOfficeonline" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Pubcal" /v "publishCalendardetailspolicy" /t REG_DWORD /d "16384" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Pubcal" /v "restrictedAccessonly" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Rss" /v "enableattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Rss" /v "enablefulltexthtml" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Webcal" /v "disable" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Options\Webcal" /v "enableattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Rpc" /v "enableRpcencryption" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "Fileextensionsremovelevel1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "Fileextensionsremovelevel2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "addinTrust" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "adminSecuritymode" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "allowactivexoneoffforms" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "allowuserstolowerattachments" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "authenticationservice" /t REG_DWORD /d "16" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "clearSign" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "enableoneoffformscripts" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "enablerememberpwd" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "Externalsmime" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "fipsmode" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "forcedefaultProfile" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "level" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "minenckey" /t REG_DWORD /d "168" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "msgformats" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "nocheckonsessionSecurity" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomaddressbookAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomaddressinformationAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomcustomaction" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomformulaAccess" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoommeetingtaskrequestresponse" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomsaveas" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "promptoomsend" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "publicfolderscript" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "publishtogaldisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "respondtoreceiptrequests" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "sharedfolderscript" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "showlevel1attach" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "supressnamechecks" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "usecrlchasing" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security" /v "warnaboutinValid" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Outlook\Security\TrustedAddins" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Options" /v "defaultformat" /t REG_DWORD /d "27" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "Powerpointbypassencryptedmacroscan" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "runprograms" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\FileBlock" /v "BinaryFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\FileValidation" /v "openinProtectedview" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Protectedview" /v "disableintranetcheck" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Powerpoint\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher" /v "promptforbadFiles" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Publisher\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security\FileBlock" /v "Visio2000Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security\FileBlock" /v "Visio2003Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security\FileBlock" /v "Visio50andearlierFiles" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Visio\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\wef\TrustedCatalogs" /v "requireserververification" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Options" /v "defaultformat" /t REG_SZ /d "" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Options" /v "dontupdatelinks" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "allowdde" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "Wordbypassencryptedmacroscan" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "Accessvbom" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "blockContentexecutionfromInternet" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "notbpromptunSignedaddin" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "requireAddinsig" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "vbadigsigTrustedPublishers" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "vbarequiredigsigwithcodeSigningeku" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "vbarequirelmTrustedPublisher" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security" /v "vbawarnings" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "openinProtectedview" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word2000Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word2003Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word2007Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word2Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word60Files" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word95Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "Word97Files" /t REG_DWORD /d "5" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileBlock" /v "WordxpFiles" /t REG_DWORD /d "5" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileValidation" /v "openinProtectedview" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileValidation" /v "disableeditfrompv" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\FileValidation" /v "enableonload" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Protectedview" /v "disableattachmentsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Protectedview" /v "disableInternetFilesinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Protectedview" /v "disableintranetcheck" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Protectedview" /v "disableunsafeLocationsinpv" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Trusted Locations" /v "allLocationsdisabled" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Word\Security\Trusted Locations" /v "allownetworkLocations" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\Common\blog" /v "disableblog" /t REG_DWORD /d "1" /f
-Reg.exe delete "HKCU\SOFTWARE\Policies\Microsoft\Office\Common\Security" /v "uficontrols" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\Common\Security" /v "automationSecurity" /t REG_DWORD /d "2" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\Common\Security" /v "automationSecurityPublisher" /t REG_DWORD /d "3" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Office\Common\Smart Tag" /v "neverloadmanifests" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\OneDrive" /v "DisablePersonalSync" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\vba\Security" /v "allowvbaintranetreferences" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\vba\Security" /v "disablestrictvbarefsSecurity" /t REG_DWORD /d "0" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\vba\Security" /v "loadcontrolsinforms" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableThirdPartySuggestions" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Control Panel\Desktop" /v "ScreenSaveActive" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Control Panel\Desktop" /v "ScreenSaverIsSecure" /t REG_SZ /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Control Panel\Desktop" /v "SCRNSAVE.EXE" /t REG_SZ /d "scrnsave.scr" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoCloudApplicationNotification" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoToastApplicationNotificationOnLockScreen" /t REG_DWORD /d "1" /f
-Reg.exe add "HKCU\SOFTWARE\Policies\Microsoft\WindowsMediaPlayer" /v "PreventCodecDownload" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SecEdit\Template Locations" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Alerter" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ALG" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\AppMgmt" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\BITS" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Browser" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\cisvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ClipSrv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\COMSysApp" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\cscsvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "2" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\DiagTrack" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmadmin" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\dmserver" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "EnableAutoDoh" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "MaxCacheTtl" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" /v "MaxNegativeCacheTtl" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EntAppSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\ERSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\EventSystem" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\FastUserSwitchingCompatibility" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\icssvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\helpsvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\HidServ" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\HbHost" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\lanmanserver" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation" /v "Start" /t REG_DWORD /d "3" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LmHosts" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MapsBroker" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Messenger" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\mnmsrvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\MSDTC" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetBT" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetDDE" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NetDDEdsdm" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Netlogon" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Netman" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Nla" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NtLmSsp" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\NtmsSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PeerDistSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PlugPlay" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RasAuto" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RasMan" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RDSessMgr" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Retaildemo" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RpcLocator" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\RSVP" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCardDrv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SCardSvr" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\seclogon" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrsvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SENS" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Smsrouter" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Snmptrap" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SstpSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\stisvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SwPrv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\SysmonLog" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TapiSrv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "DisableReverseAddressRegistrations" /t REG_DWORD /d "1" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "EnableICMPRedirect" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\tcpip\parameters" /v "IGMPLevel" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TermService" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TlntSvr" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\TrkWks" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\uploadmgr" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\UPS" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VaultSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WinHttpAutoProxySvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmickvpexchange" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicguestinterface" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicheartbeat" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicrdv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicshutdown" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmictimesync" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvmsession" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\vmicvss" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\VSS" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\W32Time" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WebClient" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\winrm" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WmdmPmSp" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Wmi" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WmiApSrv" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\Wmpnetworksvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "2" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WwanSvc" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\WZCSVC" /v "Start" /t REG_DWORD /d "4" /f
 REM ; Worms Doors Cleaner
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Rpc\Internet" /v "UseInternetPorts" /t REG_SZ /d "N" /f
-Reg.exe add "HKLM\SOFTWARE\Microsoft\Ole" /v "EnableDCOM" /t REG_SZ /d "N" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT\Parameters" /v "SmbDeviceEnabled" /t REG_DWORD /d "0" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT" /v "Start" /t REG_DWORD /d "4" /f
-Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Messenger" /v "Start" /t REG_DWORD /d "4" /f
-:: Exit
-exit /b
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Rpc\Internet" /v "UseInternetPorts" /t REG_SZ /d "N" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Microsoft\Ole" /v "EnableDCOM" /t REG_SZ /d "N" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT\Parameters" /v "SmbDeviceEnabled" /t REG_DWORD /d "0" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\NetBT" /v "Start" /t REG_DWORD /d "4" /f
+Echo Y | Reg.exe add "HKLM\SYSTEM\ControlSet001\Services\Messenger" /v "Start" /t REG_DWORD /d "4" /f
+REM ; Pac file
+Echo Y | Reg.exe add "HKU\S-1-5-18\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://raw.githubusercontent.com/Gorstak1979/Pac/main/antiad.pac" /f
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v "AutoConfigURL" /t REG_SZ /d "https://raw.githubusercontent.com/Gorstak1979/Pac/main/antiad.pac" /f
+Echo Y | Reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableLegacyAutoProxyFeature" /t REG_DWORD /d "0" /f
+Exit
+REM ; Block cmd and powershell
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /f
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /t REG_SZ /d "powershell.exe" /f
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "2" /t REG_SZ /d "powershell_ise.exe" /f
+Echo Y | Reg.exe add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "3" /t REG_SZ /d "conhost.exe" /f
+Exit
+
+:IsAdmin
+Reg.exe query "HKU\S-1-5-19\Environment"
+If Not %ERRORLEVEL% EQU 0 (
+ Cls & Echo You must have administrator rights to continue ... 
+ Pause & Exit
+)
+Cls
+goto:eof
